@@ -1,0 +1,472 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+
+use App\Models\ModuleAnswer;
+use App\Models\ModuleQuiz;
+use App\Notifications\AdminPasswordReset;
+use App\Notifications\UserNote;
+use App\Notifications\Step3;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\HtmlString;
+
+use App\Models\Admin;
+use App\Models\AdminReset;
+use App\Models\User;
+use App\Models\UserActivity;
+use App\Models\Module;
+use App\Models\InstallImage;
+use App\Models\Message;
+use App\Models\Note;
+
+use Config;
+use Auth;
+
+class AdminAuthController extends Controller
+{
+    public function getLogin() {
+        return view('admin.login');
+    }
+
+    public function postLogin(Request $request) {
+        $this->validate($request, [
+            'email' => 'required | email',
+            'password' => 'required',
+        ]);
+
+        if( auth()->guard('admin')
+            ->attempt([
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
+            ])
+        ) {
+            $user = auth()->guard('admin')->user();
+            if ( Hash::check($request->password, $user->password ) ) {
+                return redirect()->route('adminDashboard');
+            }
+        }
+        else {
+            return redirect()->route('adminLogin')->withErrors(['msg'=>'Invalid email and/or password.']);
+        }
+    }
+
+    public function adminLogout(Request $request) {
+        auth()->guard('admin')->logout();
+        Session::flush();
+        Session::flash('success','You are logged out.');
+        return redirect()->route('adminLogin');
+    }
+
+    public function adminIndex() {
+        $admin = auth()->guard('admin')->user();
+        $users = User::all();
+        $modules = Module::all();
+        $activity = UserActivity::all();
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'activity'=>$activity]);
+    }
+
+    public function userDetail($id) {
+        session(['user' => $id]);
+        session()->forget('step');
+        $admin = auth()->guard('admin')->user();
+        $user = User::where('id', $id)->first();
+        $activity = UserActivity::where('user_id', $id)->first();
+        $modules = Module::all();
+        //$docs = InstallImage::where('user_id', $id)->get();
+        $messages = Message::where('user_id', $id)->get();
+        $answers = ModuleAnswer::where('user_id',$id)->get();
+        $questions = ModuleQuiz::all();
+
+        // Run through all answers to count the total correct for each module
+        $a_count = array();
+        $c_count = array();
+
+        // Use the module ID's to verify each section of questions and answers
+        foreach ( $modules as $m ) {
+            $tot_correct = 0;
+            $tot_qty = 0;
+            // Use answers for loop so time is not spent looping through non answered modules
+            foreach( $answers as $a ) {
+                if ( $a['module_id'] == $m->id ) {
+                    // If an answer is from the current module, loop through all the questions to find the one that matches it
+                    foreach ( $questions as $q ) {
+                        if ( $q['module_id'] == $m->id && $q['q_id'] == $a['q_id'] ) {
+                            // count the number of questions for the module
+                            $tot_qty++;
+                            if ( $q['answer_correct'] == $a['answer'] ) {
+                                // count the number of correct answers
+                                $tot_correct++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // pass the totals into the arrays created earlier
+            $a_count[$m->id] = $tot_correct;
+            $c_count[$m->id] = $tot_qty;
+        }
+
+//        $notes4 = Note::where('user_id', $id)->where('module_id', 4)->where('admin_id', $admin->id)->get();
+//        $notes5 = Note::where('user_id', $id)->where('module_id', 5)->where('admin_id', $admin->id)->get();
+
+        return view('admin.user', ['admin'=>$admin, 'user'=>$user, 'activity'=>$activity, 'modules'=>$modules, 'messages' => $messages, 'answers'=>$a_count, 'questions'=>$c_count/*, 'notes4' => $notes4, 'notes5' => $notes5*/] );
+    }
+
+    public function userDetailStep($id, $step) {
+        session(['step' => $step]);
+        $admin    = auth()->guard('admin')->user();
+        $user     = User::find(session()->get('user'));
+        $activity = UserActivity::where('user_id', session()->get('user') )->first();
+        $module   = Module::where('id', $step)->first();
+        $m_count  = Module::count();
+        $docs     = InstallImage::where('user_id', session()->get('user') )->get();
+        $notes    = Note::where('user_id', session()->get('user') )->where('module_id', $step)->where('admin_id', $admin->id)->first();
+        $msgs     = Message::where('user_id', session()->get('user'))->get();
+
+        return view('admin.step', ['admin'=>$admin, 'user'=>$user, 'module'=> $module, 'm_count' => $m_count, 'activity' => $activity, 'docs'=>$docs, 'notes'=>$notes, 'msgs'=>$msgs]);
+    }
+
+    public function userDetailPost(Request $request) {
+        $user = User::where('id', $request->session()->get('user', 'default'))->first();
+        $m_count = Module::count();
+
+        $review_date = null;
+
+        $mod_name = 'module_' . sprintf("%02d", htmlentities($request->session()->get('step', 'default') ) );
+
+        if ( !empty( $request->review_03_date ) ) {
+            $new_datetime = $request->review_03_date . ' ' . $request->review_03_time;
+            $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
+        }
+        elseif ( $request->review_06_date !== null) {
+            $new_datetime = $request->review_06_date . ' ' . $request->review_06_time;
+            $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
+        }
+        elseif ( $request->session()->get('step') == $m_count) {
+
+            // create cert# with first and last initials + their user db id
+            $u_id = $user->id;
+            $flname = explode(' ', $user->name);
+            $fi = substr($flname[0], 0, 1);
+            $li = substr($flname[1], 0, 1);
+            $cert = bin2hex( $fi . $li . $u_id);
+
+            $cert_date = date('Y-m-d H:i:s');
+
+            User::where('id', $user->id)
+                ->update([
+                    'cert' => $cert,
+                    'cert_date' => $cert_date
+                ]);
+
+            $cert_pull = User::where('id', $user->id)->value('cert');
+
+            // send notification to user that they have been certified
+            $user->notify(new Step3([
+                'subject' => 'Lion Energy Certification',
+                'intro'   => 'Congratulations, ' . $user->name,
+                'message' => 'Lion Energy has confirmed the completion of your training and issued you a certification number. This allows you to install the Lion Sanctuary system.',
+                'outtro'  => '<strong>Certification number: ' . $cert_pull . '</strong>',
+                'url'     => route('home'),
+            ]));
+        }
+
+        $update_list = [
+            $mod_name => date("Y-m-d H:i:s"),
+        ];
+
+
+        // The review_date is only for steps 3 and 6. Don't include in update if not provided
+        // otherwise it will be overwritten with null.
+        if ( $review_date !== null ) {
+            $r_num = 'review_0' . $request->session()->get('step');
+            $update_list[$r_num] = $review_date;
+        }
+        UserActivity::where('user_id', $request->session()->get('user'))->update(
+            $update_list
+        );
+
+        return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
+    }
+
+    public function step3date(Request $request) {
+        $r_num = 'review_03';
+        $r_date = $r_num . '_date';
+        $r_time = $r_num . '_time';
+
+        $new_datetime = htmlentities($request->$r_date) . ' ' . htmlentities($request->$r_time);
+
+        $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
+
+        $update_data = [
+            $r_num => $review_date,
+            'review_03_user_request' => null
+        ];
+
+        if ( UserActivity::where('user_id', $request->session()->get('user'))->update(
+            $update_data
+        )
+        ) {
+            Session::flash('success' . $request->session()->get('step'),'User information updated.');
+        }
+        else {
+            Session::flash('error' . $request->session()->get('step'),'User information could not be updated.');
+        }
+
+        // Send notification to user
+        $user = User::where('id', $request->session()->get('user'))->first();
+
+        $notify_data = [
+            'subject' => 'Appointment Set',
+            'intro'   => 'Lion Energy has set an appointment with you for the following date and time',
+            'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
+            'outtro'  => 'Make sure all documents on Step 4 are uploaded before this date.',
+            'url'     => secure_url( route('home' ) ),
+        ];
+
+        $user->notify( new Step3($notify_data) );
+
+        return redirect()->back();
+    }
+
+    public function step6Date(Request $request) {
+        $r_num  = 'review_06';
+        $r_date = $r_num . '_date';
+        $r_time = $r_num . '_time';
+
+        $new_datetime = htmlentities($request->$r_date) . ' ' . htmlentities($request->$r_time);
+
+        $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
+
+        $update_data = [
+            'review_06_admin_request' => $review_date,
+            'review_06_user_request'  => null
+        ];
+
+        if ( UserActivity::where('user_id', $request->session()->get('user'))->update(
+            $update_data
+        )
+        ) {
+            Session::flash('success6','User information updated.');
+        }
+        else {
+            Session::flash('error6','User information could not be updated.');
+        }
+
+        // Send notification to user
+        $user = User::where('id', $request->session()->get('user'))->first();
+
+        $notify_data = [
+            'subject' => 'Final Inspection Change',
+            'intro'   => 'Lion Energy has suggested change to your appointment for the <strong>final inspection</strong>.',
+            'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
+            'outtro'  => 'Click below to review this appointment.',
+            'url'     => secure_url( route('modules',['id' => $request->session()->get('user')] ) ),
+        ];
+
+        $user->notify( new Step3($notify_data) );
+
+        return redirect()->back();
+    }
+
+    public function finalInspectDate(Request $request) {
+        $user =  $request->session()->get('user', 'default');
+
+        $review_date = date("Y-m-d", strtotime($request->review_06_date) );
+        $review_time = date('H:i:s', strtotime($request->review_06_time) );
+
+        $review_date_time = $review_date . ' ' . $review_time;
+
+        if ( UserActivity::where('user_id', $user)->update(
+            [
+                'review_06' => $review_date_time,
+                'review_06_user_request' => null
+            ])
+        ) {
+            Session::flash('success','On-site inspection date updated.');
+        }
+        else {
+            Session::flash('error','Inspection date could not be updated. Contact tech support for help.');
+        }
+
+        $notify_data = [
+            'subject' => 'Appointment Set',
+            'intro'   => 'Lion Energy has set an appointment with you for the <strong>final inspection</strong> of your installation for the following date and time.',
+            'message' => date('M d, Y @ h:i A', strtotime( $review_date_time ) ),
+            'outtro'  => 'Make sure the installation is fully complete before this date.',
+            'url'     => secure_url( route('home' ) ),
+        ];
+
+        $user_data = User::where('id', $user)->first();
+
+        $user_data->notify( new Step3($notify_data) );
+
+        return redirect()->route('userDetail', ['id'=>$user]);
+    }
+
+    public function adminCreate(Request $request) {
+        $request->validate([
+            'name' =>['required','string','max:255'],
+            'email'=>['required','email','unique:admins','max:255'],
+            'password'=>['required','confirmed','min:8'],
+        ]);
+
+        Admin::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+        ]);
+
+        return redirect()->back();
+    }
+
+    function admin_msg(Request $request) {
+        $validated = $request->validate([
+            'user_id' => 'required',
+            'admin_id' => 'required',
+            'message'    => 'required'
+        ]);
+        $data = new Message;
+        $data->user_id = htmlentities($request->user_id);
+        $data->admin_id = htmlentities($request->admin_id);
+        $data->message = htmlentities($request->message);
+
+        $data->save();
+
+        // Send notification to user
+        $user = User::find($data->user_id);
+
+        $notify_data = [
+            'intro' => 'Lion Energy has added a note on your certification board.',
+            'message' => new HtmlString($data->message),
+            'url' => route('home' ),
+        ];
+
+        $user->notify( new UserNote($notify_data) );
+
+        $route = ( $request->module_id == null ) ? 'userDetail' : 'userDetailStep';
+
+        return redirect()->route($route, ['id'=>$request->user_id, 'step'=>$request->module_id]);
+    }
+
+    function adminModuleNote(Request $request) {
+        $validate = $request->validate([
+            'note' => 'required',
+            'user_id' => 'required',
+            'admin_id' => 'required',
+            'module_id' => 'required',
+        ]);
+
+        $note = html_entity_decode($request->note);
+
+        $note = htmlentities($note);
+
+        Note::updateOrCreate(
+            [ 'user_id' => $request->user_id, 'module_id' => $request->module_id, 'admin_id' => $request->admin_id ],
+            [ 'note' => $note ]
+        );
+
+        return redirect()->back();
+    }
+
+    function passwordForgot() {
+        return view('admin.forgot');
+    }
+
+    function passwordReset() {
+        return view('admin.reset');
+    }
+
+    function passwordForgotProcess(Request $request) {
+        $validated = $request->validate([
+            'email' => 'required|email:rfc,dns'
+        ]);
+
+        $data = new AdminReset;
+        $token = Hash::make(rand(24,24));
+
+        // upsert updates an existing record or inserts a new one
+        // https://laravel.com/docs/9.x/queries#upserts
+        $data->upsert([
+            [
+                'email' => $request->email,
+                'token' => $token
+            ]
+        ],
+            ['email'],
+            ['token']
+        );
+        // Send email with password reset link
+        $user = Admin::where('email', $request->email)->first();
+
+        $url = Config::get('app.app_url');
+
+        $link = $url . '/admin/reset-password?token=' . $token . '&email=' . $request->email;
+        $notify_data = [
+            'intro' => 'You have requested to have your admin password reset for https://certification.lionenergy.com',
+            'url' => $link,
+        ];
+
+        $user->notify( new AdminPasswordReset($notify_data) );
+
+        Session::flash('status', 'Thank you. Your password reset link has been sent to your email.');
+        return redirect()->back();
+    }
+
+    function passwordResetProcess(Request $request) {
+        // If any error is found, $err gets incremented
+        // then checked at the end for actions to take
+        $err = 0;
+
+        $validate = $request->validate([
+            'token' => 'required',
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required|min:8|confirmed',
+        ],[
+            // if the token is not found, it's because the user entered the URI without the included params
+            'token.required' => 'The token from your email notification must be included. Please use the full link from your password reset email.'
+        ]);
+
+        // $tokencheck will only appear if the proper sequence is taken by the user to request a new password
+        $tokencheck = AdminReset::where('token', $request->token)->where('email', $request->email)->first();
+
+        if ($tokencheck == null) {
+            Session::flash('status','The reset token is invalid.');
+            $err++;
+        } else {
+            $tokencheck->toArray();
+            $now = strtotime('now');
+            $then = strtotime($tokencheck['updated_at']);
+            $diff = $now - $then;
+
+            if ( $diff > 1800 ) {
+                Session::flash('status','The reset token has expired.');
+                $err++;
+            }
+            elseif ( htmlentities($request->password) != htmlentities($request->password_confirmation ) ) {
+                Session::flash('status','The passwords did not match.');
+                $err++;
+            }
+        }
+
+        if ($err == 0) {
+            $password = Hash::make($request->password);
+            $data = new Admin;
+            $data->where('email', $request->email)->update(['password'=>$password]);
+
+            // remove the token/email combo from the admin_resets db table
+            AdminReset::where('email', $request->email)->delete();
+
+            Session::flash('status','Your password has been updated. Please login.');
+            return redirect( route('adminLogin'));
+        } else {
+            return redirect()->back();
+        }
+    }
+}

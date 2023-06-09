@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('user_activities', function (Blueprint $table) {
+            $table->id();
+            $table->integer('user_id')->unsigned();
+            $table->dateTime('module_01')->nullable();
+            $table->dateTime('module_02')->nullable();
+            $table->dateTime('module_03')->nullable();
+            $table->dateTime('module_04')->nullable();
+            $table->dateTime('module_05')->nullable();
+            $table->dateTime('module_06')->nullable();
+            $table->dateTime('review_end')->nullable();
+            $table->dateTime('review_end_admin_request')->nullable();
+            $table->dateTime('reivew_end_user_request')->nullable();
+            $table->tinyInteger('training_done')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('user_activities');
+    }
+};
