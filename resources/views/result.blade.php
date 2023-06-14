@@ -21,10 +21,10 @@
                         @foreach ($answers as $a)
                             @if ( $a['q_id'] == $q['q_id'] )
                                 @if ( $a['answer'] != $q['answer_correct'] )
+                                    @php $incorrect = ''; @endphp
                                     <div style="border-top:1px solid rgba(0,0,0,.1); padding:1rem 0; margin:0.5rem 0">
                                         <h4>{{$q['question']}}</h4>
                                         @foreach ( $a_list as $key => $value)
-                                            @php $incorrect = null; @endphp
                                             @if ($key == $a['answer'])
                                                 @php $incorrect = $value @endphp
                                             @endif
@@ -32,7 +32,7 @@
                                                 @php $correct = $value @endphp
                                             @endif
                                         @endforeach
-                                        @if ($incorrect !== null)
+                                        @if ($incorrect !== '')
                                             <p class="mb-0">Incorrect: {{ $incorrect }}</p>
                                         @endif
                                         <p><strong>Correct: {{ $correct }}</strong></p>
