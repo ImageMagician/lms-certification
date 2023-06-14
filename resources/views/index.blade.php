@@ -12,16 +12,12 @@
 
                     <h1>Welcome</h1>
                     <h5 style="font-weight:700; margin-bottom:1em">
-                        Welcome to the Lion Energy Sanctuary certification process. The process consists of 6 steps.
+                        Welcome to the Lion Energy Sanctuary certification process.
                     </h5>
-                    <ol>
-                        <li><strong>Video and quiz</strong> - product overview.</li>
-                        <li><strong>Video and quiz</strong> – product installation.</li>
-                        <li><strong>Identify your first installation project</strong> that will be used to complete your training and certification with guidance from your Lion Energy trainer.</li>
-                        <li><strong>Upload project design documents and site photos</strong> for the first installation followed by a review and consultation with your Lion Energy trainer.</li>
-                        <li><strong>Upload photographs of the completed installation</strong> and wiring for your Lion trainer to review.</li>
-                        <li><strong>Commissioning the system</strong> of the first installation by your Lion Energy trainer.</li>
-                    </ol>
+                    <p>
+                        Certification consists of a series of videos with detailed explanation of the structure and setup of the Sanctuary.
+                        Each video is followed by a brief quiz to help you learn and retain the important components of commissioning the system.
+                    </p>
                     <p>
                         Upon completion, you will receive a certification number that allows you to install the Lion Sanctuary system going forward.
                     </p>
