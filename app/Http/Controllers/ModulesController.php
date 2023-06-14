@@ -123,6 +123,9 @@ class ModulesController extends Controller
 
                     $activity = UserActivity::where('user_id', $user->id)->first();
 
+                    // check if the user has already been tagged as having finished their training
+                    // If not, pull the admin assigned to their account
+                    // Send the admin an email notifying them of the completion
                     if ( $activity->training_done == null ) {
 
                         // get the user's admin to send them a notification
@@ -144,8 +147,6 @@ class ModulesController extends Controller
 
                         UserActivity::where('user_id', $user->id)
                             ->update(['training_done' => 1 ]);
-
-
 
                     }
                 }

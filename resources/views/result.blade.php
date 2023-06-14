@@ -24,6 +24,7 @@
                                     <div style="border-top:1px solid rgba(0,0,0,.1); padding:1rem 0; margin:0.5rem 0">
                                         <h4>{{$q['question']}}</h4>
                                         @foreach ( $a_list as $key => $value)
+                                            @php $incorrect = null; @endphp
                                             @if ($key == $a['answer'])
                                                 @php $incorrect = $value @endphp
                                             @endif
@@ -31,8 +32,10 @@
                                                 @php $correct = $value @endphp
                                             @endif
                                         @endforeach
-                                        <p class="mb-0">Incorrect: {{ $incorrect }}<br />
-                                        <strong>Correct: {{ $correct }}</strong></p>
+                                        @if ($incorrect !== null)
+                                            <p class="mb-0">Incorrect: {{ $incorrect }}</p>
+                                        @endif
+                                        <p><strong>Correct: {{ $correct }}</strong></p>
                                         <button class="vid-btn btn btn-secondary btn-small mt-2" id="vid_snippet-{{$q['video_snippet_start']}}-{{$q['video_snippet_end']}}" type="button">Rewatch Video Section</button>
                                     </div>
                                 @endif
