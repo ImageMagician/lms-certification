@@ -30,6 +30,17 @@
                             </div>
                         </div>
                     </div>
+                @elseif ($activity->$mod_last != null)
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-12">
+                            <div class="alert alert-info p-3 text-center">
+                                <p>
+                                    This user has completed all the training courses. Please review their results and contact them if necessary. Otherwise, click "certify user" if they are approved.
+                                </p>
+                                <a href="{{ route('userDetailStep', ['id' => $user->id, 'step' => $m_count]) }}" class="btn btn-primary">Certify User</a>
+                            </div>
+                        </div>
+                    </div>
                 @endif
                 @if(Session::has('success'))
                     <div class="alert alert-success mt-2">

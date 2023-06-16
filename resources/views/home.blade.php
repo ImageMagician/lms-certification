@@ -37,6 +37,14 @@
                                 </div>
                             </div>
                         </div>
+                        @elseif ( $activity->training_done == 1)
+                            <div class="row justify-content-center">
+                                <div class="col-12 text-center mt-3">
+                                    <div class="alert alert-info p-2">
+                                        <span style="font-size:18px">Training complete. You will be contacted by a Lion Energy representative to finalize your certification.</span>
+                                    </div>
+                                </div>
+                            </div>
                         @else
                             @php $steps = 0; @endphp
                             @foreach( $modules as $m )
@@ -48,13 +56,14 @@
                                 @endif
                             @endforeach
                             @if ( $steps == count($modules) )
-                                <div class="row justify-content-center">
-                                    <div class="col-12 text-center mt-3">
-                                        <div class="alert alert-info p-2">
-                                            <span style="font-size:18px">Training complete. You will be contacted by a Lion Energy representative to finalize your certification.</span>
-                                        </div>
+                            <div class="row justify-content-center">
+                                <div class="col-12 text-center mt-3">
+                                    <div class="alert alert-info p-2">
+                                        <span style="font-size:18px">Training complete. Click here to be contacted by a Lion Energy representative to finalize your certification.</span><br />
+                                        <a href="{{ route('request-cert') }}" class="btn btn-primary mt-2">Request Certification</a>
                                     </div>
                                 </div>
+                            </div>
                             @endif
                         @endif
                     </div>
@@ -98,11 +107,20 @@
                                     <h3 class="h5 mb-3">
                                         {{ $m->title }}
                                     </h3>
-
-                                    {{-- Modules 1 and 2 are video/quiz. The others are not. Designate which module they are on and show appropriate content --}}
-
                                     @if ( $activity->$module_id !== null )
+                                        <p>
+                                            Quiz:
+                                            {{ $answers[$m->id] }} /
+                                            {{ $questions[$m->id] }} correct
+                                            (@php echo round( $answers[$m->id] / $questions[$m->id] * 100, 2) @endphp%)
+                                        </p>
                                         <a href="/modules/{{ $m['id'] }}" target="_blank" class="btn btn-tertiary btn-small d-inline-block">Replay Video</a>
+                                        <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/restart" method="post" class="ms-2 d-inline-block">
+                                            @csrf
+                                            <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
+                                            <input type="hidden" name="_method" value="PUT">
+                                            <button type="submit" class="btn btn-tertiary btn-small d-inline-block">Restart Quiz</button>
+                                        </form>
                                     @endif
 
                                     @if ( $activity->$module_id !== null && $activity->$module_id < $m->passing_percentage)
@@ -124,8 +142,8 @@
                                         <a class="btn btn-primary" href="/modules/{{ $m['id'] }}">Watch Video &amp; Take Quiz</a>
                                     @endif
 
-                                   {{-- Module 6 --}}
-                                    @if ( $m->id == 6 )
+                                   {{-- Last Module --}}
+                                    @if ( $m->id == count($modules) )
                                         @if ( $activity->$module_prev !== null )
                                             @if ( $activity->review_end != null )
                                                 <div class="alert alert-secondary mt-3 mb-0 p-2">
@@ -156,13 +174,13 @@
                                                 Training Complete
                                             </div>
                                         @endif
+                                    @endif
 
-                                        @if ( $activity->$module_id !== null )
-                                            <p class="small position-absolute bottom-0">
-                                                Last Activity:
-                                                @php echo date( "M d, Y", strtotime( $activity->$module_date ) ); @endphp
-                                            </p>
-                                        @endif
+                                    @if ( $activity->$module_id !== null )
+                                        <p class="small position-absolute bottom-0">
+                                            Last Activity:
+                                            @php echo date( "M d, Y", strtotime( $activity->$module_id ) ); @endphp
+                                        </p>
                                     @endif
                                 </div>
                             </div>

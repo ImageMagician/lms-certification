@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\ModuleAnswer;
+use App\Models\ModuleQuiz;
 use Illuminate\Http\Request;
 use App\Models\UserActivity;
 use App\Models\Message;
@@ -10,6 +12,7 @@ use App\Models\User;
 use App\Models\Module;
 use App\Models\Resource;
 use App\Models\InstallImage;
+use App\Traits\QuizResults;
 use Auth;
 use Illuminate\Support\Facades\Session;
 use App\Notifications\Step3;
@@ -21,6 +24,8 @@ class HomeController extends Controller
      *
      * @return void
      */
+
+    use QuizResults;
 
     public function __construct()
     {
@@ -46,28 +51,39 @@ class HomeController extends Controller
      */
     public function home()
     {
-        $module = Module::all();
-        $resources = Resource::all();
         $user_info = $this->userPull();
         session(['user' => $user_info['user']['id']]);
-        session(['user_admin' => $user_info['user']['admin_id']]);
 
-        return view('home')->with([
-            "user"=>$user_info['user'],
-            "companies"=>$user_info['companies'],
-            "states"=>$user_info['states'],
-            "activity"=>$user_info['activity'],
-            "modules"=>$module,
-            "images"=>$user_info['images'],
-            "messages"=>$user_info['messages'],
-            "resources"=>$resources
-        ]);
+        $modules   = Module::all();
+
+        // Use Trait QuizResults to get all user answers to all module questions for display
+        $qNa = $this->getQuizResults();
+
+        return view('home')->with (
+            [
+                "user"      => $user_info['user'],
+                "companies" => $user_info['companies'],
+                "states"    => $user_info['states'],
+                "activity"  => $user_info['activity'],
+                "modules"   => $modules,
+                "images"    => $user_info['images'],
+                "messages"  => $user_info['messages'],
+                "questions" => $qNa['q'],
+                "answers"   => $qNa['a'],
+            ]
+        );
     }
 
     public function install() {
         $user_info = $this->userPull();
 
-        return view('installation')->with(['activity'=>$user_info['activity'], 'user'=>$user_info['user'],'images'=>$user_info['images']]);
+        return view('installation')->with(
+            [
+                'activity' => $user_info['activity'],
+                'user'     => $user_info['user'],
+                'images'   => $user_info['images']
+            ]
+        );
     }
 
     public function installUpdate(Request $request) {

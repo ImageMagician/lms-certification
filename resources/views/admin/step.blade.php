@@ -499,7 +499,6 @@
                 @endif
             </div>
         </div>
-        </div>
     </div>
 
     <div id="overlay_bg" onclick="newMsg()"></div>

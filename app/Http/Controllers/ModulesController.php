@@ -18,10 +18,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
+use App\Traits\QuizResults;
 use Auth;
 
 class ModulesController extends Controller
 {
+    use QuizResults;
 
     public function __construct()
     {
@@ -53,6 +55,9 @@ class ModulesController extends Controller
         $user = Auth::user();
 
         $module = Module::find($id);
+
+        // use the Trait QuizResults to pull all answers the user has completed and compare it against all questions per module
+        $qNa = $this->getQuizResults();
 
         // check if module has any questions in module_quizzes
         $quiz_check = ModuleQuiz::where('module_id', $id);
@@ -112,44 +117,9 @@ class ModulesController extends Controller
 
                 $mod_id = 'module_' . sprintf("%02d", $module->id);
 
-                // Get the next module number and check against the 'modules' database.
-                // If that id does not exist, send them back to the home page.
                 $next_mod = $module->id + 1;
 
                 $mod_check = Module::where('id', $next_mod)->first();
-
-                if ( $mod_check == null) {
-                    $next_mod = 0;
-
-                    $activity = UserActivity::where('user_id', $user->id)->first();
-
-                    // check if the user has already been tagged as having finished their training
-                    // If not, pull the admin assigned to their account
-                    // Send the admin an email notifying them of the completion
-                    if ( $activity->training_done == null ) {
-
-                        // get the user's admin to send them a notification
-                        $admin = Admin::where('id', $user->admin_id)->first();
-
-                        // if no returned admin or a mismatch occurred, default admin to 1
-                        if ($admin == null) {
-                            $admin = Admin::first();
-                        }
-
-                        // send notification to the assigned admin that they have been certified
-                        $admin->notify(new Step3([
-                            'subject' => 'User Certification',
-                            'intro'   => '<strong>User training completion.</strong>',
-                            'message' => $user->name . ' has completed the Sanctuary certification training and is ready to be registered as a certified installer',
-                            'outtro'  => 'Click the button to review their progress and certify them.',
-                            'url'     => route('userDetail', ['id' => $user->id]),
-                        ]));
-
-                        UserActivity::where('user_id', $user->id)
-                            ->update(['training_done' => 1 ]);
-
-                    }
-                }
 
                 // Post to user_activities
                 UserActivity::where('user_id', $user->id)
@@ -157,9 +127,61 @@ class ModulesController extends Controller
                         $mod_id=>date('Y-m-d h:i:s')
                     ]);
 
-                return view('result', ['module'=>$module, 'user'=>$user, 'stats'=>$tot_answer, 'next'=>$next_mod, 'questions'=>$correct, 'answers'=>$answers]);
+                if ( $mod_check == null) {
+                    $modules = Module::all();
+                    $activity = UserActivity::where('user_id', $user->id)->first();
+                    $messages = Message::where('user_id', $user->id)->get();
+                    $questions = ModuleQuiz::all();
+                    $answers = ModuleAnswer::where('user_id', $user->id)->get();
+                    return view('home',
+                        [
+                            'user'      => $user,
+                            'modules'   => $modules,
+                            'activity'  => $activity,
+                            'messages'  => $messages,
+                            'questions' => $qNa['q'],
+                            'answers'   => $qNa['a'],
+                        ]);
+                }
+                else {
+                    return view('result', ['module'=>$module, 'user'=>$user, 'stats'=>$tot_answer, 'next'=>$next_mod, 'questions'=>$correct, 'answers'=>$answers]);
+                }
             }
         }
+    }
+
+    function requestCert() {
+            $user = Auth::user();
+
+            $activity = UserActivity::where('user_id', $user->id)->first();
+
+            // check if the user has already been tagged as having finished their training
+            // If not, pull the admin assigned to their account
+            // Send the admin an email notifying them of the completion
+            if ( $activity->training_done == null ) {
+
+                // get the user's admin to send them a notification
+                $admin = Admin::where('id', $user->admin_id)->first();
+
+                // if no returned admin or a mismatch occurred, default admin to 1
+                if ($admin == null) {
+                    $admin = Admin::first();
+                }
+
+                // send notification to the assigned admin that they have been certified
+                $admin->notify(new Step3([
+                    'subject' => 'User Certification',
+                    'intro'   => '<strong>User training completion.</strong>',
+                    'message' => $user->name . ' has completed the Sanctuary certification training and is ready to be registered as a certified installer',
+                    'outtro'  => 'Click the button to review their progress and certify them.',
+                    'url'     => route('userDetail', ['id' => $user->id]),
+                ]));
+
+                UserActivity::where('user_id', $user->id)
+                    ->update(['training_done' => 1 ]);
+           }
+            return redirect()->back();
+            return redirect()->back();
     }
 
     function quizResults() {

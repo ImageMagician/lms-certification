@@ -45,7 +45,7 @@ Route::group(['prefix' => 'modules'], function() {
     Route::post('/submit-review', [ModulesController::class, 'submitReview'])->name('submit-review');
     Route::post('/revise-date', [ModulesController::class, 'reviseDate'])->name('revise-date');
 });
-
+Route::get('request-cert', [ModulesController::class, 'requestCert'])->name('request-cert');
 Route::get('/final', [ModulesController::class, 'finalTest'])->name('final-test');
 Route::post('/final/post', [ModulesController::class, 'finalPost'])->name('final-post');
 Route::get('/results', [ModulesController::class, 'quizResults'])->name('result');

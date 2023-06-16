@@ -24,11 +24,15 @@ use App\Models\InstallImage;
 use App\Models\Message;
 use App\Models\Note;
 
+use App\Traits\QuizResults;
+
 use Config;
 use Auth;
 
 class AdminAuthController extends Controller
 {
+    use QuizResults;
+
     public function getLogin() {
         return view('admin.login');
     }
@@ -79,43 +83,31 @@ class AdminAuthController extends Controller
         $modules = Module::all();
         //$docs = InstallImage::where('user_id', $id)->get();
         $messages = Message::where('user_id', $id)->get();
-        $answers = ModuleAnswer::where('user_id',$id)->get();
-        $questions = ModuleQuiz::all();
 
-        // Run through all answers to count the total correct for each module
-        $a_count = array();
-        $c_count = array();
+        // get all answers from user with Trait QuizREsults
+        $qNa = $this->getQuizResults();
 
-        // Use the module ID's to verify each section of questions and answers
-        foreach ( $modules as $m ) {
-            $tot_correct = 0;
-            $tot_qty = 0;
-            // Use answers for loop so time is not spent looping through non answered modules
-            foreach( $answers as $a ) {
-                if ( $a['module_id'] == $m->id ) {
-                    // If an answer is from the current module, loop through all the questions to find the one that matches it
-                    foreach ( $questions as $q ) {
-                        if ( $q['module_id'] == $m->id && $q['q_id'] == $a['q_id'] ) {
-                            // count the number of questions for the module
-                            $tot_qty++;
-                            if ( $q['answer_correct'] == $a['answer'] ) {
-                                // count the number of correct answers
-                                $tot_correct++;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // pass the totals into the arrays created earlier
-            $a_count[$m->id] = $tot_correct;
-            $c_count[$m->id] = $tot_qty;
-        }
+        // set modules total for check on if last module quiz is completed
+        $m_count = count($modules);
+        $mod_last = 'module_' . sprintf('%02d', $m_count);
 
 //        $notes4 = Note::where('user_id', $id)->where('module_id', 4)->where('admin_id', $admin->id)->get();
 //        $notes5 = Note::where('user_id', $id)->where('module_id', 5)->where('admin_id', $admin->id)->get();
 
-        return view('admin.user', ['admin'=>$admin, 'user'=>$user, 'activity'=>$activity, 'modules'=>$modules, 'messages' => $messages, 'answers'=>$a_count, 'questions'=>$c_count/*, 'notes4' => $notes4, 'notes5' => $notes5*/] );
+        return view('admin.user')->with(
+            [
+                'admin'     => $admin,
+                'user'      => $user,
+                'activity'  => $activity,
+                'modules'   => $modules,
+                'messages'  => $messages,
+                'answers'   => $qNa['a'],
+                'questions' => $qNa['q'],
+                'mod_last'  => $mod_last,
+                'm_count'   => $m_count,
+                /*, 'notes4' => $notes4, 'notes5' => $notes5*/
+            ]
+        );
     }
 
     public function userDetailStep($id, $step) {
