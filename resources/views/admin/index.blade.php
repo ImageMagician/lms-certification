@@ -8,14 +8,15 @@
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 <h1>Installer List</h1>
+                @php $i = 0; @endphp
                 @foreach($users as $u)
-                    <a href="{{ route('userDetail', $u->id)}}" class="d-block yyz-card p-3 mt-3">
+                    <a href="{{ route('userDetail', $u->id) }}" class="d-block yyz-card p-3 mt-3">
                         <h2 class="h5">
                             {{ $u->name }}
-                            @if ($u->cert == null && $activity[0]['training_done'] == 1 )
-                                <div class="alert alert-warning d-inline-block ms-2 py-1 px-2" style="font-size:small">User ready for certification</div>
-                            @else
+                            @if ( $u->cert !== null )
                                 <div class="border border-info px-2 ms-2 d-inline-block" style="border-radius:4px; background:#f6f6f6;"><small>{{$u->cert}}</small></div>
+                            @elseif ( $activity[$i]->training_done == 1 )
+                                <div class="alert alert-warning d-inline-block ms-2 py-1 px-2" style="font-size:small">User ready for certification</div>
                             @endif
                         </h2>
                         <div class="row mt-2 mx-0">
@@ -58,6 +59,7 @@
                             @endforeach
                         </div>
                     </a>
+                    @php $i++ @endphp
                 @endforeach
             </div>
         </div>
