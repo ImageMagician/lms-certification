@@ -85,6 +85,7 @@
                src="{{ $module->video }}"
                poster="{{ $module->video_poster }}"
                type="video/mp4"
+               preload="auto"
         ></video>
     </div>
 @endsection

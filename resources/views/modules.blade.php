@@ -10,6 +10,7 @@
                            controls
                            src="{{ $module->video }}"
                            poster="{{ $module->video_poster }}"
+                           preload="auto"
                     ></video>
                     <div id="quiz_btn_overlay">
                         <div id="quiz_btn">
