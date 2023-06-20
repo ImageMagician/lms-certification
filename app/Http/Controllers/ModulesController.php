@@ -127,25 +127,7 @@ class ModulesController extends Controller
                         $mod_id=>date('Y-m-d h:i:s')
                     ]);
 
-                if ( $mod_check == null) {
-                    $modules = Module::all();
-                    $activity = UserActivity::where('user_id', $user->id)->first();
-                    $messages = Message::where('user_id', $user->id)->get();
-                    $questions = ModuleQuiz::all();
-                    $answers = ModuleAnswer::where('user_id', $user->id)->get();
-                    return view('home',
-                        [
-                            'user'      => $user,
-                            'modules'   => $modules,
-                            'activity'  => $activity,
-                            'messages'  => $messages,
-                            'questions' => $qNa['q'],
-                            'answers'   => $qNa['a'],
-                        ]);
-                }
-                else {
-                    return view('result', ['module'=>$module, 'user'=>$user, 'stats'=>$tot_answer, 'next'=>$next_mod, 'questions'=>$correct, 'answers'=>$answers]);
-                }
+                return view('result', ['module'=>$module, 'user'=>$user, 'stats'=>$tot_answer, 'next'=>$next_mod, 'mod_check'=>$mod_check, 'questions'=>$correct, 'answers'=>$answers]);
             }
         }
     }
@@ -180,7 +162,6 @@ class ModulesController extends Controller
                 UserActivity::where('user_id', $user->id)
                     ->update(['training_done' => 1 ]);
            }
-            return redirect()->back();
             return redirect()->back();
     }
 

@@ -58,18 +58,15 @@
                         <input type="hidden" name="_method" value="PUT">
                         <button type="submit" class="btn btn-tertiary">Rewatch Video</button>
                     </form>
-                    @if ( $next > 0)
+                    <a href="/home" class="btn @if ($mod_check == null) btn-primary @else btn-tertiary @endif me-2">Main Menu</a>
+                    @if ( $mod_check != null)
                         <a href="/modules/{{ $next }}" class="btn btn-primary me-2">Next Module</a>
-                        <a href="/home" class="btn btn-tertiary">Main Menu</a>
                     @else
                         <h4 class="mt-3">Training complete</h4>
                         <p>
                             You have completed the video training for certification. A Lion Energy representative will reach out to you
                             via email or phone to complete your training and supply you with a Lion Energy-approved certification number
                             needed to install the Lion Energy Sanctuary.
-                        </p>
-                        <p>
-                            <a href="/home" class="btn btn-primary me-2">Main Menu</a>
                         </p>
                     @endif
                 </div>
