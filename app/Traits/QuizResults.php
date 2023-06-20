@@ -9,11 +9,9 @@ use Auth;
 trait QuizResults {
     public function getQuizResults()
     {
-        $user = Auth::user();
-
         $modules = Module::all();
         $questions = ModuleQuiz::all();
-        $answers = ModuleAnswer::where('user_id', $user->id)->get();
+        $answers = ModuleAnswer::where('user_id', session()->get('user'))->get();
 
         // Run through all answers to count the total correct for each module
         $a_count = array();
