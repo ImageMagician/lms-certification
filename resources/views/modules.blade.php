@@ -16,7 +16,7 @@
                         <div id="quiz_btn">
                             <p>
                                 <a href="{{ $module->id }}/quiz" class="btn btn-primary">Start Quiz</a> &nbsp;
-                                <button onclick="replayVideo()" class="btn btn-primary">Restart Video</button>
+                                <button id="btn_restart_video" class="btn btn-primary">Restart Video</button>
                             </p>
                         </div>
                     </div>
@@ -45,6 +45,11 @@
                     document.getElementById('quiz_btn_overlay').className = 'show';
                 });
             }
+
+            const btn_restart = document.getElementById('btn_restart_video');
+            btn_restart.addEventListener('click', function () {
+                vid_player.play();
+            })
         },100);
     </script>
 @endsection
