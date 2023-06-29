@@ -15,7 +15,7 @@
                         Welcome to the Lion Energy Sanctuary certification process.
                     </h5>
                     <p>
-                        Certification consists of a series of videos with detailed explanation of the structure and setup of the Sanctuary.
+                        Welcome to the Lion Energy Sanctuary certification process. This process will walk you through a series of instructional videos that will cover a brief overview of the Sanctuary and how to mount, wire, and commission the Sanctuary system.
                         Each video is followed by a brief quiz to help you learn and retain the important components of commissioning the system.
                     </p>
                     <p>
