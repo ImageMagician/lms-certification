@@ -28,8 +28,11 @@
     <div class="container">
         <div class="row my-5 justify-content-center">
             <div class="col-12">
-                <h1>{{$module->title}}</h1>
-                <h2>{{$module->description}}</h2>
+                <h1>
+                    <a href="{{route('home')}}" class="float-right btn btn-outline-secondary">Home</a>
+                    {{$module->title}}
+                </h1>
+                <h2 class="h3">{{$module->description}}</h2>
             </div>
         </div>
     </div>
