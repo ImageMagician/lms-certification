@@ -41,8 +41,7 @@
                         <label for="phone" class="col-md-4 col-form-label text-md-end">{{ __('Phone') }}</label>
 
                         <div class="col-md-6">
-                            <input id="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
-                            <small style="color:#aaa">(XXX-XXX-XXXX format)</small>
+                            <input id="phone" type="tel" pattern="[0-9]{10}" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
 
                             @error('phone')
                                 <span class="invalid-feedback" role="alert">
@@ -54,10 +53,10 @@
 
                     <div class="row mb-3">
                         <label for="companies" class="col-md-4 col-form-label text-md-end">
-                            {{ __('Associated Companies') }}
+                            {{ __('Associated Company') }}
                             <i id="companies_question" class="fa fa-question-circle ms-1 position-relative" onmouseover="showCos()" onmouseout="hideCos()">
                                 <div id="companies_explainer" class="explainer yyz-card p-2 position-absolute">
-                                    List all the companies for which you install solar products (separated by commas).
+                                    List the companies for whom you install solar products.
                                 </div>
                             </i>
                         </label>
@@ -67,27 +66,6 @@
 
                             @error('companies')
                                 <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <label for="states" class="col-md-4 col-form-label text-md-end">
-                            {{ __('States certified') }}
-                            <i id="states_question" class="fa fa-question-circle ms-1 position-relative" onmouseover="showStates()" onmouseout="hideStates()">
-                                <div id="states_explainer" class="explainer yyz-card p-2 position-absolute">
-                                    List all the states in which you are qualified to install solar products (separated by commas).
-                                </div>
-                            </i>
-                        </label>
-
-                        <div class="col-md-6">
-                            <input id="states" type="text" class="form-control @error('states_certified') is-invalid @enderror" name="states" value="{{ old('states') }}" required>
-
-                            @error('states_certified')
-                            <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
