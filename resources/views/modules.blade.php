@@ -48,6 +48,7 @@
 
             const btn_restart = document.getElementById('btn_restart_video');
             btn_restart.addEventListener('click', function () {
+                document.getElementById('quiz_btn_overlay').classList.remove('show');
                 vid_player.play();
             })
         },100);
