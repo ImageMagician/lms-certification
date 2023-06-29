@@ -114,7 +114,7 @@
                                             {{ $questions[$m->id] }} correct
                                             (@php echo round( $answers[$m->id] / $questions[$m->id] * 100, 2) @endphp%)
                                         </p>
-                                        <a href="/modules/{{ $m['id'] }}" target="_blank" class="btn btn-tertiary btn-small d-inline-block">Replay Video</a>
+                                        <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block">Replay Video</a>
                                         <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/restart" method="post" class="ms-2 d-inline-block">
                                             @csrf
                                             <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
