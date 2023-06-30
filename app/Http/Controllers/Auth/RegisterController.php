@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\UserActivity;
+use App\Rules\PhoneValidation;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -53,7 +54,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone'     => ['required', 'min:10'],
+            'phone'     => ['required', 'min:10', new PhoneValidation],
             'companies' => ['required', 'string'],
             'password'  => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -67,10 +68,25 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        // Format the phone number as (XXX) XXX-XXXX
+
+        // remove everything except numbers
+        $phone = preg_replace("/[^0-9]/", '', $data['phone']);
+
+        // check if they added the "1" to the start of the number. If so, remove it.
+        if ( strlen( $phone ) == 11 && $phone[0] == 1 ) {
+            $phone = substr( $phone, 1);
+        }
+
+        // Add the dash first for the proper position, then work to the end paren and space, and then the starting paren.
+        $phone = substr_replace($phone, '-', 6, 0);
+        $phone = substr_replace($phone, ') ', 3, 0);
+        $phone = substr_replace($phone, '(', 0, 0);
+
         $user_id = User::insertGetId([
             'name'      => $data['name'],
             'email'     => $data['email'],
-            'phone'     => $data['phone'],
+            'phone'     => $phone,
             'companies' => $data['companies'],
             'password'  => Hash::make($data['password']),
         ]);
