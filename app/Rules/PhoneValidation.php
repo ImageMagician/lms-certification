@@ -65,7 +65,7 @@ class PhoneValidation implements ValidationRule
         // check for valid area code from usa_area_codes
         // Get area code
         $ac = substr( $tel, 0, 3 );
-        $le = DB::table('usa_area_codes')->where('area_code', $ac);
+        $le = DB::table('usa_area_codes')->where('area_code', $ac)->first();
 
         if ( $le == null ) {
             return false;
