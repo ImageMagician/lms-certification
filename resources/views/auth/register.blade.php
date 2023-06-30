@@ -41,7 +41,7 @@
                         <label for="phone" class="col-md-4 col-form-label text-md-end">{{ __('Phone') }}</label>
 
                         <div class="col-md-6">
-                            <input id="phone" type="tel" pattern="[0-9]{10}" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
+                            <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
 
                             @error('phone')
                                 <span class="invalid-feedback" role="alert">
@@ -56,7 +56,7 @@
                             {{ __('Associated Company') }}
                             <i id="companies_question" class="fa fa-question-circle ms-1 position-relative" onmouseover="showCos()" onmouseout="hideCos()">
                                 <div id="companies_explainer" class="explainer yyz-card p-2 position-absolute">
-                                    List the companies for whom you install solar products.
+                                    List the company for whom you install solar products.
                                 </div>
                             </i>
                         </label>
