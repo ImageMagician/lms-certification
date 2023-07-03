@@ -91,6 +91,15 @@
                             @endif
                             <div class="col-md-6 pb-4 @if ($m->id > 1 && $activity->$module_prev == null) disabled @endif">
                                 <div class="yyz-card pt-3 pe-3 pb-5 ps-3 h-100
+                                    @if ( $m->section == 'mounting' )
+                                        border-blue
+                                    @elseif ( $m->section == 'wiring' )
+                                        border-pink
+                                    @elseif ( $m->section == 'commissioning' )
+                                        border-green
+                                    @elseif ( $m->section == '2:4' )
+                                        border-purple
+                                    @endif
                                     @if ( $m->id == 1 && $activity->$module_id == null )
                                         focus
                                     @elseif ( $m->id != 1 && $activity->$module_id == null && $activity->$module_prev !== null )

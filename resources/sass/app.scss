@@ -16,7 +16,7 @@ body {
 }
 
 .yyz-card {
-    border:1px solid rgba(0,0,0,.17);
+    border:3px solid rgba(0,0,0,.17);
     border-radius:6px;
     background:white;
     box-shadow: 0 3px 3px rgba(0,0,0,.1);
@@ -26,6 +26,22 @@ body {
     &.yyz-card-docs {
         height:100%;
         padding:1.5rem 1.5rem 5rem 1.5rem;
+    }
+
+    &.border-blue {
+        border-color: $border-blue;
+    }
+
+    &.border-pink {
+        border-color: $border-pink;
+    }
+
+    &.border-green {
+        border-color: $border-green;
+    }
+
+    &.border-purple {
+        border-color: $border-purple;
     }
 
     &.focus {
