@@ -69,6 +69,14 @@
                     </div>
                 </div>
                 <div class="row justify-content-center">
+                    <div class="col-12 mb-3">
+                        <div class="alert alert-secondary p-2 text-center">
+                            Full installation instructions can be found in the installation guide:
+                            <a href="/docs/Sanctuary Installation Guide-6-15-23 - WEB.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">Click Here</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
                     <div class="col-md-8 mb-3 mb-md-0">
                         <div class="row">
                             <div class="col-12">
