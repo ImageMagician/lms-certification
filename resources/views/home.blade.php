@@ -97,7 +97,7 @@
                                         border-pink
                                     @elseif ( $m->section == 'commissioning' )
                                         border-green
-                                    @elseif ( $m->section == '2:4' )
+                                    @elseif ( $m->section == '2:4 setup' )
                                         border-purple
                                     @endif
                                     @if ( $m->id == 1 && $activity->$module_id == null )
@@ -107,7 +107,7 @@
                                     @endif">
                                     <div class="pb-1">
                                         <small>
-                                            Step {{ $m->id }}
+                                            STEP {{ $m->id }} : {{ strtoupper($m->section) }}
                                         </small>
                                         @if ( $activity->$module_id !== null)
                                             <span class="badge badge-success float-right">Complete</span>
