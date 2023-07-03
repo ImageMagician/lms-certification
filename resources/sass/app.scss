@@ -45,7 +45,23 @@ body {
     }
 
     &.focus {
-        outline: 6px solid rgba(50,175,255,0.3);
+        outline: 6px solid transparent;
+
+        &.border-blue {
+            outline-color: rgb(85,150,225,.3);
+        }
+
+        &.border-pink {
+            outline-color: rgb(200,125,200,.3);
+        }
+
+        &.border-green {
+            outline-color: rgb(75,150,75,.3);
+        }
+
+        &.border-purple {
+            outline-color: rgb(125,100,225,.3);
+        }
     }
 }
 
