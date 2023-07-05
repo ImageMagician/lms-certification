@@ -46,21 +46,21 @@
                 @endif
 
                 <div class="mt-3">
-                    <form action="/modules/@php echo sprintf("%02d", $module->id); @endphp/restart" method="post" class="d-inline-block me-2">
+                    <form action="/modules/@php echo sprintf("%02d", $module->id); @endphp/restart" method="post" class="d-inline-block me-2 mb-2 w-100 w-sm-auto">
                         @csrf
                         <input type="hidden" id="module_id" name="module_id" value="{{ $module->id }}">
                         <input type="hidden" name="_method" value="PUT">
-                        <button type="submit" class="btn btn-tertiary">Restart Quiz</button>
+                        <button type="submit" class="btn btn-tertiary w-100">Restart Quiz</button>
                     </form>
-                    <form action="/modules/@php echo sprintf("%02d", $module->id); @endphp/rewatch" method="post" class="d-inline-block me-2">
+                    <form action="/modules/@php echo sprintf("%02d", $module->id); @endphp/rewatch" method="post" class="d-inline-block me-2 mb-2 w-100 w-sm-auto">
                         @csrf
                         <input type="hidden" id="module_id" name="module_id" value="{{ $module->id }}">
                         <input type="hidden" name="_method" value="PUT">
-                        <button type="submit" class="btn btn-tertiary">Rewatch Video</button>
+                        <button type="submit" class="btn btn-tertiary w-100">Rewatch Video</button>
                     </form>
-                    <a href="/home" class="btn @if ($mod_check == null) btn-primary @else btn-tertiary @endif me-2">Main Menu</a>
+                    <a href="/home" class="btn @if ($mod_check == null) btn-primary @else btn-tertiary @endif me-2 mb-2 w-100 w-sm-auto vertical-align-bottom">Main Menu</a>
                     @if ( $mod_check != null)
-                        <a href="/modules/{{ $next }}" class="btn btn-primary me-2">Next Module</a>
+                        <a href="/modules/{{ $next }}" class="btn btn-primary me-2 mb-2 w-100 w-sm-auto vertical-align-bottom">Next Module</a>
                     @else
                         <h4 class="mt-3">Training complete</h4>
                         <p>

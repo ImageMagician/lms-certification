@@ -14,10 +14,8 @@
                     ></video>
                     <div id="quiz_btn_overlay">
                         <div id="quiz_btn">
-                            <p>
-                                <a href="{{ $module->id }}/quiz" class="btn btn-primary">Start Quiz</a> &nbsp;
-                                <button id="btn_restart_video" class="btn btn-primary">Restart Video</button>
-                            </p>
+                                <a href="{{ $module->id }}/quiz" class="btn btn-primary w-100">Start Quiz</a> &nbsp;
+                                <button id="btn_restart_video" class="btn btn-primary w-100">Restart Video</button>
                         </div>
                     </div>
                 </div>

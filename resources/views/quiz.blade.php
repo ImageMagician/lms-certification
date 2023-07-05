@@ -2,7 +2,7 @@
 @section('content')
     <div id="quiz" class="container">
         <div class="row justify-content-center">
-            <div class="col-8 py-5">
+            <div class="col-sm-8 py-3 py-sm-5">
                 @foreach($quiz as $key => $value)
                     <h2>{{ $value['question'] }}</h2>
                     @php

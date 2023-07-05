@@ -8,7 +8,7 @@
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-xl-10">
-                <h1 class="h2">
+                <h1 class="h2 clearfix">
                     User Detail : {{ $user->name }}
                     <a href="{{ route('adminDashboard') }}" class="btn btn-tertiary float-right">Admin Dashboard</a>
                 </h1>

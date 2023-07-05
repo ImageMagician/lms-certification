@@ -20,11 +20,11 @@
                             <a href="/info" class="btn btn-secondary btn-sm float-right">Edit Info</a>
                         </h1>
                         <div class="row">
-                            <div class="col-5">
+                            <div class="col-sm-5">
                                 <div class="py-1 border-bottom-light">Phone number: {{ $user->phone }}</div>
                                 <div class="py-1 border-bottom-light">Email: {{ $user->email }}</div>
                             </div>
-                            <div class="col-7">
+                            <div class="col-sm-7">
                                 <div class="py-1 border-bottom-light">Associated companies: {{ $user->companies }}</div>
                                 <div class="py-1 border-bottom-light">State certifications: {{ $user->states }}</div>
                             </div>
