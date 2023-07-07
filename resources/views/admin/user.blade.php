@@ -80,7 +80,7 @@
                                         {{ $m->title }}
                                     </h3>
                                     @if ( $activity->$mod_id !== null)
-                                    Quiz: {{$answers[$m->id]}} / {{$questions[$m->id]}} correct (@php echo round( $answers[$m->id] / $questions[$m->id] * 100, 2 ) . '%'; @endphp).
+                                    Quiz: {{$answers[$m->id]}} / {{$q_tot[$m->id]}} correct (@php echo round( $answers[$m->id] / $q_tot[$m->id] * 100, 2 ) . '%'; @endphp).
                                         @if ( $m->id == count($modules) && $user->cert == null)
                                             <div id="review_date_form" class="show">
                                                 <p class="mt-3">

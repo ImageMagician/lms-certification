@@ -48,7 +48,15 @@ class ModulesController extends Controller
         $note     = Note::where('user_id', $user->id)->where('module_id', $id)->where('admin_id', null)->first();
         $msgs     = Message::where('user_id', $user->id)->get();
 
-        return view('modules',[ 'module'=>$module, 'user'=>$user, 'activity'=>$activity, 'docs'=>$docs, 'note'=>$note, 'msgs' => $msgs ]);
+        // make sure the module id pulls an existing module
+        // else redirect to home
+        if  ($module ?? null ) {
+            return view('modules',[ 'module'=>$module, 'user'=>$user, 'activity'=>$activity, 'docs'=>$docs, 'note'=>$note, 'msgs' => $msgs ]);
+        }
+        else {
+            return redirect()->route('home');
+        }
+
     }
 
     function quiz($id) {
@@ -57,15 +65,18 @@ class ModulesController extends Controller
         $module = Module::find($id);
 
         // use the Trait QuizResults to pull all answers the user has completed and compare it against all questions per module
+        // this returns total questions in the db (under 't'), questions answered (under 'q'), and questions answered correctly ('a')
         $qNa = $this->getQuizResults();
 
-        // check if module has any questions in module_quizzes
-        $quiz_check = ModuleQuiz::where('module_id', $id);
+        // Don't allow  for someone to put in a module id that doesn't exist in the db
+        if ($qNa['t'][$id] ?? null) {
+        } else {
+            return redirect()->route('home');
+        }
 
         // If no questions are found, notify the user
-        if ( $quiz_check->count() == 0) {
-            $user_info = $this->userPull();
-            return redirect()->route('home', ['user'=>$user_info['user'], 'companies'=>$user_info['companies'], 'states'=>$user_info['states'], 'activity'=>$user_info['activity'], 'error'=>'blah']);
+        if ( $qNa['t'][$id] == 0 ) {
+            return redirect()->route('home');
         }
         else {
             // pull last answered question by user for that module and add 1.
@@ -85,36 +96,6 @@ class ModulesController extends Controller
                 return view('quiz',['module'=>$module, 'quiz'=>$quiz, 'user'=>$user]);
             }
             else {
-                $correct_count = 0;
-
-                // Check responses versus correct answers
-                // user answers from module_answers
-                // correct answers from module_quizzes
-                $answers = ModuleAnswer::where('module_id', $id)->where('user_id', $user->id)->get();
-                $correct = ModuleQuiz::where('module_id', $id)->get();
-
-                // loop through each answer, check it against the correct answer list
-                // if correct, increase correct count by 1
-                foreach( $answers as $a) {
-                    foreach ($correct as $c) {
-                        if ( $a['q_id'] == $c['q_id'] ) {
-                            if ( $a['answer'] == $c['answer_correct'] ) {
-                                $correct_count++;
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                // calculate percentage correct
-                $perc = $correct_count / count($correct) * 100;
-
-                $tot_answer = [
-                    'correct'=>$correct_count,
-                    'total'=>count($correct),
-                    'perc'=>$perc,
-                ];
-
                 $mod_id = 'module_' . sprintf("%02d", $module->id);
 
                 $next_mod = $module->id + 1;
@@ -127,7 +108,7 @@ class ModulesController extends Controller
                         $mod_id=>date('Y-m-d h:i:s')
                     ]);
 
-                return view('result', ['module'=>$module, 'user'=>$user, 'stats'=>$tot_answer, 'next'=>$next_mod, 'mod_check'=>$mod_check, 'questions'=>$correct, 'answers'=>$answers]);
+                return view('result', ['module'=>$module, 'user'=>$user, 'next'=>$next_mod, 'mod_check'=>$mod_check, 'q_tot'=>$qNa['t'], 'questions'=>$qNa['q'], 'answers'=>$qNa['a']]);
             }
         }
     }

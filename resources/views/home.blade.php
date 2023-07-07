@@ -125,6 +125,7 @@
                                         {{ $m->title }}
                                     </h3>
                                     @if ( $activity->$module_id !== null )
+                                        @if ( $questions[$m->id] > 0)
                                         <p>
                                             Quiz:
                                             {{ $answers[$m->id] }} /
@@ -133,6 +134,11 @@
                                             (@php echo round( $answers[$m->id] / $questions[$m->id] * 100, 2) @endphp%)
                                             @endif
                                         </p>
+                                        @else
+                                            <p>
+                                                Quiz restarted. Please continue.
+                                            </p>
+                                        @endif
                                         <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block">Replay Video</a>
                                         <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/restart" method="post" class="ms-2 d-inline-block">
                                             @csrf

@@ -19,8 +19,10 @@ trait QuizResults {
 
         // Use the module ID's to verify each section of questions and answers
         foreach ($modules as $m) {
+            $tot_q       = ModuleQuiz::where('module_id', $m->id)->get()->count();
+            $tot_asked   = 0;
             $tot_correct = 0;
-            $tot_qty = 0;
+
             // Use answers for loop so time is not spent looping through non answered modules
             foreach ($answers as $a) {
                 if ($a['module_id'] == $m->id) {
@@ -28,7 +30,7 @@ trait QuizResults {
                     foreach ($questions as $q) {
                         if ($q['module_id'] == $m->id && $q['q_id'] == $a['q_id']) {
                             // count the number of questions for the module
-                            $tot_qty++;
+                            $tot_asked++;
                             if ($q['answer_correct'] == $a['answer']) {
                                 // count the number of correct answers
                                 $tot_correct++;
@@ -40,13 +42,15 @@ trait QuizResults {
 
             // pass the totals into the arrays created earlier
             $a_count[$m->id] = $tot_correct;
-            $q_count[$m->id] = $tot_qty;
+            $q_count[$m->id] = $tot_asked;
+            $t_count[$m->id] = $tot_q;
         }
 
-        // put answer count and q count into a parent array for return
+        // put total questions, questions asked, question answered correctly into a parent array for return
         $results = array();
         $results['a'] = $a_count;
         $results['q'] = $q_count;
+        $results['t'] = $t_count;
 
         return $results;
     }
