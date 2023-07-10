@@ -6,38 +6,38 @@
                 <h1 class="h6" style="padding-bottom:0.25em; margin-bottom:0.5em; letter-spacing: 0.5em; border-bottom:1px solid rgba(0,0,0,.1)">QUIZ RESULTS</h1>
                 <h2 class="h2">{{ $module->title }}</h2>
                 <h3 class="h4 mb-3">
-                    @if ( $stats['perc'] == 100 )
+                    @if ( $answers[$module->id] == $q_tot[$module->id] )
                         Congratulations! You have answered all the questions correctly.
                     @else
-                        You have answered {{ $stats['correct'] }} of the {{ $stats['total'] }} questions correctly.
+                        You have answered {{ $answers[$module->id] }} of the {{ $q_tot[$module->id] }} questions correctly.
                     @endif
                 </h3>
-                @if ( $stats['perc'] < 100 )
+                    @if ( $answers[$module->id] < $q_tot[$module->id] )
                     <div class="upload_container">
 
                     <h3 class="pb-2 mb-4">Incorrect Responses</h3>
-                    @foreach( $questions as $q )
-                        @php $a_list = json_decode( $q['answer_array'], true); @endphp
-                        @foreach ($answers as $a)
-                            @if ( $a['q_id'] == $q['q_id'] )
-                                @if ( $a['answer'] != $q['answer_correct'] )
-                                    @php $incorrect = ''; @endphp
+                    @foreach( $q_list as $q )
+                        @foreach ($a_list as $a)
+                            @if ( $a->q_id == $q->q_id )
+                                @if($a->answer != $q->answer_correct)
                                     <div style="border-top:1px solid rgba(0,0,0,.1); padding:1rem 0; margin:0.5rem 0">
-                                        <h4>{{$q['question']}}</h4>
-                                        @foreach ( $a_list as $key => $value)
-                                            @if ($key == $a['answer'])
-                                                @php $incorrect = $value @endphp
-                                            @endif
-                                            @if ($key == $q['answer_correct'])
-                                                @php $correct = $value @endphp
-                                            @endif
-                                        @endforeach
-                                        @if ($incorrect !== '')
-                                            <p class="mb-0">Incorrect: {{ $incorrect }}</p>
+                                    <h4>{{ $q->question }}</h4>
+                                    @php
+                                        $incorrect = '';
+                                        $correct = '';
+                                        $a_decode = json_decode( $q->answer_array, true);
+                                    @endphp
+                                    @foreach($a_decode as $key => $value)
+                                        @if ( $key == $q->answer_correct)
+                                            @php $correct = $value; @endphp
+                                        @elseif ( $key != $a->answer)
+                                            @php $incorrect = $value; @endphp
                                         @endif
-                                        <p><strong>Correct: {{ $correct }}</strong></p>
-                                        <button class="vid-btn btn btn-secondary btn-small mt-2" id="vid_snippet-{{$q['video_snippet_start']}}-{{$q['video_snippet_end']}}" type="button">Rewatch Video Section</button>
-                                    </div>
+                                    @endforeach
+                                    <p class="mb-0">Incorrect: {{ $incorrect }}</p>
+                                    <p><strong>Correct: {{ $correct }}</strong></p>
+                                    <button class="vid-btn btn btn-secondary btn-small" id="vid_snippet-{{$q['video_snippet_start']}}-{{$q['video_snippet_end']}}" type="button">Rewatch Video Section</button>
+                                   </div>
                                 @endif
                             @endif
                         @endforeach
