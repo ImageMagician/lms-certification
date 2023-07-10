@@ -64,7 +64,6 @@ if ( form_check != undefined ) {
         }
 
         document.querySelector('[type="submit"]').classList.remove('d-none');
-        document.getElementById('quiz_submit').classList.add('d-none');
     }
 
     function getAnswerCookie() {

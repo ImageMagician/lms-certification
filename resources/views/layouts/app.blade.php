@@ -14,8 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'node_modules/bootstrap/js/src/tab.js','resources/js/filedrop.js', 'public/js/quizzes.js'])
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'node_modules/bootstrap/js/src/tab.js','resources/js/filedrop.js', 'public/js/quizzes.js?r=1'])
 </head>
 <body>
     <div id="app">
