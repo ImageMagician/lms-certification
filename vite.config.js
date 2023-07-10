@@ -8,8 +8,8 @@ export default defineConfig({
             input: [
                 'resources/sass/app.scss',
                 'resources/js/app.js',
+                'resources/js/quizzes.js',
                 //'node_modules/bootstrap/js/src/tab.js',
-                'public/js/quizzes.js',
                 //'resources/js/fileDrop.js',
             ],
             refresh: true,
