@@ -127,10 +127,13 @@ class ModulesController extends Controller
                 // get the user's admin to send them a notification
                 $admin = Admin::where('id', $user->admin_id)->first();
 
-                // if no returned admin or a mismatch occurred, default admin to 1
+                // if no returned admin or a mismatch occurred, default admin to first one found
                 if ($admin == null) {
                     $admin = Admin::first();
                 }
+
+                // Get all super_admins
+                $super = Admin::where('id', '!=', $admin->id )->where('super_admin', 1)->get();
 
                 // send notification to the assigned admin that they have been certified
                 $admin->notify(new Step3([
@@ -140,6 +143,17 @@ class ModulesController extends Controller
                     'outtro'  => 'Click the button to review their progress and certify them.',
                     'url'     => route('userDetail', ['id' => $user->id]),
                 ]));
+
+                // Send notification to supers with slightly different wording.
+                foreach ( $super as $s ) {
+                    $s->notify(new Step3([
+                        'subject' => 'User Certification',
+                        'intro'   => '<strong>User training completion.</strong>',
+                        'message' => $user->name . ' has completed the Sanctuary certification training.',
+                        'outtro'  => 'The ESS Team has been notified. Please verify that this user gets certified in a timely manner.',
+                        'url'     => route('userDetail', ['id' => $user->id]),
+                    ]));
+                }
 
                 UserActivity::where('user_id', $user->id)
                     ->update(['training_done' => 1 ]);
