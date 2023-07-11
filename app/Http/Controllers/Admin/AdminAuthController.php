@@ -147,7 +147,12 @@ class AdminAuthController extends Controller
             $u_id = $user->id;
             $flname = explode(' ', $user->name);
             $fi = substr($flname[0], 0, 1);
-            $li = substr($flname[1], 0, 1);
+            if ( count($flname) == 1 ) {
+                $li = 'z';
+            } else {
+                $li = substr($flname[1], 0, 1);
+            }
+
             $cert = bin2hex( $fi . $li . $u_id);
 
             $cert_date = date('Y-m-d H:i:s');
