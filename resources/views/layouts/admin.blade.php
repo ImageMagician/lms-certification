@@ -14,9 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'node_modules/bootstrap/js/src/tab.js'])
-
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
 <body>
@@ -48,6 +46,9 @@
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{ route('adminDashboard') }}">
                                 Admin Dashboard
+                            </a>
+                            <a href="{{ route('adminCreate') }}" class="dropdown-item">
+                                Create Admin Account
                             </a>
                             <a class="dropdown-item" href="{{ route('adminLogout') }}"
                                onclick="event.preventDefault();
