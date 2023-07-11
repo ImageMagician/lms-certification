@@ -103,6 +103,7 @@ class AdminAuthController extends Controller
                 'messages'  => $messages,
                 'answers'   => $qNa['a'],
                 'questions' => $qNa['q'],
+                'q_tot'     => $qNa['t'],
                 'mod_last'  => $mod_last,
                 'm_count'   => $m_count,
                 /*, 'notes4' => $notes4, 'notes5' => $notes5*/
@@ -306,14 +307,26 @@ class AdminAuthController extends Controller
         $request->validate([
             'name' =>['required','string','max:255'],
             'email'=>['required','email','unique:admins','max:255'],
-            'password'=>['required','confirmed','min:8'],
         ]);
 
-        Admin::create([
+        if ( Admin::create([
             'name'      => $request->name,
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
-        ]);
+        ]) ) {
+
+            $notify_data = [
+                'subject' => 'New User Account',
+                'intro'   => 'Account Creation',
+                'message' => 'Lion Energy has created an administrator account for you. Click the link to create your password and sign in.',
+                'outtro'  => 'Make sure the installation is fully complete before this date.',
+                'url'     => secure_url( route('home' ) ),
+            ];
+
+            $user_data->notify( new Step3($notify_data) );
+
+            Session::flash('admin_create_success', 'New admin account created successfully.');
+        }
 
         return redirect()->back();
     }
