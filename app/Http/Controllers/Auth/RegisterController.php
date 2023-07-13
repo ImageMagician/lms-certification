@@ -19,7 +19,7 @@ class RegisterController extends Controller
     |--------------------------------------------------------------------------
     |
     | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
+    | validation and creation. By default, this controller uses a trait to
     | provide this functionality without requiring any additional code.
     |
     */
@@ -52,11 +52,12 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone'     => ['required', 'min:10', new PhoneValidation],
-            'companies' => ['required', 'string'],
-            'password'  => ['required', 'string', 'min:8', 'confirmed'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name'  => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone'      => ['required', 'min:10', new PhoneValidation],
+            'companies'  => ['required', 'string'],
+            'password'   => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -84,11 +85,12 @@ class RegisterController extends Controller
         $phone = substr_replace($phone, '(', 0, 0);
 
         $user_id = User::insertGetId([
-            'name'      => $data['name'],
-            'email'     => $data['email'],
-            'phone'     => $phone,
-            'companies' => $data['companies'],
-            'password'  => Hash::make($data['password']),
+            'first_name' => $data['first_name'],
+            'last_name'  => $data['last_name'],
+            'email'      => $data['email'],
+            'phone'      => $phone,
+            'companies'  => $data['companies'],
+            'password'   => Hash::make($data['password']),
         ]);
 
         // Create a row in the user_activity table for the user
