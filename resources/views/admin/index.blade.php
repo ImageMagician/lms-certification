@@ -12,7 +12,7 @@
                 @foreach($users as $u)
                     <a href="{{ route('userDetail', $u->id) }}" class="d-block yyz-card p-3 mt-3">
                         <h2 class="h5">
-                            {{ $u->name }}
+                            {{ $u->first_name }} {{ $u->last_name }}
                             @if ( $u->cert !== null )
                                 <div class="border border-info px-2 ms-2 d-inline-block" style="border-radius:4px; background:#f6f6f6;"><small>{{$u->cert}}</small></div>
                             @elseif ( $activity[$i]->training_done == 1 )

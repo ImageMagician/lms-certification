@@ -1,6 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="row p-3" style="background:#333; color:white; display:none">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="h4">
+                        {{ $user->first_name . ' ' . $user->last_name }}
+                        <a href="/info" class="btn btn-secondary btn-sm float-right">Edit Info</a>
+                    </h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="py-1 border-bottom-light">Phone number: {{ $user->phone }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="py-1 border-bottom-light">Email: {{ $user->email }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="py-1 border-bottom-light">Associated companies: {{ $user->companies }}</div>
+                </div>
+            </div>
+        </div>
+</div>
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-xl-10">
@@ -14,21 +37,26 @@
             @endif
             <div class="container mt-4">
                 <div class="row">
-                    <div class="col-12 mb-4">
-                        <h1 class="h3">
-                            {{ $user->name }}
+                    <div class="col-12">
+                        <h1 class="h4">
+                            {{ $user->first_name . ' ' . $user->last_name }}
                             <a href="/info" class="btn btn-secondary btn-sm float-right">Edit Info</a>
                         </h1>
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <div class="py-1 border-bottom-light">Phone number: {{ $user->phone }}</div>
-                                <div class="py-1 border-bottom-light">Email: {{ $user->email }}</div>
-                            </div>
-                            <div class="col-sm-7">
-                                <div class="py-1 border-bottom-light">Associated companies: {{ $user->companies }}</div>
-                                <div class="py-1 border-bottom-light">State certifications: {{ $user->states }}</div>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="py-1 border-bottom-light">Phone number: {{ $user->phone }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="py-1 border-bottom-light">Email: {{ $user->email }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="py-1 border-bottom-light">Associated companies: {{ $user->companies }}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-4">
                         @if ( $user->cert )
                         <div class="row justify-content-center">
                             <div class="col-md-5">

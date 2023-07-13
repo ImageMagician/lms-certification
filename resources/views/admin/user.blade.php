@@ -9,7 +9,7 @@
         <div class="row justify-content-center">
             <div class="col-xl-10">
                 <h1 class="h2 clearfix">
-                    User Detail : {{ $user->name }}
+                    User Detail : {{ $user->first_name }} {{ $user->last_name }}
                     <a href="{{ route('adminDashboard') }}" class="btn btn-tertiary float-right">Admin Dashboard</a>
                 </h1>
                 <div class="row mb-4">

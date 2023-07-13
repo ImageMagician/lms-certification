@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 <div>Step {{ session('step') }}</div>
-                <h1 class="h2 mb-4">{{ $module->title }} : {{ $user->name }}
+                <h1 class="h2 mb-4">{{ $module->title }} : {{ $user->first_name }} {{ $user->last_name }}
                 <a href="{{ route('userDetail', ['id'=>$user->id]) }}" class="btn btn-tertiary float-right">Return to Dashboard</a>
                 </h1>
 {{--  STEP 3 --}}
