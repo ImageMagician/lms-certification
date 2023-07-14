@@ -13,13 +13,16 @@
                     <a href="{{ route('userDetail', $u->id) }}" class="d-block yyz-card p-3 mt-3">
                         <h2 class="h5">
                             {{ $u->first_name }} {{ $u->last_name }}
-                            <span class="d-none">{{ $u->id }}</span>
                             @if ( $u->cert !== null )
                                 <div class="border border-info px-2 ms-2 d-inline-block" style="border-radius:4px; background:#f6f6f6;"><small>{{$u->cert}}</small></div>
-                            @elseif ( $activity[$i]->training_done == 1 )
-                                <div class="alert alert-warning d-inline-block ms-2 py-1 px-2" style="font-size:small">User ready for certification
-                                    <span class="d-none">{{ $activity[$i]->id }}</span>
-                                </div>
+                            @else
+                                @foreach ($activity as $a)
+                                    @if ($a->user_id == $u->id && $a->training_done == 1)
+                                        <div class="alert alert-warning d-inline-block ms-2 py-1 px-2" style="font-size:small">
+                                            User ready for certification
+                                        </div>
+                                    @endif
+                                @endforeach
                             @endif
                         </h2>
                         <div class="row mt-2 mx-0">
