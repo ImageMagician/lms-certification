@@ -151,7 +151,7 @@ class HomeController extends Controller
 
         $notify_data = [
             'subject' => 'Appointment Change Request',
-            'intro'   => $user->name . ' has requested a change to the appointment for the installation location and document review.',
+            'intro'   => $user->first_name . ' ' . $user->last_name . ' has requested a change to the appointment for the installation location and document review.',
             'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
             'outtro'  => 'Please approve the change or contact the user to set a new time.',
             'url' => secure_url( route('userDetailStep', ['id'=>$user->id, 'step'=>3] ) ),
@@ -189,7 +189,7 @@ class HomeController extends Controller
 
         $notify_data = [
             'subject' => 'Final Inspection Change Request',
-            'intro'   => $user->name . " has requested a change to the <strong>final inspection</strong> date and time.",
+            'intro'   => $user->first_name . ' ' . $user->last_name . " has requested a change to the <strong>final inspection</strong> date and time.",
             'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
             'outtro'  => 'Please approve the change or contact the user to set a new time.',
             'url' => secure_url( route('userDetailStep', ['id'=>$user->id, 'step'=>3] ) ),
@@ -226,10 +226,10 @@ class HomeController extends Controller
     public function infoProcess(Request $request) {
         if ($request->isMethod('put')) {
             User::where('id', $request->id)->update ([
-                'name' => $request->name,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
                 'phone' => $request->phone,
                 'companies' => $request->companies,
-                'states' => $request->states,
             ]);
 
         }

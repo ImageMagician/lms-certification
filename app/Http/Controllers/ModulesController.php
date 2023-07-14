@@ -139,7 +139,7 @@ class ModulesController extends Controller
                 $admin->notify(new Step3([
                     'subject' => 'User Certification',
                     'intro'   => '<strong>User training completion.</strong>',
-                    'message' => $user->name . ' has completed the Sanctuary certification training and is ready to be registered as a certified installer',
+                    'message' => $user->first_name . ' ' . $user->last_name . ' has completed the Sanctuary certification training and is ready to be registered as a certified installer',
                     'outtro'  => 'Click the button to review their progress and certify them.',
                     'url'     => route('userDetail', ['id' => $user->id]),
                 ]));
@@ -149,7 +149,7 @@ class ModulesController extends Controller
                     $s->notify(new Step3([
                         'subject' => 'User Certification',
                         'intro'   => '<strong>User training completion.</strong>',
-                        'message' => $user->name . ' has completed the Sanctuary certification training.',
+                        'message' => $user->first_name . ' ' . $user->last_name . ' has completed the Sanctuary certification training.',
                         'outtro'  => 'The ESS Team has been notified. Please verify that this user gets certified in a timely manner.',
                         'url'     => route('userDetail', ['id' => $user->id]),
                     ]));
@@ -376,7 +376,7 @@ class ModulesController extends Controller
         }
 
         $notify_data = [
-            'intro' => $user->name . ' has added a note on their certification board.',
+            'intro' => $user->first_name . ' ' . $user->last_name . ' has added a note on their certification board.',
             'message' => new HtmlString($data->note),
             'url' => route('userDetail', ['id' => $user->id]),
         ];
