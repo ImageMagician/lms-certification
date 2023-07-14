@@ -16,7 +16,7 @@
                             <span class="d-none">{{ $u->id }}</span>
                             @if ( $u->cert !== null )
                                 <div class="border border-info px-2 ms-2 d-inline-block" style="border-radius:4px; background:#f6f6f6;"><small>{{$u->cert}}</small></div>
-                            @elseif ( $activity[$u->id]->training_done == 1 )
+                            @elseif ( $activity[$i]->training_done == 1 )
                                 <div class="alert alert-warning d-inline-block ms-2 py-1 px-2" style="font-size:small">User ready for certification
                                     <span class="d-none">{{ $activity[$i]->id }}</span>
                                 </div>
