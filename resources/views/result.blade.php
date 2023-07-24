@@ -64,9 +64,12 @@
                     @else
                         <h4 class="mt-3">Training complete</h4>
                         <p>
-                            You have completed the video training for certification. A Lion Energy representative will reach out to you
-                            via email or phone to complete your training and supply you with a Lion Energy-approved certification number
+                            You have completed the video training for certification. Click the button below to submit your request for a certification number.
+                            A Lion Energy representative will reach out to you via email or phone to complete your training and provide you a certification number
                             needed to install the Lion Energy Sanctuary.
+                        </p>
+                        <p>
+                            <a href="{{route('request-cert')}}" class="btn btn-primary">Submit For Review</a>
                         </p>
                     @endif
                 </div>

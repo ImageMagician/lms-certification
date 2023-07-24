@@ -4,7 +4,7 @@
         <div class="row justify-content-center">
             <div class="col-sm-8 py-3 py-sm-5">
                 @foreach($quiz as $key => $value)
-                    <h2>{{ $value['question'] }}</h2>
+                    <h2 class="h3">{{ $value['question'] }}</h2>
                     @php
                         $answers = json_decode( $value['answer_array'], true);
                     @endphp

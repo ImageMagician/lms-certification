@@ -1,119 +1,85 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row p-3" style="background:#333; color:white; display:none">
+<div class="row m-0 py-2" style="background:#333; color:white">
         <div class="col-12">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="h4">
+                    <h1 class="h4 mb-0 p-0">
                         {{ $user->first_name . ' ' . $user->last_name }}
-                        <a href="/info" class="btn btn-secondary btn-sm float-right">Edit Info</a>
+                        @if ( $user->cert != null)
+                        <span class="border border-info text-center p-2 ms-2 d-inline-block lh-1" style="font-size:.625em; border-radius:4px;">
+                            <strong>#{{ $user->cert }}</strong>
+                        </span>
+                        @elseif ( $activity->training_done != null )
+                        <div class="border border-info text-center p-2 ms-2 d-inline-block lh-1" style="font-size:.625em; border-radius:4px;">
+                            Training complete. You will be contacted by a Lion Energy representative to finalize your certification.
+                        </div>
+                        @endif
+                        <a href="/info" class="btn btn-outline-light btn-sm float-right">&#9998;</a>
                     </h1>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="py-1 border-bottom-light">Phone number: {{ $user->phone }}</div>
+                    Phone number: {{ $user->phone }}
                 </div>
                 <div class="col-sm-4">
-                    <div class="py-1 border-bottom-light">Email: {{ $user->email }}</div>
+                    Email: {{ $user->email }}
                 </div>
                 <div class="col-sm-4">
-                    <div class="py-1 border-bottom-light">Associated companies: {{ $user->companies }}</div>
+                    Company: {{ $user->companies }}
                 </div>
             </div>
         </div>
 </div>
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-xl-10">
-            @if ( isset($error) )
-                <div class="alert alert-success">
-                    @if ( $update  == 'installation')
-                    <p>The installation information has been successfully updated.</p>
-                    @endif
+<div class="bg-med-gray p-2 text-center">
+    Full installation instructions can be found in the installation guide:
+    <a href="/docs/Sanctuary Installation Guide-6-15-23 - WEB.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">Click Here</a>
+</div>
+<div class="container-fluid">
+    <div class="row py-2">
+        <div class="col-12">
+            @php $steps = 0; @endphp
+            @foreach( $modules as $m )
+                @php
+                    $act_step = 'module_' . sprintf('%02d', $m->id);
+                @endphp
+                @if ( $activity->$act_step !== null )
+                    @php $steps++; @endphp
+                @endif
+            @endforeach
+            @if ( $steps == count($modules) )
+            <div class="row justify-content-center">
+                <div class="col-12 text-center mt-3">
+                    <div class="alert alert-success p-2">
+                        <span style="font-size:18px">Training complete. Click here to be contacted by a Lion Energy representative to finalize your certification.</span><br />
+                        <a href="{{ route('request-cert') }}" class="btn btn-primary mt-2">Request Certification</a>
+                    </div>
                 </div>
-                @unset($update)
+            </div>
             @endif
-            <div class="container mt-4">
-                <div class="row">
-                    <div class="col-12">
-                        <h1 class="h4">
-                            {{ $user->first_name . ' ' . $user->last_name }}
-                            <a href="/info" class="btn btn-secondary btn-sm float-right">Edit Info</a>
-                        </h1>
-                    </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9 mb-3 mb-md-0">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="h5">Training Steps</h2>
                 </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="py-1 border-bottom-light">Phone number: {{ $user->phone }}</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="py-1 border-bottom-light">Email: {{ $user->email }}</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="py-1 border-bottom-light">Associated companies: {{ $user->companies }}</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        @if ( $user->cert )
-                        <div class="row justify-content-center">
-                            <div class="col-md-5">
-                                <div class="border border-info mt-4 p-3 text-center" style="border-radius:6px;">
-                                    <span style="font-size:24px">Certification ID: <strong>{{ $user->cert }}</strong></span>
-                                </div>
-                            </div>
-                        </div>
-                        @elseif ( $activity->training_done == 1)
-                            <div class="row justify-content-center">
-                                <div class="col-12 text-center mt-3">
-                                    <div class="alert alert-info p-2">
-                                        <span style="font-size:18px">Training complete. You will be contacted by a Lion Energy representative to finalize your certification.</span>
-                                    </div>
-                                </div>
-                            </div>
-                        @else
-                            @php $steps = 0; @endphp
-                            @foreach( $modules as $m )
-                                @php
-                                    $act_step = 'module_' . sprintf('%02d', $m->id);
-                                @endphp
-                                @if ( $activity->$act_step !== null )
-                                    @php $steps++; @endphp
-                                @endif
-                            @endforeach
-                            @if ( $steps == count($modules) )
-                            <div class="row justify-content-center">
-                                <div class="col-12 text-center mt-3">
-                                    <div class="alert alert-info p-2">
-                                        <span style="font-size:18px">Training complete. Click here to be contacted by a Lion Energy representative to finalize your certification.</span><br />
-                                        <a href="{{ route('request-cert') }}" class="btn btn-primary mt-2">Request Certification</a>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-                        @endif
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-12 mb-3">
-                        <div class="alert alert-secondary p-2 text-center">
-                            Full installation instructions can be found in the installation guide:
-                            <a href="/docs/Sanctuary Installation Guide-6-15-23 - WEB.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">Click Here</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-8 mb-3 mb-md-0">
-                        <div class="row">
-                            <div class="col-12">
-                                <h2 class="h5">Training Steps</h2>
-                            </div>
-                        </div>
-                        <div class="row">
-                        @foreach ($modules as $m)
-                            @if ( $activity != null )
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table d-sm-table">
+                        <tr class="d-none d-sm-table-row">
+                            <th class="d-block d-sm-table-cell" scope="col">Step</th>
+                            <th class="d-block d-sm-table-cell" scope="col">Status</th>
+                            <th class="d-block d-sm-table-cell" scope="col">Section</th>
+                            <th class="d-block d-sm-table-cell" scope="col">Title</th>
+                            <th class="d-block d-sm-table-cell" scope="col">Results</th>
+                            <th class="d-block d-sm-table-cell" scope="col">Actions</th>
+                        </tr>
+                            @foreach ($modules as $m)
                                 @php
                                     $prev_id = ( $m['id']-1 <= 1 ) ? 1 : $m['id']-1;
                                     $mod_prev = ( $m['id']-2 <= 0 ) ? 0 : $m['id']-2;
@@ -122,157 +88,148 @@
                                     $module_id = 'module_' . sprintf('%02d', $m['id']);
                                     $module_prev = 'module_' . sprintf('%02d', $prev_id);
                                     $module_date = $module_id . '_date';
-
                                 @endphp
-                            @endif
-                            <div class="col-md-6 pb-4 @if ($m->id > 1 && $activity->$module_prev == null) disabled @endif">
-                                <div class="yyz-card pt-3 pe-3 pb-5 ps-3 h-100
-                                    @if ( $m->section == 'mounting' )
-                                        border-blue
-                                    @elseif ( $m->section == 'wiring' )
-                                        border-pink
-                                    @elseif ( $m->section == 'commissioning' )
-                                        border-green
-                                    @elseif ( $m->section == '2:4 setup' )
-                                        border-purple
-                                    @endif
-                                    @if ( $m->id == 1 && $activity->$module_id == null )
-                                        focus
-                                    @elseif ( $m->id != 1 && $activity->$module_id == null && $activity->$module_prev !== null )
-                                        focus
-                                    @endif">
-                                    <div class="pb-1">
-                                        <small>
-                                            STEP {{ $m->id }} : {{ strtoupper($m->section) }}
-                                        </small>
-                                        @if ( $activity->$module_id !== null)
-                                            <span class="badge badge-success float-right">Complete</span>
+                                @if ( $activity != null )
+                                    <tr class="d-block my-3 my-sm-0 d-sm-table-row border-1 border-sm-0 p-2 p-sm-2
+                                        @if ($m->id > 1 && $activity->$module_prev == null) disabled @endif
+                                        @if ( $m->section == 'mounting' )
+                                            border-blue
+                                        @elseif ( $m->section == 'wiring' )
+                                            border-pink
+                                        @elseif ( $m->section == 'commissioning' )
+                                            border-green
+                                        @elseif ( $m->section == '2:4 setup' )
+                                            border-purple
                                         @endif
-                                   </div>
-                                    <h3 class="h5 mb-3">
-                                        {{ $m->title }}
-                                    </h3>
-                                    @if ( $activity->$module_id !== null )
-                                        @if ( $questions[$m->id] > 0)
-                                        <p>
-                                            Quiz:
-                                            {{ $answers[$m->id] }} /
-                                            {{ $questions[$m->id] }} correct
-                                            @if ($questions[$m->id] > 0)
-                                            (@php echo round( $answers[$m->id] / $questions[$m->id] * 100, 2) @endphp%)
+                                        @if ( $m->id == 1 && $activity->$module_id == null )
+                                            focus
+                                        @elseif ( $m->id != 1 && $activity->$module_id == null && $activity->$module_prev !== null )
+                                            focus
+                                        @endif
+                                   ">
+                                        <td class="d-block d-sm-table-cell text-center border-table-0 border-table-sm-1 p-1 p-sm-2 table-tile-header">
+                                            <span class="d-sm-none d-inline">Step </span>
+                                            {{ $m->id }}
+                                        </td>
+                                        <td class="d-block d-sm-table-cell text-center text-sm-start border-table-0 border-table-sm-1 p-1 p-sm-2">
+                                            <span class="d-sm-none d-inline">Status:</span>
+                                            @if ( $activity->$module_id !== null)
+                                                <span class="badge badge-success d-inline-block ms-2 vertical-align-middle">Complete</span>
                                             @endif
-                                        </p>
-                                        @else
-                                            <p>
-                                                Quiz restarted. Please continue.
-                                            </p>
-                                        @endif
-                                        <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block">Replay Video</a>
-                                        <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/restart" method="post" class="ms-2 d-inline-block">
-                                            @csrf
-                                            <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
-                                            <input type="hidden" name="_method" value="PUT">
-                                            <button type="submit" class="btn btn-tertiary btn-small d-inline-block">Restart Quiz</button>
-                                        </form>
-                                    @endif
-
-                                    @if ( $activity->$module_id !== null && $activity->$module_id < $m->passing_percentage)
-                                        <div class="step-forms">
-                                            <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/rewatch" method="post" class="d-inline-block">
-                                                @csrf
-                                                <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
-                                                <input type="hidden" name="_method" value="PUT">
-                                                <button type="submit" class="btn btn-tertiary me-1">Rewatch Video</button>
-                                            </form>
-                                            <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/restart" method="post" class="d-inline-block">
-                                                @csrf
-                                                <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
-                                                <input type="hidden" name="_method" value="PUT">
-                                                <button type="submit" class="btn btn-tertiary me-1">Restart Quiz</button>
-                                            </form>
-                                        </div>
-                                    @elseif ( ( $activity->$module_id == null && $activity->$module_prev ) || ( $activity->$module_id == null && $m->id == 1))
-                                        <a class="btn btn-primary" href="/modules/{{ $m['id'] }}">Watch Video &amp; Take Quiz</a>
-                                    @endif
-
-                                   {{-- Last Module --}}
-                                    @if ( $m->id == count($modules) )
-                                        @if ( $activity->$module_prev !== null )
-                                            @if ( $activity->review_end != null )
-                                                <div class="alert alert-secondary mt-3 mb-0 p-2">
-                                                    @if ( $activity->review_06_admin_request == null)<button onclick="changeDateModal(6)" class="float-right btn btn-tertiary btn-small h-100">Change</button>@endif
-                                                    <strong>Site inspection appt:</strong><br />{{ date("M d, Y @ h:i A", strtotime($activity->review_06)) }}
-
-                                                    @if ($activity->review_06_user_request != null)
-                                                        <p class="mb-0"><small class="color-red-medium">Your requested change: {{ date('M d, Y @ h:i A', strtotime($activity->review_06_user_request)) }}</small></p>
-                                                    @elseif ( $activity->review_06_admin_request != null )
-                                                        <p>
-                                                            <small class="color-red-medium">Lion Energy&rsquo;s requested change:<br />
-                                                                {{ date('M d, Y @ h:i A', strtotime($activity->review_06_admin_request)) }}
-                                                            </small>
-                                                        </p>
-                                                        <p class="mb-0">
-                                                            <form action="{{ route('userStep6Accept') }}" method="post">
-                                                                @csrf
-                                                                <input type="hidden" name="new_datetime" value="{{ $activity->review_06_admin_request }}">
-                                                                <button type="submit" class="btn btn-small btn-primary">Accept</button>
-                                                                <button type="button" onclick="changeDateModal(6)" class="btn btn-tertiary btn-small ms-2">Suggest New Date/Time</button>
-                                                            </form>
-                                                        </p>
+                                        </td>
+                                        <td class="d-block d-sm-table-cell text-center text-sm-start border-table-0 border-table-sm-1 p-1 p-sm-2">
+                                            <span class="d-sm-none d-inline">Section:</span>
+                                            {{ ucwords($m->section) }}</td>
+                                        <td class="d-block d-sm-table-cell text-center text-sm-start border-table-0 border-table-sm-1 p-1 p-sm-2">
+                                            <span class="d-sm-none d-inline">Title:</span>
+                                            {{ $m->title }}</td>
+                                        <td class="d-block d-sm-table-cell text-center text-sm-start border-table-0 border-table-sm-1 p-1 p-sm-2">
+                                            <span class="d-sm-none d-inline">Results:</span>
+                                            @if ( $activity->$module_id !== null )
+                                                @if ( $questions[$m->id] > 0)
+                                                    @php $perc = round( $answers[$m->id] / $questions[$m->id] * 100, 2); @endphp
+                                                    @if ( $perc < 75 )
+                                                        <span class="text-danger"><strong>
                                                     @endif
-                                                </div>
+                                                    {{ $answers[$m->id] }} /
+                                                    {{ $questions[$m->id] }} correct
+                                                    ({{ $perc }}%)
+                                                    @if ( $perc < 75 )
+                                                        </strong></span>
+                                                    @endif
+                                                @else
+                                                    Quiz restarted. Please continue.
+                                                @endif
                                             @endif
-                                        @else
-                                            <div class="h4 text-center mt-4">
-                                                Training Complete
-                                            </div>
-                                        @endif
-                                    @endif
+                                        </td>
+                                        <td class="text-center d-block d-sm-table-cell text-center text-sm-start border-table-0 border-table-sm-1 p-1 p-sm-2">
+                                            <span class="d-sm-none d-inline">Actions: </span>
+                                            @if ( $activity->$module_id !== null )
+                                            <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block d-sm-block mb-sm-1 d-xxl-inline-block mx-2
+                                                @if ($perc < 75)
+                                                    btn-danger
+                                                @endif
+                                            ">Replay Video</a>
+                                            <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/restart" method="post" class="mx-2 mt-md-1 d-inline-block d-sm-block d-xxl-inline-block">
+                                                @csrf
+                                                <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
+                                                <input type="hidden" name="_method" value="PUT">
+                                                <button type="submit" class="btn btn-tertiary btn-small w-100
+                                                @if ($perc < 75)
+                                                    btn-danger
+                                                @endif
+                                                ">Restart Quiz</button>
+                                            </form>
+                                            @elseif ( ( $activity->$module_id == null && $activity->$module_prev ) || ( $activity->$module_id == null && $m->id == 1))
+                                                <a class="btn btn-primary btn-small" href="/modules/{{ $m['id'] }}">Watch Video &amp; Take Quiz</a>
+                                            @endif
+                                       {{-- Last Module --}}
+                                        @if ( $m->id == count($modules) )
+                                            @if ( $activity->$module_prev !== null )
+                                                @if ( $activity->review_end != null )
+                                                    <div class="alert alert-secondary mt-3 mb-0 p-2">
+                                                        @if ( $activity->review_06_admin_request == null)<button onclick="changeDateModal(6)" class="float-right btn btn-tertiary btn-small h-100">Change</button>@endif
+                                                        <strong>Site inspection appt:</strong><br />{{ date("M d, Y @ h:i A", strtotime($activity->review_06)) }}
 
-                                    @if ( $activity->$module_id !== null )
-                                        <p class="small position-absolute bottom-0">
-                                            Last Activity:
-                                            @php echo date( "M d, Y", strtotime( $activity->$module_id ) ); @endphp
-                                        </p>
-                                    @endif
+                                                        @if ($activity->review_06_user_request != null)
+                                                            <p class="mb-0"><small class="color-red-medium">Your requested change: {{ date('M d, Y @ h:i A', strtotime($activity->review_06_user_request)) }}</small></p>
+                                                        @elseif ( $activity->review_06_admin_request != null )
+                                                            <p>
+                                                                <small class="color-red-medium">Lion Energy&rsquo;s requested change:<br />
+                                                                    {{ date('M d, Y @ h:i A', strtotime($activity->review_06_admin_request)) }}
+                                                                </small>
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <form action="{{ route('userStep6Accept') }}" method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="new_datetime" value="{{ $activity->review_06_admin_request }}">
+                                                                    <button type="submit" class="btn btn-small btn-primary">Accept</button>
+                                                                    <button type="button" onclick="changeDateModal(6)" class="btn btn-tertiary btn-small ms-2">Suggest New Date/Time</button>
+                                                                </form>
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        @endif
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-12">
+                    <button type="button" id="AddNotesBtn" onclick="newNote()" class="float-right btn btn-tertiary btn-small d-inline-block w-auto float-right">Add</button>
+                    <h2 class="h5">Messages</h2>
+                </div>
+            </div>
+            <div id="msg_parent" style="position:relative; height:100%; border:1px solid rgba(0,0,0,.1); overflow-y:auto; overflow-x:clip;">
+                <div id="msg_content" class="position-absolute px-2 w-100">
+                    @if( count($messages) > 0 )
+                        @foreach($messages as $msg)
+                            <div class="row mb-2 p-0 align-items-end">
+                                <div class="col-11 @if($msg->admin_id == null) offset-1 @endif">
+                                    <div class="note-bubble @if($msg->admin_id !== null) admin @endif">
+                                        <div class="small-steps mb-1">
+                                            {{ date('M d, Y', strtotime($msg->created_at)) }} @
+                                            {{ date('h:i:s A', strtotime($msg->created_at)) }}
+                                        </div>
+                                            @php echo html_entity_decode($msg->message) @endphp
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
-                        </div>
-                    </div>
-                    <div class="col-md-4">
+                    @else
                         <div class="row">
                             <div class="col-12">
-                                <button type="button" id="AddNotesBtn" onclick="newNote()" class="float-right btn btn-tertiary btn-small d-inline-block w-auto float-right">Add</button>
-                                <h2 class="h5">Messages</h2>
+                                <p class="mt-5 msg-no-notes">No messages yet</p>
                             </div>
                         </div>
-                        <div id="msg_parent" style="position:relative; height:100%; border:1px solid rgba(0,0,0,.1); overflow-y:auto; overflow-x:clip;">
-                            <div id="msg_content" class="position-absolute px-2 w-100">
-                                @if( count($messages) > 0 )
-                                    @foreach($messages as $msg)
-                                        <div class="row mb-2 p-0 align-items-end">
-                                            <div class="col-11 @if($msg->admin_id == null) offset-1 @endif">
-                                                <div class="note-bubble @if($msg->admin_id !== null) admin @endif">
-                                                    <div class="small-steps mb-1">
-                                                        {{ date('M d, Y', strtotime($msg->created_at)) }} @
-                                                        {{ date('h:i:s A', strtotime($msg->created_at)) }}
-                                                    </div>
-                                                        @php echo html_entity_decode($msg->message) @endphp
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <p class="mt-5 msg-no-notes">No messages yet</p>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>

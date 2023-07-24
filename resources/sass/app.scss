@@ -8,7 +8,14 @@
 @import 'bootstrap/scss/bootstrap';
 
 body {
-    background:#f0f2f4;
+}
+
+.bg-light-gray {
+    background-color:$light-gray;
+}
+
+.bg-med-gray {
+    background-color: $med-gray;
 }
 
 .vertical-align-middle {
@@ -20,56 +27,41 @@ body {
 }
 
 .yyz-card {
-    border:1px solid rgba(0,0,0,.17);
-    border-radius:6px;
-    background:white;
-    box-shadow: 0 3px 3px rgba(0,0,0,.1);
-    position:relative;
-    min-height:150px;
+    border: 1px solid rgba(0, 0, 0, .17);
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, .1);
+    position: relative;
+    min-height: 150px;
 
     &.yyz-card-docs {
-        height:100%;
-        padding:1.5rem 1.5rem 5rem 1.5rem;
+        height: 100%;
+        padding: 1.5rem 1.5rem 5rem 1.5rem;
     }
+}
+
+.focus {
+    outline: 6px solid transparent;
+    border-width:3px;
 
     &.border-blue {
-        border-width:3px;
         border-color: $border-blue;
+        outline-color: rgb(85,150,225,.3);
     }
 
     &.border-pink {
-        border-width:3px;
         border-color: $border-pink;
+        outline-color: rgb(200,125,200,.3);
     }
 
     &.border-green {
-        border-width:3px;
         border-color: $border-green;
+        outline-color: rgb(75,150,75,.3);
     }
 
     &.border-purple {
-        border-width:3px;
         border-color: $border-purple;
-    }
-
-    &.focus {
-        outline: 6px solid transparent;
-
-        &.border-blue {
-            outline-color: rgb(85,150,225,.3);
-        }
-
-        &.border-pink {
-            outline-color: rgb(200,125,200,.3);
-        }
-
-        &.border-green {
-            outline-color: rgb(75,150,75,.3);
-        }
-
-        &.border-purple {
-            outline-color: rgb(125,100,225,.3);
-        }
+        outline-color: rgb(125,100,225,.3);
     }
 }
 
@@ -717,6 +709,27 @@ p {
     }
 }
 
+.table {
+    .border-table-0 {
+        border-bottom-width: 0 !important;
+    }
+
+    .table-tile-header {
+        margin:-0.5rem -0.5rem 0 -0.5rem;
+        background: $med-gray;
+        color: white;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    tr {
+        &.disabled {
+            opacity:.3;
+        }
+    }
+}
+
 @media (min-width:576px) {
     .w-sm-auto {
         width: auto !important;
@@ -744,6 +757,29 @@ p {
 
     .w-sm-100 {
         width: 100% !important;
+    }
+
+    .table {
+
+        .border-table-sm-0 {
+            border-bottom-width:0 !important;
+        }
+
+        .border-sm-0 {
+            border: 0 !important;
+        }
+
+        .border-table-sm-1 {
+            border-bottom-width:1px !important;
+            border-color:rgba(0,0,0,0.1);
+        }
+        .table-tile-header {
+            margin:auto;
+            background: transparent;
+            color: black;
+            font-weight: normal;
+            letter-spacing: 0px;
+        }
     }
 }
 
