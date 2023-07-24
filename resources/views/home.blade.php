@@ -49,7 +49,7 @@
                     @php $steps++; @endphp
                 @endif
             @endforeach
-            @if ( $activity->training_done != null )
+            @if ( $activity->training_done == null && $activity->$act_step != null )
             <div class="row justify-content-center">
                 <div class="col-12 text-center mt-3">
                     <div class="alert alert-success p-2">
