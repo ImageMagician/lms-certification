@@ -145,12 +145,15 @@ class AdminAuthController extends Controller
 
             // create cert# with first and last initials + their user db id
             $u_id = $user->id;
-            $flname = explode(' ', $user->name);
-            $fi = substr($flname[0], 0, 1);
-            if ( count($flname) == 1 ) {
+            $fi = substr($user->first_name, 0, 1);
+            $li = substr($user->last_name, 0, 1);
+
+            if ($fi == '') {
+                $fi = 'j';
+            }
+
+            if ( $li == '' ) {
                 $li = 'z';
-            } else {
-                $li = substr($flname[1], 0, 1);
             }
 
             $cert = bin2hex( $fi . $li . $u_id);
