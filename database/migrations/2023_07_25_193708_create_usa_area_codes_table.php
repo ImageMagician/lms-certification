@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('usa_area_codes', function (Blueprint $table) {
             $table->id();
-            $table->integer('area_code', ['length'=>3]);
-            $table->string('region' ,['length'=>2]);
+            $table->string('area_code', 3);
+            $table->string('region' ,2);
+            $table->string('utc',10);
             $table->text('description');
             $table->timestamps();
         });

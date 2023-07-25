@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('usa_phone_exchange_bad', function (Blueprint $table) {
             $table->id();
-            $table->integer('area_code', ['length'=>3]);
+            $table->string('area_code', 3);
             $table->timestamps();
         });
     }
