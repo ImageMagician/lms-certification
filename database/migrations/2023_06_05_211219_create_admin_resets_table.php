@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('admin_resets', function (Blueprint $table) {
             $table->id();
+            $table->string('email');
+            $table->string('token');
             $table->timestamps();
         });
     }

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
+            $table->string('section');
             $table->string('title');
             $table->text('description');
             $table->string('video')->nullable();
             $table->string('video_poster')->nullable();
             $table->float('passing_percentage')->nullable();
-            $table->boolean('admin_review')->nullable();
             $table->timestamps();
         });
     }

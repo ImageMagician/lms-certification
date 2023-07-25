@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('api_users', function (Blueprint $table) {
+        Schema::create('usa_area_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->string('password');
+            $table->integer('area_code', ['length'=>3]);
+            $table->string('region' ,['length'=>2]);
+            $table->text('description');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('api_users');
+        Schema::dropIfExists('usa_area_codes');
     }
 };
