@@ -77,6 +77,23 @@
                             <input id="companies" type="text" class="form-control @error('companies') is-invalid @enderror" name="companies" value="{{ old('companies') }}" required>
 
                             @error('companies')
+                            <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="states" class="col-md-4 col-form-label text-md-end">
+                            {{ __('State') }}
+
+                        </label>
+
+                        <div class="col-md-6">
+                            <input id="states" type="text" class="form-control @error('states') is-invalid @enderror" name="states" value="{{ old('states') }}" required>
+
+                            @error('states')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
