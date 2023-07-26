@@ -187,11 +187,14 @@ class AdminAuthController extends Controller
             // send notification to RSM that they have been certified
             $state = DB::table('usa_states')->where('abbrev', $user->states)->first();
             $rsm = RegionalRep::where('id', $state->rep)->first();
-            $rsm->notify(new RSM([
-                'subject' => 'Lion Energy Certification',
-                'intro'   => $user->first_name . ' ' . $user->last_name . ' (' . $user->companies . ') is now a certified installer in the state of ' . ucwords($state->name) . '.',
-                'message' => 'Lion Energy has confirmed the completion of their training and issued them a certification number.' . '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
-            ]));        }
+
+            if ( $rsm ) {
+                $rsm->notify(new RSM([
+                    'subject' => 'Lion Energy Certification',
+                    'intro'   => $user->first_name . ' ' . $user->last_name . ' (' . $user->companies . ') is now a certified installer in the state of ' . ucwords($state->name) . '.',
+                    'message' => 'Lion Energy has confirmed the completion of their training and issued them a certification number.' . '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
+                ]));        }
+            }
 
         $update_list = [
             $mod_name => date("Y-m-d H:i:s"),
