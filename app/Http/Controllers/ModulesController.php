@@ -13,12 +13,14 @@ use App\Models\Message;
 use App\Models\Module;
 use App\Models\ModuleQuiz;
 use App\Models\ModuleAnswer;
+use App\Models\RegionalRep;
 use App\Models\Note;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use App\Traits\QuizResults;
+use Illuminate\Support\Facades\DB;
 use Auth;
 
 class ModulesController extends Controller
@@ -132,8 +134,25 @@ class ModulesController extends Controller
                     $admin = Admin::first();
                 }
 
+                // Get user's specified state (NEED TO CREATE A JOIN FOR THIS AND THE RSM BELOW)
+                $state = DB::table('usa_states')->where('abbrev', $user->states)->first();
+
+                // Get RSM for user's state
+                $rep = RegionalRep::where('id', $state->rep)->first();
+
                 // Get all super_admins
-                $super = Admin::where('id', '!=', $admin->id )->where('super_admin', 1)->get();
+                $super = Admin::where('id', '!=', $admin->id)->where('super_admin', 1)->get();
+
+                // send notification to the RSM for the user's state
+                if ($rep) {
+                    $rep->notify(new Step3([
+                        'subject' => 'User Certification',
+                        'intro' => '<strong>User training completion.</strong>',
+                        'message' => $user->first_name . ' ' . $user->last_name . ' has completed the Sanctuary certification training and in the state of ' . $user->states,
+                        'outtro' => 'The ESS Team has been notified. Please verify that this user gets certified in a timely manner.',
+                        'url' => route('userDetail', ['id' => $user->id]),
+                    ]));
+                }
 
                 // send notification to the assigned admin that they have been certified
                 $admin->notify(new Step3([
