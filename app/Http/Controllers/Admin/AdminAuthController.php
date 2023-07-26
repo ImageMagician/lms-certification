@@ -10,6 +10,7 @@ use App\Models\RegionalRep;
 use App\Notifications\AdminPasswordReset;
 use App\Notifications\UserNote;
 use App\Notifications\Step3;
+use App\Notifications\RSM;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -186,12 +187,10 @@ class AdminAuthController extends Controller
             // send notification to RSM that they have been certified
             $state = DB::table('usa_states')->where('abbrev', $user->states)->first();
             $rsm = RegionalRep::where('id', $state->rep)->first();
-            $rsm->notify(new Step3([
+            $rsm->notify(new RSM([
                 'subject' => 'Lion Energy Certification',
                 'intro'   => $user->first_name . ' ' . $user->last_name . ' (' . $user->companies . ') is now a certified installer in the state of ' . ucwords($state->name) . '.',
-                'message' => 'Lion Energy has confirmed the completion of their training and issued them a certification number.',
-                'outtro'  => '<strong>Certification number: ' . $cert_pull . '</strong>',
-                'url'     => route('home'),
+                'message' => 'Lion Energy has confirmed the completion of their training and issued them a certification number.' . '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
             ]));        }
 
         $update_list = [

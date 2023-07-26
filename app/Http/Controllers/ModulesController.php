@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\InstallImage;
 use App\Models\UserActivity;
 use App\Notifications\Step3;
+use App\Notifications\RSM;
 use App\Notifications\UserNote;
 use Illuminate\Http\Request;
 use App\Models\Message;
@@ -145,12 +146,11 @@ class ModulesController extends Controller
 
                 // send notification to the RSM for the user's state
                 if ($rep) {
-                    $rep->notify(new Step3([
+                    $rep->notify(new RSM([
                         'subject' => 'User Certification',
                         'intro' => '<strong>User training completion.</strong>',
-                        'message' => $user->first_name . ' ' . $user->last_name . ' has completed the Sanctuary certification training and in the state of ' . $user->states,
-                        'outtro' => 'The ESS Team has been notified. Please verify that this user gets certified in a timely manner.',
-                        'url' => route('userDetail', ['id' => $user->id]),
+                        'message' => $user->first_name . ' ' . $user->last_name . ' has completed the Sanctuary certification training and in the state of ' . $state->name .
+                            '<p>The ESS Team has been notified. Please verify that this user gets certified in a timely manner.</p>',
                     ]));
                 }
 
