@@ -418,7 +418,7 @@ class AdminAuthController extends Controller
         // Send email with password reset link
         $user = Admin::where('email', $request->email)->first();
 
-        $url = config('app.app_url');
+        $url = config('app.url');
 
         $link = $url . '/admin/reset-password?token=' . $token . '&email=' . $request->email;
         $notify_data = [
