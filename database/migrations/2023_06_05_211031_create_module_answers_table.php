@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('module_id')->unsigned();
             $table->integer('q_id')->unsigned();
-            $table->boolean('final')->default(0);
             $table->string('answer');
             $table->timestamps();
         });

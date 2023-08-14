@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('api_users', function (Blueprint $table) {
+        Schema::create('usa_states', function (Blueprint $table) {
             $table->id();
+            $table->string('abbrev');
             $table->string('name');
-            $table->string('email');
-            $table->string('password');
+            $table->string('rep');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('api_users');
+        Schema::dropIfExists('usa_states');
     }
 };

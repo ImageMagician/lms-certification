@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 
 use App\Models\ModuleAnswer;
 use App\Models\ModuleQuiz;
+use App\Models\RegionalRep;
 use App\Notifications\AdminPasswordReset;
 use App\Notifications\UserNote;
 use App\Notifications\Step3;
+use App\Notifications\RSM;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +25,8 @@ use App\Models\Module;
 use App\Models\InstallImage;
 use App\Models\Message;
 use App\Models\Note;
+
+use Illuminate\Support\Facades\DB;
 
 use App\Traits\QuizResults;
 
@@ -148,12 +152,15 @@ class AdminAuthController extends Controller
             $fi = substr($user->first_name, 0, 1);
             $li = substr($user->last_name, 0, 1);
 
+            // just in case fi and li don't get populated
+            $rstring = 'abcdefghijklmnopqrstuvwxyz';
+
             if ($fi == '') {
-                $fi = 'j';
+                $fi = $rstring[rand(0, strlen($rstring)-1)];
             }
 
             if ( $li == '' ) {
-                $li = 'z';
+                $li = $rstring[rand(0, strlen($rstring)-1)];
             }
 
             $cert = bin2hex( $fi . $li . $u_id);
@@ -171,12 +178,23 @@ class AdminAuthController extends Controller
             // send notification to user that they have been certified
             $user->notify(new Step3([
                 'subject' => 'Lion Energy Certification',
-                'intro'   => 'Congratulations, ' . $user->name,
+                'intro'   => 'Congratulations, ' . $user->first_name,
                 'message' => 'Lion Energy has confirmed the completion of your training and issued you a certification number. This allows you to install the Lion Sanctuary system.',
                 'outtro'  => '<strong>Certification number: ' . $cert_pull . '</strong>',
                 'url'     => route('home'),
             ]));
-        }
+
+            // send notification to RSM that they have been certified
+            $state = DB::table('usa_states')->where('abbrev', $user->states)->first();
+            $rsm = RegionalRep::where('id', $state->rep)->first();
+
+            if ( $rsm ) {
+                $rsm->notify(new RSM([
+                    'subject' => 'Lion Energy Certification',
+                    'intro'   => $user->first_name . ' ' . $user->last_name . ' (' . $user->companies . ') is now a certified installer in the state of ' . ucwords($state->name) . '.',
+                    'message' => 'Lion Energy has confirmed the completion of their training and issued them a certification number.' . '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
+                ]));        }
+            }
 
         $update_list = [
             $mod_name => date("Y-m-d H:i:s"),
@@ -418,7 +436,7 @@ class AdminAuthController extends Controller
         // Send email with password reset link
         $user = Admin::where('email', $request->email)->first();
 
-        $url = Config::get('app.app_url');
+        $url = config('app.url');
 
         $link = $url . '/admin/reset-password?token=' . $token . '&email=' . $request->email;
         $notify_data = [
