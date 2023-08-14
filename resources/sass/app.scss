@@ -75,6 +75,11 @@ body {
     position:relative;
     z-index:1;
 
+    &.flashing-bullet {
+        outline:none;
+        border-width:0 !important;
+    }
+
     td {
         border-bottom:0 !important;
     }

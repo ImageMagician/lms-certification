@@ -22,12 +22,19 @@
                             <input type="hidden" name="user_id" value="{{ $user->id }}">
                             <div class="mt-3">
                                 <div id="quiz_msg" class="btn d-inline-block d-none me-3 mb-0" style="font-weight:700; color:#900"></div>
-                                <button type="submit" class="btn btn-primary me-3 d-none">Next Question</button>
+                                <button id="quiz_submit" type="submit" class="btn btn-primary me-3 d-none">Next Question</button>
                             </div>
                     </form>
                 @endforeach
             </div>
         </div>
+    </div>
+
+    <div id="main_overlay_bg" class="overlay_bg"></div>
+    <div id="main_overlay_content" class="overlay_content text-center">
+        <div class="flashing-bullet">&bull;</div>
+        <div class="flashing-bullet">&bull;</div>
+        <div class="flashing-bullet">&bull;</div>
     </div>
 @endsection
 
@@ -35,4 +42,31 @@
     @php
         setcookie('leqca', $value['answer_correct']);
     @endphp
+
+    <script>
+        setInterval(function() {
+            const bullets = document.querySelectorAll('.flashing-bullet');
+            let bF = 0;
+            for( let i = 0; i < bullets.length; i++) {
+                if ( bullets[i].classList.contains('focus') ) {
+                    bF = i + 1;
+                    if ( bF >= bullets.length ) {
+                        bF = 0;
+                    }
+                    bullets[i].classList.remove('focus');
+                }
+            }
+            bullets[bF].classList.add('focus');
+        }, 400);
+
+        setTimeout( () => {
+            const submit = document.getElementById('quiz_submit');
+            submit.addEventListener('click', showOverlay, false);
+        },250);
+
+        function showOverlay() {
+            document.getElementById('main_overlay_bg').classList.add('show');
+            document.getElementById('main_overlay_content').classList.add('show');
+        }
+    </script>
 @endsection
