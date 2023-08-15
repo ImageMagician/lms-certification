@@ -90,6 +90,7 @@ class RegisterController extends Controller
         $email      = $this->clearSpecial($data['email']);
         $company    = $this->clearSpecial($data['companies']);
         $states     = $this->clearSpecial($data['states']);
+        dd($first_name,$last_name,$email,$company,$states);
 
         $user_id = User::insertGetId([
             'first_name' => $first_name,
@@ -113,7 +114,6 @@ class RegisterController extends Controller
 
     // Clear all special characters for input fields
     protected function clearSpecial($item) {
-        $item = htmlentities($item);
         return preg_replace('/[^A-Za-z0-9\-.@]/', '', $item);
     }
 }
