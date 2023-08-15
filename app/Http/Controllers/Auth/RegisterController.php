@@ -90,7 +90,6 @@ class RegisterController extends Controller
         $email      = $this->clearSpecial($data['email']);
         $company    = $this->clearSpecial($data['companies']);
         $states     = $this->clearSpecial($data['states']);
-        dd($first_name,$last_name,$email,$company,$states);
 
         $user_id = User::insertGetId([
             'first_name' => $first_name,
