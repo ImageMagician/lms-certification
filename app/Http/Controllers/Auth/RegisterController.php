@@ -85,13 +85,19 @@ class RegisterController extends Controller
         $phone = substr_replace($phone, ') ', 3, 0);
         $phone = substr_replace($phone, '(', 0, 0);
 
+        $first_name = $this->clearSpecial($data['first_name']);
+        $last_name  = $this->clearSpecial($data['last_name']);
+        $email      = $this->clearSpecial($data['email']);
+        $company    = $this->clearSpecial($data['companies']);
+        $states     = $this->clearSpecial($data['states']);
+
         $user_id = User::insertGetId([
-            'first_name' => $data['first_name'],
-            'last_name'  => $data['last_name'],
-            'email'      => $data['email'],
+            'first_name' => $first_name,
+            'last_name'  => $last_name,
+            'email'      => $email,
             'phone'      => $phone,
-            'companies'  => $data['companies'],
-            'states'     => $data['states'],
+            'companies'  => $company,
+            'states'     => $states,
             'password'   => Hash::make($data['password']),
         ]);
 
@@ -103,5 +109,11 @@ class RegisterController extends Controller
         $new_user = User::find($user_id);
 
         return $new_user;
+    }
+
+    // Clear all special characters for input fields
+    protected function clearSpecial($item) {
+        $item = htmlentities($item);
+        return preg_replace('/[^A-Za-z0-9\-.@]/', '', $item);
     }
 }
