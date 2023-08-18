@@ -116,6 +116,7 @@
 
             // disable the cert button when clicked
             document.getElementById('cert_request').addEventListener('click', ()=> {
+                document.getElementById('overlay_bg').removeEventListener('click', toggleVid);
                 document.getElementById('overlay_bg').classList.toggle('show');
                 document.getElementById('overlay_bullets').classList.toggle('show');
             });
