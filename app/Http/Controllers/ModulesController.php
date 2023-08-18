@@ -106,13 +106,14 @@ class ModulesController extends Controller
                 $mod_check = Module::where('id', $next_mod)->first();
                 $q_list = ModuleQuiz::where('module_id', $module->id)->get();
                 $a_list = ModuleAnswer::where('module_id', $module->id)->where('user_id', $user->id)->get();
+                $activity = UserActivity::where('user_id', $user->id)->first();
 
                 // Post to user_activities
                 UserActivity::where('user_id', $user->id)
                     ->update([
                         $mod_id=>date('Y-m-d h:i:s')
                     ]);
-                return view('result', ['module'=>$module, 'user'=>$user, 'next'=>$next_mod, 'mod_check'=>$mod_check, 'q_tot'=>$qNa['t'], 'questions'=>$qNa['q'], 'answers'=>$qNa['a'], 'q_list'=>$q_list, 'a_list'=>$a_list]);
+                return view('result', ['module'=>$module, 'user'=>$user, 'activity'=>$activity,'next'=>$next_mod, 'mod_check'=>$mod_check, 'q_tot'=>$qNa['t'], 'questions'=>$qNa['q'], 'answers'=>$qNa['a'], 'q_list'=>$q_list, 'a_list'=>$a_list]);
             }
         }
     }
@@ -179,11 +180,12 @@ class ModulesController extends Controller
                 UserActivity::where('user_id', $user->id)
                     ->update(['training_done' => 1 ]);
            }
-            return redirect()->back();
+            return redirect()->route('home');
     }
 
     function quizResults() {
-        return view('result', ['module'=>$module, 'user'=>$user, 'answers'=>$answers]);
+        $activity = UserActivity::where('user_id', $user->id)->first();
+        return view('result', ['module'=>$module, 'user'=>$user, 'answers'=>$answers, 'activity'=>$activity]);
     }
 
     function store(Request $request) {

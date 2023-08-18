@@ -50,11 +50,11 @@
                 @endif
             @endforeach
             @if ( $user->cert == null && $activity->training_done == null && $activity->$act_step != null )
-            <div class="row justify-content-center">
+            <div id="cont_request_cert" class="row justify-content-center">
                 <div class="col-12 text-center mt-3">
                     <div class="alert alert-success p-2">
                         <span style="font-size:18px">Training complete. Click here to be contacted by a Lion Energy representative to finalize your certification.</span><br />
-                        <a href="{{ route('request-cert') }}" class="btn btn-primary mt-2">Request Certification</a>
+                        <a id="btn_request_cert" href="{{ route('request-cert') }}" class="btn btn-primary mt-2">Request Certification</a>
                     </div>
                 </div>
             </div>
@@ -114,8 +114,9 @@
                                         <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                             <div class="d-sm-none w-33 text-right pe-2"><strong>Section:</strong></div>
                                             <div>
-                                                {{ ucwords($m->section) }}</td>
+                                                {{ ucwords($m->section) }}
                                             </div>
+                                        </td>
                                         <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                             <div class="d-sm-none w-33 text-right pe-2"><strong>Title:</strong></div>
                                             <div class="d-block">
@@ -236,7 +237,6 @@
             </div>
         </div>
     </div>
-</div>
 <div id="overlay_bg" onclick="newNote()"></div>
 <div id="overlay_content" class="yyz-card p-3">
     <form action="{{ route('add-message') }}" method="post" onsubmit="processingOverlay()">
@@ -371,7 +371,13 @@
             m_list = document.getElementById('msg_parent');
             m_height = document.getElementById('msg_content').offsetHeight;
             m_list.scrollTop += m_height;
+
+            document.getElementById('btn_request_cert').addEventListener('click', ()=> {
+                document.getElementById('main_overlay_bg').classList.add('show');
+                document.getElementById('main_overlay_content').classList.add('show');
+            });
         }, 200);
+
 
     </script>
 @endsection

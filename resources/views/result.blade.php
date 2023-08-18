@@ -63,14 +63,20 @@
                         <a href="/modules/{{ $next }}" class="btn btn-primary me-2 mb-2 w-100 w-sm-auto vertical-align-bottom">Next Module</a>
                     @else
                         <h4 class="mt-3">Training complete</h4>
+                        @if ( $activity->training_done == null)
                         <p>
                             You have completed the video training for certification. Click the button below to submit your request for a certification number.
                             A Lion Energy representative will reach out to you via email or phone to complete your training and provide you a certification number
                             needed to install the Lion Energy Sanctuary.
                         </p>
                         <p>
-                            <a href="{{route('request-cert')}}" class="btn btn-primary">Submit For Review</a>
+                            <a id="cert_request" href="{{route('request-cert')}}" class="btn btn-primary">Submit For Review</a>
                         </p>
+                        @else
+                            <p>
+                                Your request for a certification number has been sent. A member of Lion Energy's ESS team should reach out to you soon.
+                            </p>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -88,6 +94,11 @@
                preload="auto"
         ></video>
     </div>
+    <div id="overlay_bullets" class="overlay_content text-center">
+        <div class="flashing-bullet">&bull;</div>
+        <div class="flashing-bullet">&bull;</div>
+        <div class="flashing-bullet">&bull;</div>
+    </div>
 @endsection
 @section('scripts')
     <script>
@@ -102,6 +113,12 @@
             // set event listener to the overlay_bg
             document.getElementById('overlay_bg').addEventListener('click', toggleVid, false);
             document.getElementById('close_btn').addEventListener('click', toggleVid, false);
+
+            // disable the cert button when clicked
+            document.getElementById('cert_request').addEventListener('click', ()=> {
+                document.getElementById('overlay_bg').classList.toggle('show');
+                document.getElementById('overlay_bullets').classList.toggle('show');
+            });
         }, 250);
 
         function showVid() {
@@ -128,5 +145,20 @@
                 video.pause();
             }
         }
+
+        setInterval(function() {
+            const bullets = document.querySelectorAll('.flashing-bullet');
+            let bF = 0;
+            for( let i = 0; i < bullets.length; i++) {
+                if ( bullets[i].classList.contains('focus') ) {
+                    bF = i + 1;
+                    if ( bF >= bullets.length ) {
+                        bF = 0;
+                    }
+                    bullets[i].classList.remove('focus');
+                }
+            }
+            bullets[bF].classList.add('focus');
+        }, 400);
     </script>
 @endsection
