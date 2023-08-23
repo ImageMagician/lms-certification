@@ -18,6 +18,16 @@ body {
     background-color: $med-gray;
 }
 
+.bg-green {
+    background-color: $darkGreen;
+    color:white;
+}
+
+.bg-red {
+    background-color: $darkRed;
+    color:white;
+}
+
 .vertical-align-middle {
     vertical-align:middle;
 }

@@ -120,8 +120,9 @@
                                         <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                             <div class="d-sm-none w-33 text-right pe-2"><strong>Title:</strong></div>
                                             <div class="d-block">
-                                                {{ $m->title }}</td>
+                                                {{ $m->title }}
                                             </div>
+                                        </td>
                                         <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                             <div class="d-sm-none d-block w-33 text-right pe-2"><strong>Results:</strong></div>
                                             <div class="d-block">

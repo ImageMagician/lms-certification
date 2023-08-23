@@ -75,7 +75,9 @@ class AdminAuthController extends Controller
         $users = User::all();
         $modules = Module::all();
         $activity = UserActivity::all();
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'activity'=>$activity]);
+        $answers = ModuleAnswer::all();
+        $questions = ModuleQuiz::all();
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'activity'=>$activity, 'answers'=>$answers, 'questions'=>$questions]);
     }
 
     public function userDetail($id) {
