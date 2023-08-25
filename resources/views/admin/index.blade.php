@@ -60,7 +60,7 @@
                                                                 @php
                                                                     $q_tot++;
                                                                 @endphp
-                                                                @foreach ($answers as $answer)
+                                                                @foreach ($answers[$u->id] as $answer)
                                                                     @if ( $question->module_id == $answer->module_id && $question->q_id == $answer->q_id && $answer->user_id == $u->id)
                                                                         @if ( $question->answer_correct == $answer->answer)
                                                                             @php
@@ -133,7 +133,7 @@
                                                                 @php
                                                                     $q_tot++;
                                                                 @endphp
-                                                                @foreach ($answers as $answer)
+                                                                @foreach ($answers[$u->id] as $answer)
                                                                     @if ( $question->module_id == $answer->module_id && $question->q_id == $answer->q_id && $answer->user_id == $u->id)
                                                                         @if ( $question->answer_correct == $answer->answer)
                                                                             @php

@@ -72,12 +72,18 @@ class AdminAuthController extends Controller
 
     public function adminIndex() {
         $admin = auth()->guard('admin')->user();
-        $users = User::all();
         $modules = Module::all();
+
+        $users = User::all();
+        $user_answers = array();
+
+        foreach ( $users as $u ) {
+            $user_answers[$u->id] = ModuleAnswer::where('user_id', $u->id)->get();
+        }
+
         $activity = UserActivity::all();
-        $answers = ModuleAnswer::all();
         $questions = ModuleQuiz::all();
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'activity'=>$activity, 'answers'=>$answers, 'questions'=>$questions]);
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'activity'=>$activity, 'answers'=>$user_answers, 'questions'=>$questions]);
     }
 
     public function userDetail($id) {
