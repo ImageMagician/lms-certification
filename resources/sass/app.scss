@@ -314,8 +314,6 @@ form#quiz_form {
     }
 }
 
-
-
 /* -----   Step 4   ----- */
 #quiz_btn_overlay {
     position:absolute;
@@ -727,10 +725,67 @@ p {
     width:100%;
 }
 
+span.step-name {
+    display: none;
+}
+
+/**********************
+    MEDIA QUERIES
+ */
+
 @media (max-width:993px) {
     #overlay_content,
     .overlay_content {
         width: 75%;
+    }
+
+    .table.admin-table,
+    .table.admin-table > tbody {
+        display: block;
+    }
+
+    .table.admin-table tr {
+        display:flex;
+        flex-wrap: wrap;
+        padding-top:1em;
+        padding-bottom: 1.5em;
+        border-top:1px solid rgba(0,0,0,.1);
+    }
+
+    .table.admin-table td {
+        display:block;
+        width:33.333%;
+        border-width:1px;
+        margin-left:-1px;
+        margin-top:-1px;
+    }
+
+    .table.admin-table td .step-name {
+        display:inline-block;
+        width:50%;
+    }
+
+    .table.admin-table td .bg-green,
+    .table.admin-table td .bg-red {
+        display:inline-block;
+        padding:.25em 1em;
+        width:50%;
+    }
+
+    .table.admin-table tr.th-header {
+        display:none;
+    }
+
+    .table.admin-table .table-action {
+        width:100%;
+        border:none;
+    }
+
+    .table.admin-table .name {
+        font-size:larger;
+        font-weight:700;
+        padding:0 0 0 3px;
+        border:none;
     }
 }
 
@@ -747,6 +802,12 @@ p {
     #overlay_content,
     .overlay_content {
         width:90%;
+    }
+}
+
+@media (max-width:480px) {
+    .table.admin-table td {
+        width: 50%;
     }
 }
 
