@@ -109,7 +109,7 @@
                                                             bg-green
                                                         @endif
                                                     ">
-                                                        {{ $u->$mod_id }}%                                                    ">
+                                                        {{ $u->$mod_id }}%
                                                     </div>
                                                 @endif
                                             @endforeach
