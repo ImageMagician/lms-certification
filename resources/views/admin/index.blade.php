@@ -45,7 +45,7 @@
                                         @endif
                                     </td>
                                     @foreach($modules as $m)
-                                        <td class="px-lg-1">
+                                        <td>
                                             @php
                                                 $mod_id = 'module_' . sprintf("%02d", $m->id);
                                             @endphp
@@ -61,6 +61,8 @@
                                                         @else
                                                             bg-green
                                                         @endif
+                                                    ">
+                                                        {{ $u->$mod_id }}%
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -107,7 +109,7 @@
                                                             bg-green
                                                         @endif
                                                     ">
-                                                        {{ $u->$mod_id }}%
+                                                        {{ $u->$mod_id }}%                                                    ">
                                                     </div>
                                                 @endif
                                             @endforeach
