@@ -76,7 +76,7 @@
                     <tr class="border-0 p-0"><td colspan="15" class="p-0 border-black w-100"></td></tr>
                     @foreach($users as $u)
                         @foreach ( $activity as $a )
-                            @if ($a->user_id == $u->id && ( ( $a->training_done == null && $u->cert == null ) || ($a->training_done != null && $u->cert != null ) ) )
+                            @if ($a->user_id == $u->id && ( ( $a->training_done == null && $u->cert == null ) || ( $u->cert != null ) ) )
                                 <tr>
                                     <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
                                     <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
