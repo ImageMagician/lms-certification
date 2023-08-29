@@ -103,7 +103,7 @@
                                                     <div class="text-center small py-1
                                                         @if ( $a->$mod_id == null )
                                                             opacity-0
-                                                        @elseif ( $u->$mod_id > 0 && $u->$mod_id < 75 )
+                                                        @elseif ( $u->$mod_id < 75 )
                                                             bg-red
                                                         @else
                                                             bg-green
