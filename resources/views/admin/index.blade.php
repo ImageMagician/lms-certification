@@ -78,8 +78,8 @@
                         @foreach ( $activity as $a )
                             @if ($a->user_id == $u->id && ( ( $a->training_done == null && $u->cert == null ) || ($a->training_done != null && $u->cert != null ) ) )
                                 <tr>
-                                    <td class="name w-auto">{{$u->first_name}}</td>
-                                    <td class="name w-auto">{{$u->last_name}}</td>
+                                    <td class="name w-auto">{{ucwords($u->first_name)}}</td>
+                                    <td class="name w-auto">{{ucwords($u->last_name)}}</td>
                                     <td class="table-action">
                                         @if ( $u->cert == null )
                                             <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
