@@ -76,6 +76,11 @@ body {
     }
 }
 
+.table.admin-table tr td {
+    background:transparent;
+    padding:.875rem .0625rem;
+}
+
 .focus {
     outline: 6px solid rgb(85,150,225,.3);
     border-top:1px solid $med-blue !important;
@@ -750,6 +755,11 @@ span.step-name {
         padding-top:1em;
         padding-bottom: 1.5em;
         border-top:1px solid rgba(0,0,0,.1);
+    }
+
+    .table.admin-table tr td {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
 
     .table.admin-table td {

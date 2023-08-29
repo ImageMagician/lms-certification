@@ -23,7 +23,7 @@
                                 <tr>
                                     <td class="name w-auto">{{$u->first_name}}</td>
                                     <td class="name w-auto">{{$u->last_name}}</td>
-                                    <td class="table-action">
+                                    <td class="table-action px-lg-2">
                                         @if($u->cert)
                                             {{ $u->cert }}
                                         @else
@@ -54,14 +54,12 @@
                                                     {{-- determine if module is completed --}}
                                                     <span class="step-name">Step {{$m->id}}</span>
                                                     <div class="text-center small py-1
-                                                        @if ( $u->$mod_id > 0 && $u->$mod_id < 75 )
+                                                        @if ( $a->$mod_id == null )
+                                                            opacity-0 d-inline-block
+                                                        @elseif ( $u->$mod_id < 75 )
                                                             bg-red
                                                         @else
                                                             bg-green
-                                                        @endif
-                                                    ">
-                                                        @if ($u->$mod_id > 0 )
-                                                            {{ $u->$mod_id }}%
                                                         @endif
                                                     </div>
                                                 @endif
@@ -80,7 +78,7 @@
                                 <tr>
                                     <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
                                     <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                    <td class="table-action">
+                                    <td class="table-action px-lg-2">
                                         @if ( $u->cert == null )
                                             <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
                                                 VIEW
@@ -92,7 +90,7 @@
                                         @endif
                                     </td>
                                     @foreach($modules as $m)
-                                        <td class="px-lg-1">
+                                        <td>
                                             @php
                                                 $mod_id = 'module_' . sprintf("%02d", $m->id);
                                             @endphp
@@ -102,7 +100,7 @@
                                                     <span class="step-name">Step {{$m->id}}</span>
                                                     <div class="text-center small py-1
                                                         @if ( $a->$mod_id == null )
-                                                            opacity-0
+                                                            opacity-0 d-inline-block
                                                         @elseif ( $u->$mod_id < 75 )
                                                             bg-red
                                                         @else
