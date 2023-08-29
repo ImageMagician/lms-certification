@@ -23,6 +23,7 @@ use Illuminate\Support\HtmlString;
 use App\Traits\QuizResults;
 use Illuminate\Support\Facades\DB;
 use Auth;
+use Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
 
 class ModulesController extends Controller
 {
@@ -217,6 +218,13 @@ class ModulesController extends Controller
                 ->where('user_id', $user->id)
                 ->update([
                     'user_id'=>0
+                ]);
+
+            $mod_activity = 'module_' . sprintf("%02d", $request->module_id);
+
+            UserActivity::where('user_id', $user->id)
+                ->update([
+                   $mod_activity => null
                 ]);
         }
 

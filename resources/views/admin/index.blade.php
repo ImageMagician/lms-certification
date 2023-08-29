@@ -46,50 +46,24 @@
                                     </td>
                                     @foreach($modules as $m)
                                         <td class="px-lg-1">
+                                            @php
+                                                $mod_id = 'module_' . sprintf("%02d", $m->id);
+                                            @endphp
                                             @foreach($activity as $a)
                                                 @if ($a->user_id == $u->id)
                                                     {{-- determine if module is completed --}}
-                                                    @php
-                                                        $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                        $q_tot = 0;
-                                                        $a_tot = 0;
-                                                    @endphp
-                                                    @if ($a->$mod_id != null)
-                                                        @foreach($questions as $question)
-                                                            @if ($question->module_id == $m->id )
-                                                                @php
-                                                                    $q_tot++;
-                                                                @endphp
-                                                                @foreach ($answers[$u->id] as $answer)
-                                                                    @if ( $question->module_id == $answer->module_id && $question->q_id == $answer->q_id && $answer->user_id == $u->id)
-                                                                        @if ( $question->answer_correct == $answer->answer)
-                                                                            @php
-                                                                                $a_tot++;
-                                                                            @endphp
-                                                                        @endif
-                                                                    @endif
-                                                                @endforeach
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                <span class="step-name">Step {{$m->id}}</span>
-                                                <div class="text-center small py-1 perc-{{$a_tot}}-{{$q_tot}}
-                                                    @php $perc = 0; @endphp
-                                                    @if ( $q_tot > 0)
-                                                        @php
-                                                            $perc = round($a_tot / $q_tot * 100, 2);
-                                                        @endphp
-                                                        @if ( $perc < 75 )
+                                                    <span class="step-name">Step {{$m->id}}</span>
+                                                    <div class="text-center small py-1
+                                                        @if ( $u->$mod_id > 0 && $u->$mod_id < 75 )
                                                             bg-red
                                                         @else
                                                             bg-green
                                                         @endif
-                                                    @endif
-                                                ">
-                                                    @if ($perc > 0 )
-                                                        {{ $perc }}%
-                                                    @endif
-                                                </div>
+                                                    ">
+                                                        @if ($u->$mod_id > 0 )
+                                                            {{ $u->$mod_id }}%
+                                                        @endif
+                                                    </div>
                                                 @endif
                                             @endforeach
                                         </td>
@@ -119,48 +93,25 @@
                                     </td>
                                     @foreach($modules as $m)
                                         <td class="px-lg-1">
+                                            @php
+                                                $mod_id = 'module_' . sprintf("%02d", $m->id);
+                                            @endphp
                                             @foreach($activity as $a)
                                                 @if ($a->user_id == $u->id)
                                                     {{-- determine if module is completed --}}
-                                                    @php
-                                                        $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                        $q_tot = 0;
-                                                        $a_tot = 0;
-                                                    @endphp
-                                                    @if ($a->$mod_id != null)
-                                                        @foreach($questions as $question)
-                                                            @if ($question->module_id == $m->id )
-                                                                @php
-                                                                    $q_tot++;
-                                                                @endphp
-                                                                @foreach ($answers[$u->id] as $answer)
-                                                                    @if ( $question->module_id == $answer->module_id && $question->q_id == $answer->q_id && $answer->user_id == $u->id)
-                                                                        @if ( $question->answer_correct == $answer->answer)
-                                                                            @php
-                                                                                $a_tot++;
-                                                                            @endphp
-                                                                        @endif
-                                                                    @endif
-                                                                @endforeach
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                    @php $perc = 0; @endphp
-                                                    @if ( $q_tot > 0)
-                                                        <span class="step-name">Step {{$m->id}}</span>
-                                                        @php
-                                                            $perc = round($a_tot / $q_tot * 100, 2);
-                                                        @endphp
-                                                        @if ( $perc < 75 )
-                                                            @php $badge = 'bg-red'; @endphp
+                                                    <span class="step-name">Step {{$m->id}}</span>
+                                                    <div class="text-center small py-1
+                                                        @if ( $a->$mod_id == null )
+                                                            opacity-0
+                                                        @elseif ( $u->$mod_id > 0 && $u->$mod_id < 75 )
+                                                            bg-red
                                                         @else
-                                                            @php $badge = 'bg-green'; @endphp
+                                                            bg-green
                                                         @endif
-                                                    @else
-                                                        @php $badge = 'opacity-0'; @endphp
-                                                    @endif
-                                                    <div class="text-center small py-1 {{$badge}}">
-                                                        {{ $perc }}%
+                                                    ">
+                                                        @if ($u->$mod_id > 0 )
+                                                            {{ $u->$mod_id }}%
+                                                        @endif
                                                     </div>
                                                 @endif
                                             @endforeach
