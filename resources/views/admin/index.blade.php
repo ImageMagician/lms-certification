@@ -109,9 +109,7 @@
                                                             bg-green
                                                         @endif
                                                     ">
-                                                        @if ($u->$mod_id > 0 )
-                                                            {{ $u->$mod_id }}%
-                                                        @endif
+                                                        {{ $u->$mod_id }}%
                                                     </div>
                                                 @endif
                                             @endforeach
