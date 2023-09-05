@@ -7,7 +7,10 @@
     <div class="container-fluid py-3">
         <div class="row justify-content-center">
             <div class="col-xxl-10 p-4 bg-white border-info-subtle">
-                <h1 class="h4">Installer List</h1>
+                <div class="position-relative mb-4">
+                    <h1 class="h4 d-inline-block">Installer List</h1>
+                    <input id="user_search" type="text" class="form-control float-right d-inline-block w-auto" placeholder="Search users&hellip;">
+                </div>
                 <table class="table admin-table">
                     <tr class="th-header">
                         <th>First name</th>
@@ -20,7 +23,7 @@
                     @foreach($users as $u)
                         @foreach ( $activity as $a )
                             @if ($a->user_id == $u->id && $a->training_done == 1 && $u->cert == null)
-                                <tr>
+                                <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->id}}">
                                     <td class="name w-auto">{{$u->first_name}}</td>
                                     <td class="name w-auto">{{$u->last_name}}</td>
                                     <td class="table-action px-lg-2">
@@ -77,7 +80,7 @@
                     @foreach($users as $u)
                         @foreach ( $activity as $a )
                             @if ($a->user_id == $u->id && ( ( $a->training_done == null && $u->cert == null ) || ( $u->cert != null ) ) )
-                                <tr>
+                                <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->id}}">
                                     <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
                                     <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
                                     <td class="table-action px-lg-2">
@@ -123,4 +126,36 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        const users = document.getElementsByClassName('user-line');
+
+        setTimeout( ()=>{
+            const user_search = document.getElementById('user_search');
+            user_search.addEventListener('keyup', this.searchUsers, false);
+        }, 1000);
+
+        function searchUsers() {
+            // Take the search value and check the id of each user "tr"
+            // If the pattern does not exist, add the class d-none
+            const val = this.value;
+            const pattern = new RegExp(val, "i");
+
+            for ( let i = 0; i < users.length; i++ ) {
+                users[i].classList.remove('d-none');
+                if (!pattern.test(users[i].id)) {
+                    users[i].classList.add('d-none');
+                } else {
+
+                }
+            }
+        }
+    </script>
+    <style>
+        .highlight {
+            background:yellow;
+        }
+    </style>
 @endsection
