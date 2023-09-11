@@ -7,9 +7,9 @@
     <div class="container-fluid py-3">
         <div class="row justify-content-center">
             <div class="col-xxl-10 p-4 bg-white border-info-subtle">
-                <div class="position-relative mb-4">
+                <div class="position-relative mb-4 clearfix">
                     <h1 class="h4 d-inline-block">Installer List</h1>
-                    <input id="user_search" type="text" class="form-control float-right d-inline-block w-auto" placeholder="Search users&hellip;">
+                    <input id="user_search" type="text" class="form-control float-right d-inline-block w-100 w-sm-auto" placeholder="Search users&hellip;">
                 </div>
                 <table class="table admin-table">
                     <tr class="th-header">
@@ -132,30 +132,52 @@
     <script>
         const users = document.getElementsByClassName('user-line');
 
-        setTimeout( ()=>{
+        setTimeout( ()=> {
             const user_search = document.getElementById('user_search');
             user_search.addEventListener('keyup', this.searchUsers, false);
         }, 1000);
 
         function searchUsers() {
+            let i;
+
             // Take the search value and check the id of each user "tr"
             // If the pattern does not exist, add the class d-none
             const val = this.value;
-            const pattern = new RegExp(val, "i");
 
-            for ( let i = 0; i < users.length; i++ ) {
+            // Escape all special characters for the Regex search
+            const escapedDynamicString = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const pattern = new RegExp(escapedDynamicString, "gi");
+
+            for ( i = 0; i < users.length; i++ ) {
                 users[i].classList.remove('d-none');
                 if (!pattern.test(users[i].id)) {
                     users[i].classList.add('d-none');
-                } else {
+                }
+            }
 
+            const names = document.getElementsByClassName('name');
+            const highlight = document.getElementsByClassName('highlight');
+
+            for ( i = 0; i < highlight.length; i++ ) {
+                // remove all previous highlight nodes
+                let cont = highlight[i].innerText;
+                highlight[i].after(cont);
+                highlight[i].remove();
+            }
+
+            // add new highlight node around searched text of all class names "name"
+            // These are the first and last name fields
+            function wrapSubstringWithSpan(inputString, substringToWrap) {
+                const escapedDynamicString = substringToWrap.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escapedDynamicString})`, 'gi');
+                return inputString.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            for ( i = 0; i < names.length; i++ ) {
+                if ( pattern.test( names[i].innerText ) ) {
+                    names[i].innerHTML = wrapSubstringWithSpan(names[i].innerText, val);
                 }
             }
         }
     </script>
-    <style>
-        .highlight {
-            background:yellow;
-        }
-    </style>
 @endsection
