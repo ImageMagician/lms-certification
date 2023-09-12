@@ -109,6 +109,54 @@ class AdminAuthController extends Controller
         return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'activity'=>$activity, 'modules'=>$modules]);
     }
 
+
+    public function adminActivityRecalc() {
+        $admin = auth()->guard('admin')->user();
+        $modules = Module::all();
+
+        $users = User::all();
+        $activity = UserActivity::all();
+
+        $questions = ModuleQuiz::all();
+
+        foreach ( $users as $u ) {
+
+            foreach( $modules as $m) {
+                $mod   = '';
+                $q_tot = 0;
+                $a_tot = 0;
+                $perc  = 0;
+                $answers = ModuleAnswer::where('user_id', $u->id)->get();
+                foreach ($questions as $question) {
+                    if ($question->module_id == $m->id) {
+                        $q_tot++;
+                        foreach ($answers as $answer) {
+                            if ($question->module_id == $answer->module_id && $question->q_id == $answer->q_id && $answer->user_id == $u->id) {
+                                if ($question->answer_correct == $answer->answer) {
+                                    $a_tot++;
+                                }
+                            }
+                        }
+                    }
+                }
+                $perc = round($a_tot / $q_tot * 100, 2);
+                $mod = 'module_' . sprintf("%02d", $m->id);
+                $u[$mod] = $perc;
+                if ( $perc > 0 ) {
+                    UserActivity::where('user_id', $u->id)
+                        ->update([$mod=>$perc]);
+                } else {
+                    UserActivity::where('user_id', $u->id)
+                        ->update([$mod=>NULL]);
+                }
+            }
+        }
+
+        $activity = UserActivity::all();
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'activity'=>$activity, 'modules'=>$modules]);
+    }
+
+
     public function userDetail($id) {
         session(['user' => $id]);
         session()->forget('step');

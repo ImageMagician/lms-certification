@@ -109,10 +109,12 @@ class ModulesController extends Controller
                 $a_list = ModuleAnswer::where('module_id', $module->id)->where('user_id', $user->id)->get();
                 $activity = UserActivity::where('user_id', $user->id)->first();
 
-                // Post to user_activities
+                $perc = $qNa['a'][$module->id] / $qNa['t'][$module->id] * 100;
+
+                // Post percentage to user_activities
                 UserActivity::where('user_id', $user->id)
                     ->update([
-                        $mod_id=>date('Y-m-d h:i:s')
+                        $mod_id=>$perc
                     ]);
                 return view('result', ['module'=>$module, 'user'=>$user, 'activity'=>$activity,'next'=>$next_mod, 'mod_check'=>$mod_check, 'q_tot'=>$qNa['t'], 'questions'=>$qNa['q'], 'answers'=>$qNa['a'], 'q_list'=>$q_list, 'a_list'=>$a_list]);
             }

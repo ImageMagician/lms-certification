@@ -75,6 +75,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
 Route::get('/create', function() { return view('admin.create'); })->name('admin-new');
 Route::post('/create/process', [AdminAuthController::class, 'adminCreate'])->name('admin-create');
+Route::get('/user-update', [AdminAuthController::class, 'adminActivityRecalc']);
 
 Auth::routes();
 
