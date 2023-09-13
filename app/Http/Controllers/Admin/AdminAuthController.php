@@ -383,7 +383,9 @@ class AdminAuthController extends Controller
                 'url'     => secure_url( route('home' ) ),
             ];
 
-            $user_data->notify( new Step3($notify_data) );
+            $admin_user = Admin::latest()->first();
+
+            $admin_user->notify( new Step3($notify_data) );
 
             Session::flash('admin_create_success', 'New admin account created successfully.');
         }
@@ -534,4 +536,5 @@ class AdminAuthController extends Controller
             return redirect()->back();
         }
     }
+
 }

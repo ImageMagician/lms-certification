@@ -57,15 +57,15 @@
                                                     {{-- determine if module is completed --}}
                                                     <span class="step-name">Step {{$m->id}}</span>
                                                     <div class="text-center small py-1
-                                                        @if ( $a->$mod_id == null )
+                                                        @if ( $a->$mod_id === NULL )
                                                             opacity-0 d-inline-block
-                                                        @elseif ( $u->$mod_id < 75 )
+                                                        @elseif ( $a->$mod_id < 75 )
                                                             bg-red
                                                         @else
                                                             bg-green
                                                         @endif
                                                     ">
-                                                        {{ $u->$mod_id }}%
+                                                        {{ $a->$mod_id }}%
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -104,15 +104,15 @@
                                                     {{-- determine if module is completed --}}
                                                     <span class="step-name">Step {{$m->id}}</span>
                                                     <div class="text-center small py-1
-                                                        @if ( $a->$mod_id == null )
+                                                        @if ( $a->$mod_id === NULL )
                                                             opacity-0 d-inline-block
-                                                        @elseif ( $u->$mod_id < 75 )
+                                                        @elseif ( $a->$mod_id < 75 )
                                                             bg-red
                                                         @else
                                                             bg-green
                                                         @endif
                                                     ">
-                                                        {{ $u->$mod_id }}%
+                                                        {{ $a->$mod_id }}%
                                                     </div>
                                                 @endif
                                             @endforeach
