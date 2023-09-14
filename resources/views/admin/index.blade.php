@@ -11,6 +11,9 @@
                     <h1 class="h4 d-inline-block">Installer List</h1>
                     <input id="user_search" type="text" class="form-control float-right d-inline-block w-100 w-sm-auto" placeholder="Search users&hellip;">
                 </div>
+                <div class="text-right mb-4">
+                    {{ $users->links() }}
+                </div>
                 <table class="table admin-table">
                     <tr class="th-header">
                         <th>First name</th>
@@ -126,6 +129,9 @@
                         @endforeach
                     @endforeach
                 </table>
+                <div class="text-right mt-4">
+                    {{ $users->links() }}
+                </div>
             </div>
         </div>
     </div>

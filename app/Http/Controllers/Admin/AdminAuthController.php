@@ -73,7 +73,7 @@ class AdminAuthController extends Controller
     public function adminIndex() {
         $admin = auth()->guard('admin')->user();
         $modules = Module::all();
-        $users = User::all();
+        $users = User::orderBy('first_name')->cursorPaginate(20);
         $activity = UserActivity::all();
 
         return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'activity'=>$activity, 'modules'=>$modules]);
