@@ -73,10 +73,19 @@ class AdminAuthController extends Controller
     public function adminIndex() {
         $admin = auth()->guard('admin')->user();
         $modules = Module::all();
-        $users = User::orderBy('first_name')->cursorPaginate(20);
-        $activity = UserActivity::all();
+        $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
 
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'activity'=>$activity, 'modules'=>$modules]);
+        // counts for certs and training
+//        $certs = User::where('cert', 'IS NOT', NULL)->count();
+//        $training = UserActivity::where('training_done', 1)->count();
+//        $train_minus_certs = DB::table('users')
+//            ->join('user_activities', 'users.id', '=', 'user_activities.user_id')
+//            ->get();
+//        $unfinished = $users->count() - $training;
+//        dd('users: ' . $users->count(), 'unfinished: ' . $unfinished, 'training done: ' . $training, 'train - certs: ' . $train_minus_certs, 'certs: ' . $certs);
+
+
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules]);
     }
 
     public function userDetail($id) {
