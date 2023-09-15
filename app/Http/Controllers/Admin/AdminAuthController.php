@@ -12,6 +12,7 @@ use App\Notifications\UserNote;
 use App\Notifications\Step3;
 use App\Notifications\RSM;
 
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -76,16 +77,24 @@ class AdminAuthController extends Controller
         $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
 
         // counts for certs and training
-//        $certs = User::where('cert', 'IS NOT', NULL)->count();
-//        $training = UserActivity::where('training_done', 1)->count();
-//        $train_minus_certs = DB::table('users')
-//            ->join('user_activities', 'users.id', '=', 'user_activities.user_id')
-//            ->get();
-//        $unfinished = $users->count() - $training;
-//        dd('users: ' . $users->count(), 'unfinished: ' . $unfinished, 'training done: ' . $training, 'train - certs: ' . $train_minus_certs, 'certs: ' . $certs);
+        $certs = User::whereNotNull('cert')->count();
+        $unfinished = UserActivity::whereNull('training_done')->count();
+        $finished = DB::table('users')
+            ->join('user_activities', function(JoinClause $join) {
+                $join->on('users.id', '=', 'user_activities.user_id')
+                    ->whereNull('users.cert')
+                    ->whereNotNull('user_activities.training_done');
+            })
+            ->count();
 
+        $user_stats = [
+            'certs' => $certs,
+            'finished' => $finished,
+            'unfinished' => $unfinished,
+            'total' => $users->count(),
+        ];
 
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules]);
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'stats'=>$user_stats]);
     }
 
     public function userDetail($id) {

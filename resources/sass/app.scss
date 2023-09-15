@@ -773,6 +773,10 @@ span.step-name {
                     padding-bottom: 1.5em;
                     border-top: 1px solid rgba(0, 0, 0, .1);
 
+                    &.th-header {
+                        display:none;
+                    }
+
                     td {
                         padding: 0.5rem;
                         display:block;
@@ -781,36 +785,32 @@ span.step-name {
                         margin-left:-1px;
                         margin-top:-1px;
 
+                        &.table-action {
+                            width:100%;
+                            border:none;
+                        }
+
+                        &.name {
+                            font-size:larger;
+                            font-weight:700;
+                            padding:0 0 0 3px;
+                            border:none;
+                        }
+
                         .step-name {
                             display:inline-block;
+                            width:50%;
+                        }
+
+                        .bg-green,
+                        .bg-red {
+                            display:inline-block;
+                            padding:.25em 1em;
                             width:50%;
                         }
                     }
                 }
             }
-        }
-
-        .table.admin-table td .bg-green,
-        .table.admin-table td .bg-red {
-            display:inline-block;
-            padding:.25em 1em;
-            width:50%;
-        }
-
-        .table.admin-table tr.th-header {
-            display:none;
-        }
-
-        .table.admin-table .table-action {
-            width:100%;
-            border:none;
-        }
-
-        .table.admin-table .name {
-            font-size:larger;
-            font-weight:700;
-            padding:0 0 0 3px;
-            border:none;
         }
     }
 
