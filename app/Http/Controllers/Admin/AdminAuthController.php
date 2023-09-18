@@ -218,21 +218,6 @@ class AdminAuthController extends Controller
                 }
             }
 
-        $update_list = [
-            $mod_name => date("Y-m-d H:i:s"),
-        ];
-
-
-        // The review_date is only for steps 3 and 6. Don't include in update if not provided
-        // otherwise it will be overwritten with null.
-        if ( $review_date !== null ) {
-            $r_num = 'review_0' . $request->session()->get('step');
-            $update_list[$r_num] = $review_date;
-        }
-        UserActivity::where('user_id', $request->session()->get('user'))->update(
-            $update_list
-        );
-
         return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
     }
 

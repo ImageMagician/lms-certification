@@ -125,6 +125,7 @@ class ModulesController extends Controller
             $user = Auth::user();
 
             $activity = UserActivity::where('user_id', $user->id)->first();
+            $super = RegionalRep::all();
 
             // check if the user has already been tagged as having finished their training
             // If not, pull the admin assigned to their account
