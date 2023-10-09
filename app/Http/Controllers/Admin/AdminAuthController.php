@@ -459,55 +459,117 @@ class AdminAuthController extends Controller
         return redirect()->back();
     }
 
-    function passwordResetProcess(Request $request) {
-        // If any error is found, $err gets incremented
-        // then checked at the end for actions to take
-        $err = 0;
+    function adminUpdate(Request $request)
+    {
+        $admin = auth()->guard('admin')->user();
 
-        $validate = $request->validate([
-            'token' => 'required',
+        $validation_fields = [
+            'first_name' => 'required',
+            'last_name' => 'required',
             'email' => 'required|email:rfc,dns',
-            'password' => 'required|min:8|confirmed',
-        ],[
-            // if the token is not found, it's because the user entered the URI without the included params
-            'token.required' => 'The token from your email notification must be included. Please use the full link from your password reset email.'
-        ]);
+        ];
 
-        // $tokencheck will only appear if the proper sequence is taken by the user to request a new password
-        $tokencheck = AdminReset::where('token', $request->token)->where('email', $request->email)->first();
+        $validation_messages = [
+            'first_name.required' => 'First name is required.',
+            'last_name.required' => 'Last name is required.',
+            'email.required' => 'Email address is required',
+            'email.email' => 'Must be a valid email address.',
+        ];
 
-        if ($tokencheck == null) {
-            Session::flash('status','The reset token is invalid.');
-            $err++;
-        } else {
-            $tokencheck->toArray();
-            $now = strtotime('now');
-            $then = strtotime($tokencheck['updated_at']);
-            $diff = $now - $then;
+        // Check if password fields used
+        if (!empty($request->password) || !empty($request->password_confirmation)) {
+            $validation_fields['password'] = 'confirmed | min:12';
 
-            if ( $diff > 1800 ) {
-                Session::flash('status','The reset token has expired.');
-                $err++;
-            }
-            elseif ( htmlentities($request->password) != htmlentities($request->password_confirmation ) ) {
-                Session::flash('status','The passwords did not match.');
-                $err++;
-            }
+            $validation_messages['password.confirmed'] = 'The password fields must match.';
+            $validation_messages['password.length'] = 'The password must be at least 12 characters long.';
         }
 
-        if ($err == 0) {
+        $validate = $request->validate($validation_fields, $validation_messages);
+
+        // If password passes, hash it for saving
+        if ( $request->password ) {
             $password = Hash::make($request->password);
-            $data = new Admin;
-            $data->where('email', $request->email)->update(['password'=>$password]);
-
-            // remove the token/email combo from the admin_resets db table
-            AdminReset::where('email', $request->email)->delete();
-
-            Session::flash('status','Your password has been updated. Please login.');
-            return redirect( route('adminLogin'));
-        } else {
-            return redirect()->back();
         }
+
+        // If optional fields of super_admin and rsm are filled out
+        if ( $request->super_admin ) {
+            // check if admin has super_admin rights themselves.
+            if ( $admin->super_admin === NULL ) {
+                Session::flash('error','You do not have the clearance to change the user\'s credentials.');
+
+                return redirect( route('admin-list') );
+            }
+        }
+
+        $update_fields = [
+            'first_name'  => $request->first_name,
+            'last_name'   => $request->last_name,
+        ];
+
+        // set for RSM only if it appears
+        if ( $request->rsm ) {
+            if ( $admin->super_admin === NULL ) {
+                Session::flash('error','You do not have the clearance to change the user\'s credentials.');
+
+                return redirect( route('admin-list') );
+            }
+
+            $update_fields['rsm'] = $request->rsm;
+        }
+
+        // set for Super Admin only if it appears
+        if ( $request->super_admin ) {
+            if ( $admin->super_admin === null ) {
+                Session::flash('error','You do not have the clearance to change the user\'s credentials.');
+                return redirect( route('admin-list') );
+            }
+            elseif ( $admin->email == $request->email ) {
+                Session::flash('error','You cannot change your own credential level.');
+                return redirect( route('admin-list') );
+            }
+
+            $update_fields['super_admin'] = $request->super_admin;
+        }
+
+        // set for Password only if it appears and validates
+        if ( isset( $password ) ) {
+            $update_fields['password'] = $password;
+        }
+
+        $data = Admin::where('email', $request->email )
+                ->update( $update_fields);
+
+        // remove the token/email combo from the admin_resets db table
+        //AdminReset::where('email', $request->email)->delete();
+
+        Session::flash('password_status','The user has been updated.');
+        return redirect( route('admin-list'));
+    }
+
+    function adminList() {
+        $admin = auth()->guard('admin')->user();
+        $list = Admin::all();
+
+        return view('admin.admins-view')->with(['admin'=>$admin, 'list'=>$list]);
+    }
+
+    function adminIndividual($id) {
+        $admin = auth()->guard('admin')->user();
+        $user = Admin::where('id', $id)->first();
+
+        return view('admin.admins-individual')->with(['admin'=>$admin, 'user'=>$user]);
+    }
+
+    function adminIndividualDelete($id) {
+        $user = Admin::where('id', $id)->delete();
+        if ( $user == 1) {
+            Session::flash('action','The user has been deleted.');
+        }
+        else {
+            Session::flash('error','There was a problem deleting the user.');
+        }
+
+        return redirect(route('admin-list'));
     }
 
 }

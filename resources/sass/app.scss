@@ -245,6 +245,42 @@ form#quiz_form {
     }
 }
 
+.form-control {
+    &[readonly] {
+        opacity: .6;
+        background: #fff;
+
+        &:focus {
+            box-shadow: none;
+            border-color: rgb(222, 226, 230);
+        }
+    }
+
+    &[disabled] {
+        opacity: .6;
+        background-color: #fff;
+    }
+}
+
+select {
+    &.form-control {
+        background-image:
+            linear-gradient(45deg, transparent 50%, gray 50%),
+            linear-gradient(135deg, gray 50%, transparent 50%),
+            linear-gradient(to right, #ccc, #ccc);
+        background-position:
+            calc(100% - 19.75px) calc(1em + 2px),
+            calc(100% - 15px) calc(1em + 2px),
+            calc(100% - 2.5em) 0.5em;
+        background-size:
+            5px 5px,
+            5px 5px,
+            1px 1.5em;
+        background-repeat: no-repeat;
+        cursor:pointer;
+    }
+}
+
 .btn {
     &.btn-small {
         font-size:.75em;

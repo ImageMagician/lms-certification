@@ -58,7 +58,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
    Route::get('/forgot-password', [AdminAuthController::class, 'passwordForgot'])->name('admin-forgot');
    Route::post('/forgot-password/process',[AdminAuthController::class, 'passwordForgotProcess'])->name('admin-forgot-process');
    Route::get('/reset-password', [AdminAuthController::class, 'passwordReset'])->name('admin-reset');
-   Route::post('/reset-password/process', [AdminAuthController::class, 'passwordResetProcess'])->name('admin-reset-process');
 
    Route::group(['middleware' => 'adminauth'], function() {
       Route::get('/', [AdminAuthController::class, 'adminIndex'])->name('adminDashboard');
@@ -70,11 +69,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
       Route::post('/user/final', [AdminAuthController::class,'finalInspectDate'])->name('final-inspect');
       Route::post('/user/admin-msg', [AdminAuthController::class, 'admin_msg'])->name('admin-msg');
       Route::post('/user/admin-module-note', [AdminAuthController::class, 'adminModuleNote'])->name('admin-module-note');
-   });
+
+      Route::get('/list', [AdminAuthController::class, 'adminList'])->name('admin-list');
+      Route::get('/list/{id}', [AdminAuthController::class, 'adminIndividual'])->name('admin-individual');
+      Route::get('/list/{id}/delete', [AdminAuthController::class, 'adminIndividualDelete'])->name('admin-delete');
+
+      Route::post('/list/process', [AdminAuthController::class, 'adminUpdate'])->name('admin-update');
+
+      Route::get('/create', function() { return view('admin.create'); })->name('admin-new');
+      Route::post('/create/process', [AdminAuthController::class, 'adminCreate'])->name('admin-create');   });
 });
 
-Route::get('/create', function() { return view('admin.create'); })->name('admin-new');
-Route::post('/create/process', [AdminAuthController::class, 'adminCreate'])->name('admin-create');
 
 Auth::routes();
 
