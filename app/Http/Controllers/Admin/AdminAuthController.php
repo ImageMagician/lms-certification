@@ -419,10 +419,6 @@ class AdminAuthController extends Controller
         return view('admin.forgot');
     }
 
-    function passwordReset() {
-        return view('admin.reset');
-    }
-
     function passwordForgotProcess(Request $request) {
         $validated = $request->validate([
             'email' => 'required|email:rfc,dns'
@@ -457,6 +453,45 @@ class AdminAuthController extends Controller
 
         Session::flash('status', 'Thank you. Your password reset link has been sent to your email.');
         return redirect()->back();
+    }
+
+    function passwordReset() {
+        return view('admin.reset');
+    }
+
+    function passwordResetProcess(Request $request) {
+        $validation_fields = [
+            'token' => 'required',
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required | confirmed | min:12',
+        ];
+
+        $validation_messages = [
+            'token.required'     => 'Missing validation token. Please use the link supplied in the "Forgot Password" email.',
+            'email.required'     => 'Email missing. Please use the link supplied in the "Forgot Password" email',
+            'password.confirmed' => 'The password fields must match.',
+            'password.length'    => 'The password must be at least 12 characters long.',
+        ];
+
+        $validate = $request->validate( $validation_fields, $validation_messages );
+
+        $password = Hash::make($request->password);
+
+        $update = Admin::where('email', $request->email)
+            ->update(
+                [
+                'password' => $password,
+                ]
+            );
+
+        if ( $update == 1 ) {
+            Session::flash('status', 'Your password has successfully been updated. Please login with your new information.');
+        }
+        else {
+            Session::flash('status', 'Your password could not be updated. Please contact Lion Energy for assistance.');
+        }
+
+        return redirect( route('adminLogin') );
     }
 
     function adminUpdate(Request $request)
@@ -540,7 +575,7 @@ class AdminAuthController extends Controller
                 ->update( $update_fields);
 
         // remove the token/email combo from the admin_resets db table
-        //AdminReset::where('email', $request->email)->delete();
+        AdminReset::where('email', $request->email)->delete();
 
         Session::flash('password_status','The user has been updated.');
         return redirect( route('admin-list'));

@@ -58,6 +58,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
    Route::get('/forgot-password', [AdminAuthController::class, 'passwordForgot'])->name('admin-forgot');
    Route::post('/forgot-password/process',[AdminAuthController::class, 'passwordForgotProcess'])->name('admin-forgot-process');
    Route::get('/reset-password', [AdminAuthController::class, 'passwordReset'])->name('admin-reset');
+   Route::post('/reset-password/process', [AdminAuthController::class, 'passwordResetProcess'])->name('admin-reset-process');
 
    Route::group(['middleware' => 'adminauth'], function() {
       Route::get('/', [AdminAuthController::class, 'adminIndex'])->name('adminDashboard');
