@@ -49,7 +49,7 @@
                                 Dashboard
                             </a>
                             <a href="{{ route('admin-list') }}" class="dropdown-item">
-                                User List
+                                Admin List
                             </a>
                             {{--<a href="{{ route('adminCreate') }}" class="dropdown-item">
                             Create Admin Account

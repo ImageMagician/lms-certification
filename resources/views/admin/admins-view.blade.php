@@ -54,11 +54,11 @@
                         <td>{{$user->email}}</td>
                         <td>
                             @if ($user->super_admin == 1)
-                                Admin
+                                Super
                             @elseif ($user->rsm == 1)
                                 Regional Rep
                             @else
-                                User
+                                Standard
                             @endif
                         </td>
                     </tr>
