@@ -475,6 +475,24 @@ class AdminAuthController extends Controller
 
         $validate = $request->validate( $validation_fields, $validation_messages );
 
+        // Check that the reset token exists and hasn't expired. Token should be valid for 24 hours.
+        $token = AdminReset::where('email', $request->email)->where('token', $request->token)->first();
+
+        if ( $token === null ) {
+            Session::flash('error', 'The email/token combination is invalid. Please resubmit a password reset request.');
+            return redirect( route( 'admin-forgot' ) );
+        }
+
+        // get time difference between now and when token was created
+        $token_updated = strtotime($token->updated_at);
+        $current_time  = strtotime( date( now() ) );
+        $time_difference = $current_time - $token_updated;
+
+        if ( $time_difference > 86400 ) {
+            Session::flash('error','The password request has expired. Please resubmit the password change request.');
+            return redirect( route( 'admin-forgot' ) );
+        }
+
         $password = Hash::make($request->password);
 
         $update = Admin::where('email', $request->email)
@@ -485,6 +503,9 @@ class AdminAuthController extends Controller
             );
 
         if ( $update == 1 ) {
+            // remove token field
+            AdminReset::where('email', $request->email)->delete();
+
             Session::flash('status', 'Your password has successfully been updated. Please login with your new information.');
         }
         else {

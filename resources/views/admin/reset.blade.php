@@ -16,6 +16,14 @@
                                 </strong>
                             </div>
                         </div>
+                    @elseif ( session('error') )
+                        <div class="row">
+                            <div class="col-md-6 offset-md-4 invalid-feedback d-block mb-2" role="alert">
+                                <strong>
+                                    {{ session('error') }}
+                                </strong>
+                            </div>
+                        </div>
                     @endif
                     @error('token')
                         <div class="row">
