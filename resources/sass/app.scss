@@ -36,6 +36,16 @@ body {
     vertical-align:bottom;
 }
 
+/*******************
+ *  NAVIGATION
+ *******************/
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: rgba(0,30,60,.03);
+}
+
+/* --- END NAVIGATION  --- */
+
 .yyz-card {
     border: 1px solid rgba(0, 0, 0, .17);
     border-radius: 6px;
