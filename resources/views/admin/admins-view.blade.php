@@ -7,7 +7,12 @@
     <div class="container">
         <div class="row">
             <div class="col-12 p-4 bg-white mt-4">
-                <h1 class="h3">Admin List</h1>
+                <div class="clearfix mb-2">
+                    <a class="btn btn-tertiary float-right vertical-align-middle" href="{{ route('adminDashboard') }}">Dashboard</a>
+                    <h1 class="h3 mb-0">
+                        Admin List
+                    </h1>
+                </div>
                 @if ( Session::has('password_status') )
                     <div class="alert alert-info">{{ Session::get('password_status') }}</div>
                 @endif

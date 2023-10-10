@@ -46,7 +46,10 @@
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{ route('adminDashboard') }}">
-                                Admin Dashboard
+                                Dashboard
+                            </a>
+                            <a href="{{ route('admin-list') }}" class="dropdown-item">
+                                User List
                             </a>
                             {{--<a href="{{ route('adminCreate') }}" class="dropdown-item">
                             Create Admin Account
