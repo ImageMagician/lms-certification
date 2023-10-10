@@ -1,24 +1,5 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Lion Energy') }} @yield('title')</title>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-</head>
-
-<body>
+@extends('layouts.admin')
+@section('content')
 <div id="app" class="py-5">
     <div class="container">
         <div class="row justify-content-center">
@@ -30,39 +11,55 @@
                                 Your password has been updated. Please login using the new password.
                             </div>
                         @endif
-                        <h2 class="text-primary">Admin Login</h2>
-                        <form class="auth-login-form mt-2" action="{{route('admin-create')}}" method="post">
-                            @csrf
+                        <div class="mb-0 clearfix">
+                            <a href="{{ route('admin-list') }}" class="float-right btn btn-tertiary">Back</a>
+                            <h2 class="h3 text-primary">Create New Admin</h2>
+                        </div>
+                        <form class="auth-login-form mt-2" action="{{ route('admin-create') }}" method="post">
                             @if ($errors->has('msg'))
                                 <div class="alert alert-danger">
                                     <strong>{{ $errors->first('msg') }}</strong>
                                 </div>
                             @endif
                             <div class="my-3">
-                                <label for="name" class="form-label no-style p-0">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" autofocus tabindex="1">
+                                <label for="first_name" class="form-label no-style p-0">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" tabindex="1">
+                                @if ($errors->has('first_name'))
+                                    <span class="help-block font-red-mint">
+                                        <strong>{{ $errors->first('first_name') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="my-3">
+                                <label for="last_name" class="form-label no-style p-0">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" tabindex="2">
+                                @if ($errors->has('last_name'))
+                                    <span class="help-block font-red-mint">
+                                        <strong>{{ $errors->first('last_name') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                             <div class="my-3">
                                 <label for="email" class="form-label no-style p-0">Email</label>
-                                <input type="text" class="form-control" id="email" name="email" value="{{old('email') }}" tabindex="2" />
+                                <input type="text" class="form-control" id="email" name="email" value="{{old('email') }}" tabindex="3" />
                                 @if ($errors->has('email'))
                                     <span class="help-block font-red-mint">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
                             </div>
-
                             <div class="my-3">
-                                    <label class="form-label no-style p-0" for="password">Password</label>
-                                    <input type="text" class="form-control" id="password" name="password" tabindex="3" />
+                                <label for="role" class="form-label no-style p-0">Admin Level</label>
+                                <select name="role" id="role" class="form-control" tabindex="4">
+                                    <option value="0">Standard</option>
+                                    <option value="1">Super Admin</option>
+                                    <option value="2">Regional Sales Manager</option>
+                                </select>
                             </div>
-
-                            <div class="my-3">
-                                    <label class="form-label no-style p-0" for="password_confirmation">Confirm Password</label>
-                                    <input type="text" class="form-control" id="password_confirmation" name="password_confirmation" tabindex="4" />
+                            <div>
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-100" tabindex="5">Create Admin</button>
                             </div>
-
-                            <button type="submit" class="btn btn-primary w-100" tabindex="5">Create Admin</button>
                         </form>
                     </div>
                 </div>
@@ -71,6 +68,8 @@
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
 <script>
     function showPassword() {
         const obj = document.getElementById('password');
@@ -83,7 +82,11 @@
             obj.setAttribute('type', 'password');
             eye.classList.add('fa-eye');
             eye.classList.remove('fa-eye-slash');
-        }    }
+        }
+    }
+
+    window.onload = function(){
+       document.getElementById('first_name').focus();
+    }
 </script>
-</body>
-</html>
+@endsection

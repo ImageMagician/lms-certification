@@ -8,18 +8,21 @@
         <div class="row">
             <div class="col-12 p-4 bg-white mt-4">
                 <div class="clearfix mb-2">
-                    <a class="btn btn-tertiary float-right vertical-align-middle" href="{{ route('adminDashboard') }}">Dashboard</a>
+                    <a class="btn btn-tertiary float-right ms-2" href="{{ route('adminDashboard') }}">Dashboard</a>
+                    @if ($admin->super_admin == 1)
+                    <a class="btn btn-tertiary float-right ms-2" href="{{ route('admin-new') }}">Add New</a>
+                    @endif
                     <h1 class="h3 mb-0">
                         Admin List
                     </h1>
                 </div>
-                @if ( Session::has('password_status') )
+                @if ( session('password_status') )
                     <div class="alert alert-info">{{ Session::get('password_status') }}</div>
                 @endif
 
-                @if ( Session::has('action') )
-                    <div class="alert alert-success">{{ Session::get('action') }}</div>
-                @elseif (Session::has('error'))
+                @if ( session('success') )
+                    <div class="alert alert-success">{{ Session::get('success') }}</div>
+                @elseif ( session('error'))
                     <div class="alert alert-danger">{{ Session::get('error') }}</div>
                 @endif
                 <table class="table">

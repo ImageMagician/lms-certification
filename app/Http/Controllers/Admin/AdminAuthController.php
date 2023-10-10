@@ -336,34 +336,87 @@ class AdminAuthController extends Controller
         return redirect()->route('userDetail', ['id'=>$user]);
     }
 
-    public function adminCreate(Request $request) {
-        $request->validate([
-            'name' =>['required','string','max:255'],
-            'email'=>['required','email','unique:admins','max:255'],
-        ]);
+    public function adminCreate() {
+        $admin    = auth()->guard('admin')->user();
+        if ( $admin->super_admin == 1) {
+            return view( 'admin.create')->with(['admin' => $admin]);;
+        }
+        else {
+            Session::flash('error', 'You don\'t have the right privileges to create a new admin.' );
+            return redirect()->route('admin-list');
+        }
+    }
 
-        if ( Admin::create([
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-        ]) ) {
+    public function adminCreateProcess(Request $request) {
+        $validate_fields = [
+            'first_name' =>['required','string','max:255'],
+            'last_name' =>['required','string','max:255'],
+            'email'=>['required','email','unique:admins','max:255'],
+            'role'=>['required'],
+        ];
+
+        $validate_messages = [
+            'first_name.required' => 'First name is required.',
+            'last_name.required'  => 'Last Name is required',
+            'email.required'      => 'A valid email address is required.',
+            'email.unique'        => 'The email address is already assigned to an Admin.',
+            'role.required'       => 'You must select a role for the Admin.',
+        ];
+
+        $request->validate( $validate_fields, $validate_messages );
+
+        $add_fields = [
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'email'      => $request->email,
+        ];
+
+        if ( $request->role == 1 ) {
+            $add_fields['super_admin'] = 1;
+        }
+        elseif ( $request->role == 2 ) {
+            $add_fields['rsm'] = 1;
+        }
+
+        if ( Admin::create($add_fields) ) {
+
+            $data = new AdminReset;
+            $token = Hash::make(rand(24,24));
+
+            // upsert updates an existing record or inserts a new one
+            // https://laravel.com/docs/10.x/queries#upserts
+            $data->upsert([
+                [
+                    'email' => $request->email,
+                    'token' => $token
+                ]
+            ],
+                ['email'],
+                ['token']
+            );
+
+            $url = config('app.url');
+            $link = $url . '/admin/reset-password?token=' . $token . '&email=' . $request->email;
 
             $notify_data = [
                 'subject' => 'New User Account',
                 'intro'   => 'Account Creation',
                 'message' => 'Lion Energy has created an administrator account for you. Click the link to create your password and sign in.',
-                'outtro'  => 'Make sure the installation is fully complete before this date.',
-                'url'     => secure_url( route('home' ) ),
+                'outtro'  => '',
+                'url'     => secure_url( $link ),
             ];
 
             $admin_user = Admin::latest()->first();
 
             $admin_user->notify( new Step3($notify_data) );
 
-            Session::flash('admin_create_success', 'New admin account created successfully.');
+            Session::flash('success', 'New admin account created successfully.');
+        }
+        else {
+            Session::flash('error','There was an error creating the Admin in the database.');
         }
 
-        return redirect()->back();
+        return redirect()->route('admin-list');
     }
 
     function admin_msg(Request $request) {
@@ -438,6 +491,7 @@ class AdminAuthController extends Controller
             ['email'],
             ['token']
         );
+
         // Send email with password reset link
         $user = Admin::where('email', $request->email)->first();
 
@@ -619,7 +673,7 @@ class AdminAuthController extends Controller
     function adminIndividualDelete($id) {
         $user = Admin::where('id', $id)->delete();
         if ( $user == 1) {
-            Session::flash('action','The user has been deleted.');
+            Session::flash('success','The user has been deleted.');
         }
         else {
             Session::flash('error','There was a problem deleting the user.');
