@@ -65,7 +65,7 @@
                             <label class="form-label my-2" for="super_admin">Access</label>
                         </div>
                         <div class="col sm-8">
-                            <select id="super_admin" name="super_admin" class="form-control"
+                            <select id="super_admin" name="super_admin" class="form-control" tabindex="5"
                             @if ( $admin->id == $user->id )
                                 disabled
                             @endif
@@ -85,8 +85,8 @@
                         <div class="col-sm-8">
                             @csrf
                             <input type="hidden" name="user_id" value="{{ $user->id }}">
-                            <button type="submit" class="btn btn-primary me-2">Submit</button>
-                            <a href="{{ route('admin-list') }}" class="btn btn-tertiary">Cancel</a>
+                            <button type="submit" class="btn btn-primary me-2" tabindex="6">Submit</button>
+                            <a href="{{ route('admin-list') }}" class="btn btn-tertiary" tabindex="7">Cancel</a>
                         </div>
                     </div>
                 </form>

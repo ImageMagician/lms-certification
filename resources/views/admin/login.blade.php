@@ -70,6 +70,10 @@
     </div>
 </div>
 <script>
+    window.onload = function() {
+        const admin_email = document.getElementById('email');
+        admin_email.focus();
+    }
     function showPassword() {
         const obj = document.getElementById('password');
         const eye = document.getElementById('eye_icon');

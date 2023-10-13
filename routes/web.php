@@ -73,7 +73,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
       Route::get('/list', [AdminAuthController::class, 'adminList'])->name('admin-list');
       Route::get('/list/{id}', [AdminAuthController::class, 'adminIndividual'])->name('admin-individual');
-      Route::get('/list/{id}/delete', [AdminAuthController::class, 'adminIndividualDelete'])->name('admin-delete');
+      Route::post('/list/delete', [AdminAuthController::class, 'adminIndividualDelete'])->name('admin-delete');
 
       Route::post('/list/process', [AdminAuthController::class, 'adminUpdate'])->name('admin-update');
 

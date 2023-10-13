@@ -670,8 +670,8 @@ class AdminAuthController extends Controller
         return view('admin.admins-individual')->with(['admin'=>$admin, 'user'=>$user]);
     }
 
-    function adminIndividualDelete($id) {
-        $user = Admin::where('id', $id)->delete();
+    function adminIndividualDelete(Request $request) {
+        $user = Admin::where('id', $request->id)->delete();
         if ( $user == 1) {
             Session::flash('success','The user has been deleted.');
         }
