@@ -58,8 +58,8 @@
                         <td>
                             @if ($user->super_admin == 1)
                                 Super
-                            @elseif ($user->rsm == 1)
-                                Regional Rep
+                            @elseif ($user->rsm !== null)
+                                RSM (Region {{ $user->rsm }})
                             @else
                                 Standard
                             @endif

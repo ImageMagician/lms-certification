@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ModulesController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\RsmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,8 +80,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
       Route::get('/create', [AdminAuthController::class, 'adminCreate'])->name('admin-new');
       Route::post('/create/process', [AdminAuthController::class, 'adminCreateProcess'])->name('admin-create');   });
-});
 
+      Route::get('/rsm/regions', [RsmController::class, 'RsmMap'])->name('rsm-map');
+      Route::post('/rsm/process', [RsmController::class, 'RsmMapSubmit'])->name('rsm-map-submit');
+});
 
 Auth::routes();
 
