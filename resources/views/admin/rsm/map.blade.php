@@ -4,7 +4,13 @@
         <svg id="map" class="map svg-content-responsive" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin meet" viewBox="0 0 960  550">
             <g>
                 <g id="states">
-                    <a id="AL" rel="nofollow" title="Alabama">
+                    <a id="AL" rel="nofollow" title="Alabama"
+                        @foreach($state as $state)
+                            @if ($state->abbrev == 'AL' && $state->rep !== null)
+                                class="selected_{{$state[0]['rep']}}"
+                            @endif
+                        @endforeach
+                    >
                         <path d="M617.7136803354653,337.9696199131963L643.8506241218478,335.65061012391664L648.2317462665565,351.24032812840835L654.6057694510167,374.1496046280074L656.9582534438196,379.0919935678229L658.979620904724,381.82084595246715L658.5170946500847,383.7138527984621L660.4171139157299,384.6157313393908L658.0704999264116,387.23859116957817L658.4231117479753,389.5465273630449L657.4275361781622,392.82596988408477L659.5953928111236,398.18875653812256L659.0446984286879,403.14835181559977L661.3372013939256,407.98097160767134L653.6347396969741,408.95775014672415L620.6737091386697,412.2462967815719L620.3717670286012,414.71223360088106L624.2200013560256,417.9244661723427L623.8889940241392,421.0020277733977L625.2365657847604,422.40334286591565L623.1438950427437,425.33373598823346L621.0299246371782,426.1303959008844L616.7820049404004,423.4536310228809L615.9632726742407,418.9545855826956L614.7123619026681,418.5527236324515L613.530806056609,422.1036581217526L613.2876210913104,425.472899366432L609.1400162056648,424.89803360424025L605.6908438279582,396.82762072783737L606.3884890283352,361.41722982688225L606.8566023466185,340.9606058203242L605.1434560192987,339.16154839762953Z" stroke="#FFFFFF" stroke-dasharray="0, 0" stroke-width="1"></path>
                         <text x="629.57928518605" y="378.27125693354327" title="Alabama">AL</text>
                     </a>
@@ -213,7 +219,7 @@
         </svg>
     </div>
     <div>
-        <form action="post">
+        <form id="states_form" action="{{route('rsm-map-submit')}}" method="post">
             <select name="region" id="region">
                 <option value="0">Please select...</option>
                 <option value="1">Region 1</option>
@@ -224,11 +230,11 @@
                 <option value="6">Region 6</option>
             </select>
             @csrf
-            <input type="hidden" name="states">
-            <input type="submit" class="d-none">
+            <input id="states_data" type="hidden" name="states">
+            <input type="submit" class="">
         </form>
     </div>
-    <div id="result"></div>
+    <div id="response"></div>
 @endsection
 
 @section('scripts')
@@ -343,8 +349,22 @@
                 const option = 'selected_' + this.value;
                 const states_array  = [];
 
+                const class_array = [
+                    'selected_1',
+                    'selected_2',
+                    'selected_3',
+                    'selected_4',
+                    'selected_5',
+                    'selected_6',
+                ];
+
                 // Assign 'selected_' class to all selected states
                 for(a=0; a<selected_states.length; a++) {
+                    // clear off any previously selected class
+                    for( let b = 0; b < class_array.length; b++ ) {
+                        selected_states[a].classList.remove(class_array[b]);
+                    }
+
                     selected_states[a].classList.remove('clicked');
                     selected_states[a].classList.add(option);
                 }
@@ -357,32 +377,8 @@
                     states_array.push(all_selected_states[a].id);
                 }
 
-
-                // AJAX post
-                //this.preventDefault();
-
-                const form = this.target;
-                const formData = new FormData(form);
-                const csrf_token = document.querySelector('[name="csrf-token"]').content;
-                console.log(csrf_token);
-
-                fetch("{{ route('rsm-map-submit') }}", {
-                    headers: {
-                        'X-CSRF-TOKEN': csrf_token
-                    },
-                    method: 'post',
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('result').textContent = data;
-                })
-                .catch(error => {
-                    console.log("error: ", error);
-                });
-
-                // reset the select so that you can choose the same option again if you want
-                document.getElementById('region').value = 0;
+                // Assign values array to the states_data hidden field
+                document.getElementById('states_data').value = states_array;
             }
         }
     </script>
