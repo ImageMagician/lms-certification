@@ -11,11 +11,12 @@ use Auth;
 class RsmController extends Controller
 {
     public function RsmMap() {
-        $admin = auth()->guard('admin')->user();
-
+        $admin  = auth()->guard('admin')->user();
         $states = DB::table('usa_states')->get();
+        $reps   = DB::table('regional_reps')->get();
 
-        return view('admin.rsm.map')->with(['admin'=>$admin, 'state' => $states]);
+
+        return view('admin.rsm.map')->with(['admin'=>$admin, 'state' => $states, 'rep' => $reps]);
     }
 
     public function RsmMapSubmit(Request $request) {
@@ -24,10 +25,16 @@ class RsmController extends Controller
            'states' => ['required'],
         ]);
 
-        $states = explode(',', $request->states);
+        if ( $request->region == 0) {
+            $region = null;
+        }
+        else {
+            $region = htmlentities($request->region);
+        }
 
+        $states = explode(',', $request->states);
         foreach ( $states as $state) {
-            $data = DB::table('usa_states')->update('rep', $request->region)->where('abbrev', $state);
+            $data = DB::table('usa_states')->where('abbrev', $state)->update(['rep'=> $region]);
         }
 
         return redirect()->back();

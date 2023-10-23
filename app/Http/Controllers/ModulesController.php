@@ -34,16 +34,6 @@ class ModulesController extends Controller
         $this->middleware(['auth', 'verified']);
     }
 
-    protected function userPull() {
-        $user      = Auth::user();
-        $companies = explode(',', $user->companies);
-        $states    = explode(',', $user->states);
-        $activity  = UserActivity::where('user_id', $user->id)->first();
-        $msgs      = Message::where('user_id', $user->id)->get();
-
-        return ( [ 'user'=>$user, 'companies'=>$companies, 'states'=>$states, 'activity'=>$activity, 'msgs'=>$msgs ] );
-    }
-
     function index($id) {
         $user     = Auth::user();
         $module   = Module::find($id);
@@ -155,7 +145,7 @@ class ModulesController extends Controller
                         $rep->notify(new RSM([
                             'subject' => 'User Certification',
                             'intro' => '<strong>User training completion.</strong>',
-                            'message' => $user->first_name . ' ' . $user->last_name . ' has completed the Sanctuary certification training and in the state of ' . $state->name .
+                            'message' => $user->first_name . ' ' . $user->last_name . ' (' . $user->companies . ') has completed the Sanctuary certification training and in the state of ' . $state->name .
                                 '<p>The ESS Team has been notified. Please verify that this user gets certified in a timely manner.</p>',
                         ]));
                     }
@@ -165,7 +155,7 @@ class ModulesController extends Controller
                 $admin->notify(new Step3([
                     'subject' => 'User Certification',
                     'intro'   => '<strong>User training completion.</strong>',
-                    'message' => $user->first_name . ' ' . $user->last_name . ' has completed the Sanctuary certification training and is ready to be registered as a certified installer',
+                    'message' => $user->first_name . ' ' . $user->last_name . ' (' . $user->companies . ') has completed the Sanctuary certification training and is ready to be registered as a certified installer',
                     'outtro'  => 'Click the button to review their progress and certify them.',
                     'url'     => route('userDetail', ['id' => $user->id]),
                 ]));
