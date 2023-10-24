@@ -13,8 +13,7 @@ class RsmController extends Controller
     public function RsmMap() {
         $admin  = auth()->guard('admin')->user();
         $states = DB::table('usa_states')->get();
-        $reps   = DB::table('regional_reps')->get();
-
+        $reps   = DB::table('admins')->where('rsm', '!=', null)->get();
 
         return view('admin.rsm.map')->with(['admin'=>$admin, 'state' => $states, 'rep' => $reps]);
     }

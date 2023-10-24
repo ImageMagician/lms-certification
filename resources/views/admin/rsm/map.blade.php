@@ -12,14 +12,14 @@
                                     $rep_list = $rep->toArray();
                                 @endphp
                                 @foreach($rep as $rep)
-                                <div class="col-6 col-md-4 col-lg-3 col-xl-2">
-                                    <div class="legend-tile selected_{{$rep->region}}"></div>
-                                    <div class="d-inline-block">{{ $rep->first_name }} {{ $rep->last_name }}</div>
+                                <div class="col-6 col-md-4 col-lg-3 col-xl-2" style="white-space:nowrap">
+                                    <div class="legend-tile selected_{{$rep->rsm}}"></div>
+                                    <div class="legend-text">{{ $rep->first_name }} {{ $rep->last_name }}</div>
                                 </div>
                                 @endforeach
                                 <div class="col-6 col-md-4 col-lg-3 col-xl-2">
                                     <div class="legend-tile"></div>
-                                    <div class="d-inline-block">Undesignated</div>
+                                    <div class="legend-text">Undesignated</div>
                                 </div>
                             </div>
                         </div>
@@ -30,7 +30,7 @@
                                     <select name="region" id="region" class="form-control d-inline-block w-auto" style="padding-right:30px;" disabled="disabled">
                                         <option value="">Please select...</option>
                                         @foreach($rep_list as $rep)
-                                            <option value="{{ $rep->region }}">{{ $rep->first_name }} {{ $rep->last_name }}</option>
+                                            <option value="{{ $rep->rsm }}">{{ $rep->first_name }} {{ $rep->last_name }}</option>
                                         @endforeach
                                         <option value="0">Undesignate area</option>
                                     </select>
@@ -189,13 +189,19 @@
 
         .legend-tile    {
             display: inline-block;
-            height:16px;
-            width:16px;
+            height:.75rem;
+            width:.75rem;
             line-height:0;
             font-size:0;
             border:rgba(0,0,0,.1);
             vertical-align:middle;
-            margin-right:1rem;
+            margin-right:.5rem;
+        }
+
+        .legend-text {
+            display:inline-block;
+            font-size:.75rem;
+            line-height:14px;
         }
 
         @media (max-width:993px) {

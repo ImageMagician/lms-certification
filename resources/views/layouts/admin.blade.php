@@ -51,9 +51,11 @@
                             <a href="{{ route('admin-list') }}" class="dropdown-item">
                                 Admin List
                             </a>
-                            {{--<a href="{{ route('adminCreate') }}" class="dropdown-item">
-                            Create Admin Account
-                            </a>--}}
+                            @if( $admin->super_admin == 1)
+                                <a href="{{ route('rsm-map') }}" class="dropdown-item">
+                                    RSM Regions
+                                </a>
+                            @endif
                             <a class="dropdown-item" href="{{ route('adminLogout') }}"
                                onclick="event.preventDefault();
                                                  document.getElementById('logout-form').submit();">

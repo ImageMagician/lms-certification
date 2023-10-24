@@ -74,6 +74,18 @@ class AdminAuthController extends Controller
     public function adminIndex() {
         $admin = auth()->guard('admin')->user();
         $modules = Module::all();
+        $rsm_users = null;
+
+        // Get user list of only assigned states if admin is an RSM
+        if ( $admin->rsm != null ) {
+            $states = DB::table('usa_states')->where('rep', $admin->rsm)->get();
+            $user_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
+            foreach ($states as $state) {
+                $user_temp->orWhere('states', $state->abbrev );
+            }
+            $rsm_users = $user_temp->get();
+        }
+
         $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
 
         // counts for certs and training
@@ -94,7 +106,7 @@ class AdminAuthController extends Controller
             'total' => $users->count(),
         ];
 
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'stats'=>$user_stats]);
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'rsm_users'=>$rsm_users, 'modules'=>$modules, 'stats'=>$user_stats]);
     }
 
     public function userDetail($id) {
