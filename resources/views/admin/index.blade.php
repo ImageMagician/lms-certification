@@ -125,7 +125,7 @@
                                 @endforeach
                             @endif
                             </tr>
-                            <tr class="border-0 p-0"><td colspan="16" class="p-0 border-black w-100"></td></tr>
+                            <tr class="border-0 p-0"><td colspan="17" class="p-0 border-black w-100"></td></tr>
                             @if( $admin->rsm > 0)
                                 @foreach($rsm_users as $u)
                                     @if (( $u->training_done == null && $u->cert == null ) || $u->cert !== NULL )
