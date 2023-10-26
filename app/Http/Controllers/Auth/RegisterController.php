@@ -90,6 +90,7 @@ class RegisterController extends Controller
         $email      = $this->clearSpecial($data['email']);
         $company    = $this->clearSpecial($data['companies']);
         $states     = $this->clearSpecial($data['states']);
+        $referer    = $this->clearSpecial($data['ref']);
 
         $user_id = User::insertGetId([
             'first_name' => $first_name,
@@ -99,6 +100,7 @@ class RegisterController extends Controller
             'companies'  => $company,
             'states'     => $states,
             'password'   => Hash::make($data['password']),
+            'referer'    => $referer
         ]);
 
         // Create a row in the user_activity table for the user
@@ -113,6 +115,6 @@ class RegisterController extends Controller
 
     // Clear all special characters for input fields
     protected function clearSpecial($item) {
-        return preg_replace('/[^A-Za-z0-9\-.@]/', '', $item);
+        return preg_replace('/[^A-Za-z0-9\-.@\s+]/', '', $item);
     }
 }

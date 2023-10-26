@@ -7,7 +7,11 @@ use Auth;
 
 class IndexController extends Controller
 {
-    function index() {
+    function index(Request $request) {
+        if ( $request->query('ref') != null) {
+            $request->session()->put('ref', $request->query('ref'));
+        }
+
         $user = Auth::user();
 
         if ( $user !== null) {
