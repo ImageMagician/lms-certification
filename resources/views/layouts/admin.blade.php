@@ -48,9 +48,12 @@
                             <a class="dropdown-item" href="{{ route('adminDashboard') }}">
                                 Dashboard
                             </a>
-                            <a href="{{ route('admin-list') }}" class="dropdown-item">
-                                Admin List
-                            </a>
+                            @if ( is_null($admin->partner) )
+                                <a href="{{ route('admin-list') }}" class="dropdown-item">
+                                    Admin List
+                                </a>
+                            @else
+                            @endif
                             @if( $admin->super_admin == 1)
                                 <a href="{{ route('rsm-map') }}" class="dropdown-item">
                                     RSM Regions

@@ -34,10 +34,16 @@
                     <div class="row justify-content-center mb-3">
                         <div class="col-12">
                             <div class="alert alert-info p-3 text-center">
-                                <p>
-                                    This user has completed all the training courses. Please review their results and contact them if necessary. Otherwise, click "certify user" if they are approved.
-                                </p>
-                                <a href="{{ route('userDetailStep', ['id' => $user->id, 'step' => $m_count]) }}" class="btn btn-primary">Certify User</a>
+                                @if ( $admin->rsm != null || $admin->partner != null )
+                                    <p class="mb-0">
+                                        This user has completed all the training courses. The ESS Team will work to complete their certification.
+                                    </p>
+                                @else
+                                    <p>
+                                        This user has completed all the training courses. Please review their results and contact them if necessary. Otherwise, click "certify user" if they are approved.
+                                    </p>
+                                    <a href="{{ route('userDetailStep', ['id' => $user->id, 'step' => $m_count]) }}" class="btn btn-primary">Certify User</a>
+                                @endif
                             </div>
                         </div>
                     </div>

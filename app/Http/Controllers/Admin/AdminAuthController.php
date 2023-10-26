@@ -84,6 +84,8 @@ class AdminAuthController extends Controller
                 $user_temp->orWhere('states', $state->abbrev );
             }
             $rsm_users = $user_temp->get();
+        } elseif ( $admin->partner != null ) {
+            $rsm_users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->where('referer', $admin->partner)->get();
         }
 
         $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
