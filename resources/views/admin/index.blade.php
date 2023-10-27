@@ -46,52 +46,7 @@
                                     <th>Step {{ $m->id }}</th>
                                 @endforeach
                             </tr>
-                            @if($admin->rsm > 0 || $admin->partner != null)
-                                @foreach($rsm_users as $u)
-                                    @if ( $u->training_done == 1 && is_null( $u->cert ) )
-                                        <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                            <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
-                                            <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                            <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
-                                            <td class="name w-auto">{{$u->states}}</td>
-                                            <td class="table-action px-lg-2">
-                                                @if ( $admin->partner != null && $u->cert == null )
-                                                    <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                        VIEW
-                                                    </a>
-
-                                                @elseif ( is_null($u->cert) )
-                                                    <a class="btn btn-small btn-primary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                        CERTIFY
-                                                    </a>
-                                                @else
-                                                    <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
-                                                        <strong>{{$u->cert}}</strong>
-                                                    </a>
-                                                @endif
-                                            </td>
-                                            @foreach($modules as $m)
-                                                <td>
-                                                    @php
-                                                        $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                    @endphp
-                                                    <span class="step-name">Step {{$m->id}}</span>
-                                                    <div class="text-center small py-1
-                                                            @if ( $u->$mod_id === NULL )
-                                                                opacity-0 d-inline-block
-                                                            @elseif ( $u->$mod_id < 75 )
-                                                                bg-red
-                                                            @else
-                                                                bg-green
-                                                            @endif
-                                                        ">
-                                                        {{ $u->$mod_id }}%
-                                                    </div>
-                                                </td>
-                                            @endforeach
-                                        </tr>
-                                    @endif
-                                @endforeach
+                            @if (is_null($users))
                             @else
                                 @foreach($users as $u)
                                     @if ( $u->training_done == 1 && is_null( $u->cert ) )
@@ -136,8 +91,16 @@
                             @endif
                             </tr>
                             <tr class="border-0 p-0"><td colspan="17" class="p-0 border-black w-100"></td></tr>
-                            @if($admin->rsm > 0 || $admin->partner != null)
-                                @foreach($rsm_users as $u)
+                            @if( is_null( $users ) )
+                                <tr>
+                                    <td colspan="17">
+                                        <h3 class="py-3 text-center" style="opacity:.5">
+                                            No users registered in your region.
+                                        </h3>
+                                    </td>
+                                </tr>
+                            @else
+                                @foreach($users as $u)
                                     @if (( $u->training_done == null && $u->cert == null ) || $u->cert !== NULL )
                                         <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
                                             <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
@@ -160,64 +123,23 @@
                                                     @php
                                                         $mod_id = 'module_' . sprintf("%02d", $m->id);
                                                     @endphp
-                                                    <span class="step-name">Step {{$m->id}}</span>
-                                                    <div class="text-center small py-1
-                                            @if ( $u->$mod_id === NULL )
-                                                opacity-0 d-inline-block
-                                            @elseif ( $u->$mod_id < 75 )
-                                                bg-red
-                                            @else
-                                                bg-green
-                                            @endif
-                                        ">
-                                                        {{ $u->$mod_id }}%
-                                                    </div>
+                                                        <span class="step-name">Step {{$m->id}}</span>
+                                                        <div class="text-center small py-1
+                                                            @if ( is_null( $u->$mod_id ) )
+                                                                opacity-0 d-inline-block
+                                                            @elseif ( $u->$mod_id < 75 )
+                                                                bg-red
+                                                            @else
+                                                                bg-green
+                                                            @endif
+                                                        ">
+                                                            {{ $u->$mod_id }}%
+                                                        </div>
                                                 </td>
                                             @endforeach
                                         </tr>
                                     @endif
                                 @endforeach
-                            @else
-                            @foreach($users as $u)
-                                @if (( $u->training_done == null && $u->cert == null ) || $u->cert !== NULL )
-                                    <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                        <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
-                                        <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                        <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
-                                        <td class="name w-auto">{{$u->states}}</td>
-                                        <td class="table-action px-lg-2">
-                                            @if ( $u->cert == null )
-                                                <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                    VIEW
-                                                </a>
-                                            @else
-                                                <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
-                                                    <strong>{{$u->cert}}</strong>
-                                                </a>
-                                            @endif
-                                        </td>
-                                        @foreach($modules as $m)
-                                            <td>
-                                                @php
-                                                    $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                @endphp
-                                                    <span class="step-name">Step {{$m->id}}</span>
-                                                    <div class="text-center small py-1
-                                                        @if ( is_null( $u->$mod_id ) )
-                                                            opacity-0 d-inline-block
-                                                        @elseif ( $u->$mod_id < 75 )
-                                                            bg-red
-                                                        @else
-                                                            bg-green
-                                                        @endif
-                                                    ">
-                                                        {{ $u->$mod_id }}%
-                                                    </div>
-                                            </td>
-                                        @endforeach
-                                    </tr>
-                                @endif
-                            @endforeach
                             @endif
                         </table>
                     </div>

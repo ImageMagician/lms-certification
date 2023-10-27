@@ -74,21 +74,26 @@ class AdminAuthController extends Controller
     public function adminIndex() {
         $admin = auth()->guard('admin')->user();
         $modules = Module::all();
+        $users = null;
         $rsm_users = null;
 
         // Get user list of only assigned states if admin is an RSM
         if ( $admin->rsm != null ) {
             $states = DB::table('usa_states')->where('rep', $admin->rsm)->get();
-            $user_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
-            foreach ($states as $state) {
-                $user_temp->orWhere('states', $state->abbrev );
+            if ( count( $states ) > 0 ) {
+                $user_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
+                foreach ($states as $state) {
+                    $user_temp->orWhere('states', $state->abbrev );
+                }
+                $users = $user_temp->get();
             }
-            $rsm_users = $user_temp->get();
         } elseif ( $admin->partner != null ) {
-            $rsm_users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->where('referer', $admin->partner)->get();
+            $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->where('referer', $admin->partner)->get();
+        } else {
+            $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
         }
 
-        $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
+        $users_count = (is_null( $users ) ) ? 0 : $users->count();
 
         // counts for certs and training
         $certs = User::whereNotNull('cert')->count();
@@ -105,10 +110,10 @@ class AdminAuthController extends Controller
             'certs' => $certs,
             'finished' => $finished,
             'unfinished' => $unfinished,
-            'total' => $users->count(),
+            'total' => $users_count,
         ];
 
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'rsm_users'=>$rsm_users, 'modules'=>$modules, 'stats'=>$user_stats]);
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'stats'=>$user_stats]);
     }
 
     public function userDetail($id) {
@@ -389,7 +394,9 @@ class AdminAuthController extends Controller
             $add_fields['super_admin'] = 1;
         }
         elseif ( $request->role == 2 ) {
-            $add_fields['rsm'] = 1;
+            $admin = Admin::orderBy('rsm', 'desc')->first();
+            $new_order = $admin->rsm + 1;
+            $add_fields['rsm'] = $new_order;
         }
 
         if ( Admin::create($add_fields) ) {

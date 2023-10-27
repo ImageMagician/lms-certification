@@ -140,6 +140,18 @@
             fill:#4c804c;
         }
 
+        #states a.selected_6 path,
+        .legend-tile.selected_6 {
+            fill:#c69;
+            background-color:#c69;
+        }
+
+        #states a.selected_6:hover path {
+            fill:#b35c80;
+        }
+
+
+
         #states a.clicked text {
             fill:#900;
             font-weight:bold;

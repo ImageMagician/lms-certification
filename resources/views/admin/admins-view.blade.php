@@ -59,7 +59,7 @@
                             @if ($user->super_admin == 1)
                                 Super
                             @elseif ($user->rsm !== null)
-                                RSM (Region {{ $user->rsm }})
+                                Regional Sales Manager
                             @else
                                 Standard
                             @endif
@@ -70,11 +70,12 @@
             </div>
         </div>
     </div>
-    <div id="alert_delete" class="alert_custom p-2">
+    <div id="alert_delete" class="alert_custom p-3 border border-1">
         <p>Are you sure you want to delete this user?</p>
-        <form method="post" action="{{ route('admin-delete') }}">
+        <form method="post" action="{{ route('admin-delete') }}" onblur="deleteConfirmToggle(this)">
+            @csrf
             <input type="hidden" name="id" id="delete_id" value="">
-            <button type="submit" class="btn btn-primary">Delete</button>
+            <button type="submit" class="btn btn-primary me-2">Delete</button>
             <button type="button" id="btn_cancel" class="btn btn-tertiary" onclick="deleteConfirmToggle(this)">Cancel</button>
         </form>
     </div>
@@ -88,8 +89,9 @@
             top:-250px;
             transform:translateX(-50%);
             background:white;
-            box-shadow:0 2px 2px rgba(0,0,0,.5);
+            box-shadow:0 3px 2px rgba(0,0,0,.2);
             transition:top .25s ease-out;
+            border-radius:10px;
 
             &.show {
                 top:40px;
