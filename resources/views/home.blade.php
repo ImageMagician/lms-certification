@@ -373,10 +373,13 @@
             m_height = document.getElementById('msg_content').offsetHeight;
             m_list.scrollTop += m_height;
 
-            document.getElementById('btn_request_cert').addEventListener('click', ()=> {
-                document.getElementById('main_overlay_bg').classList.add('show');
-                document.getElementById('main_overlay_content').classList.add('show');
-            });
+            const cert_btn = document.getElementById('btn_request_cert');
+            if ( cert_btn !== null) {
+                cert_btn.addEventListener('click', () => {
+                    document.getElementById('main_overlay_bg').classList.add('show');
+                    document.getElementById('main_overlay_content').classList.add('show');
+                });
+            }
         }, 200);
 
 

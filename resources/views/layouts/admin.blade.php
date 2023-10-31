@@ -28,10 +28,28 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse ms-4" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav me-auto">
-
+                <ul class="navbar-nav left-nav me-auto">
+                    <li>
+                        <a href="{{ route('adminDashboard') }}">
+                            Dashboard
+                        </a>
+                    </li>
+                    @if ( is_null($admin->partner) )
+                    <li>
+                        <a href="{{ route('admin-list') }}">
+                            Admin List
+                        </a>
+                    </li>
+                    @endif
+                    @if( $admin->super_admin == 1)
+                    <li>
+                        <a href="{{ route('rsm-map') }}">
+                            RSM Regions
+                        </a>
+                    </li>
+                    @endif
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -45,20 +63,6 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('adminDashboard') }}">
-                                Dashboard
-                            </a>
-                            @if ( is_null($admin->partner) )
-                                <a href="{{ route('admin-list') }}" class="dropdown-item">
-                                    Admin List
-                                </a>
-                            @else
-                            @endif
-                            @if( $admin->super_admin == 1)
-                                <a href="{{ route('rsm-map') }}" class="dropdown-item">
-                                    RSM Regions
-                                </a>
-                            @endif
                             <a class="dropdown-item" href="{{ route('adminLogout') }}"
                                onclick="event.preventDefault();
                                                  document.getElementById('logout-form').submit();">
