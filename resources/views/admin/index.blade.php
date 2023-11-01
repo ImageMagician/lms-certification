@@ -11,17 +11,37 @@
                     <div class="col-lg-3 col-xl-2 py-3 pe-2 ps-3">
                         <div class="p-3 bg-white border mb-3 mb-lg-0 border-r-6">
                             <h2 class="h4">User Stats</h2>
-                            <div class="d-inline-block d-lg-block pe-3 pe-lg-0">
-                                Total users: {{ $stats['total'] }}
+                            <div class="row m-0">
+                                <div class="p-2 col-6 border-bottom">
+                                    Total users:
+                                </div>
+                                <div class="p-2 col-6 border-bottom">
+                                    {{ $stats['total'] }}
+                                </div>
                             </div>
-                            <div class="d-inline-block d-lg-block pe-3 pe-lg-0">
-                                Cert ready:  {{ $stats['finished'] }}
+                            <div class="row m-0">
+                                <div class="p-2 col-6 border-bottom">
+                                    Certified:
+                                </div>
+                                <div class="p-2 col-6 border-bottom">
+                                    {{ $stats['certs'] }}
+                                </div>
                             </div>
-                            <div class="d-inline-block d-lg-block pe-3 pe-lg-0">
-                                In progress: {{ $stats['unfinished'] }}
+                            <div class="row m-0">
+                                <div class="p-2 col-6 border-bottom">
+                                    Cert ready:
+                                </div>
+                                <div class="p-2 col-6 border-bottom">
+                                    {{ $stats['finished'] }}
+                                </div>
                             </div>
-                            <div class="d-inline-block d-lg-block pe-3 pe-lg-0">
-                                Certified:   {{ $stats['certs'] }}
+                            <div class="row m-0">
+                                <div class="p-2 col-6">
+                                    In progress:
+                                </div>
+                                <div class="p-2 col-6">
+                                    {{ $stats['unfinished'] }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -34,8 +54,12 @@
                                         : {{ ucwords( $admin->partner ) }}
                                     @endif
                                 </h1>
-                                <input id="user_search" type="text" class="form-control float-right d-inline-block w-100 w-sm-auto" placeholder="Search users&hellip;">
+                                <form method="get" action="{{ route('adminDashboard') }}" class="float-right form-control w-sm-auto p-0 ps-1 focus-0">
+                                    <input id="user_search" name="search" type="text" class="d-inline-block border-0" placeholder="Search users&hellip;" value="{{ request()->search; }}">
+                                    <button type="submit" class="btn">&#128269;</button>
+                                </form>
                             </div>
+                            {{ $users->links() }}
                             <table class="table admin-table">
                                 <tr class="th-header">
                                     <th>First name</th>
@@ -143,7 +167,7 @@
                                     @endforeach
                                 @endif
                             </table>
-                            {{-- $users->links() --}}
+                            {{ $users->links() }}
                         </div>
                     </div>
                 </div>
@@ -153,55 +177,61 @@
 @endsection
 
 @section('scripts')
+    <style>
+        #user_search:focus {
+            outline:none;
+        }
+    </style>
     <script>
         const users = document.getElementsByClassName('user-line');
+        /*
+                setTimeout( ()=> {
+                    const user_search = document.getElementById('user_search');
+                    user_search.addEventListener('keyup', this.searchUsers, false);
+                }, 1000);
 
-        setTimeout( ()=> {
-            const user_search = document.getElementById('user_search');
-            user_search.addEventListener('keyup', this.searchUsers, false);
-        }, 1000);
+                function searchUsers() {
+                    let i;
 
-        function searchUsers() {
-            let i;
+                    // Take the search value and check the id of each user "tr"
+                    // If the pattern does not exist, add the class d-none
+                    const val = this.value;
 
-            // Take the search value and check the id of each user "tr"
-            // If the pattern does not exist, add the class d-none
-            const val = this.value;
+                    // Escape all special characters for the Regex search
+                    const escapedDynamicString = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const pattern = new RegExp(escapedDynamicString, "gi");
 
-            // Escape all special characters for the Regex search
-            const escapedDynamicString = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const pattern = new RegExp(escapedDynamicString, "gi");
+                    for ( i = 0; i < users.length; i++ ) {
+                        users[i].classList.remove('d-none');
+                        if (!pattern.test(users[i].id)) {
+                            users[i].classList.add('d-none');
+                        }
+                    }
 
-            for ( i = 0; i < users.length; i++ ) {
-                users[i].classList.remove('d-none');
-                if (!pattern.test(users[i].id)) {
-                    users[i].classList.add('d-none');
+                    const names = document.getElementsByClassName('name');
+                    const highlight = document.getElementsByClassName('highlight');
+
+                    for ( i = 0; i < highlight.length; i++ ) {
+                        // remove all previous highlight nodes
+                        let cont = highlight[i].innerText;
+                        highlight[i].after(cont);
+                        highlight[i].remove();
+                    }
+
+                    // add new highlight node around searched text of all class names "name"
+                    // These are the first and last name fields
+                    function wrapSubstringWithSpan(inputString, substringToWrap) {
+                        const escapedDynamicString = substringToWrap.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        const regex = new RegExp(`(${escapedDynamicString})`, 'gi');
+                        return inputString.replace(regex, '<span class="highlight">$1</span>');
+                    }
+
+                    for ( i = 0; i < names.length; i++ ) {
+                        if ( pattern.test( names[i].innerText ) ) {
+                            names[i].innerHTML = wrapSubstringWithSpan(names[i].innerText, val);
+                        }
+                    }
                 }
-            }
-
-            const names = document.getElementsByClassName('name');
-            const highlight = document.getElementsByClassName('highlight');
-
-            for ( i = 0; i < highlight.length; i++ ) {
-                // remove all previous highlight nodes
-                let cont = highlight[i].innerText;
-                highlight[i].after(cont);
-                highlight[i].remove();
-            }
-
-            // add new highlight node around searched text of all class names "name"
-            // These are the first and last name fields
-            function wrapSubstringWithSpan(inputString, substringToWrap) {
-                const escapedDynamicString = substringToWrap.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(`(${escapedDynamicString})`, 'gi');
-                return inputString.replace(regex, '<span class="highlight">$1</span>');
-            }
-
-            for ( i = 0; i < names.length; i++ ) {
-                if ( pattern.test( names[i].innerText ) ) {
-                    names[i].innerHTML = wrapSubstringWithSpan(names[i].innerText, val);
-                }
-            }
-        }
+         */
     </script>
 @endsection

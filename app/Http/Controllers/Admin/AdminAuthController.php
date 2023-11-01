@@ -71,40 +71,58 @@ class AdminAuthController extends Controller
         return redirect()->route('adminLogin');
     }
 
-    public function adminIndex() {
+    public function adminIndex(Request $request) {
         $admin = auth()->guard('admin')->user();
         $modules = Module::all();
-        $users = null;
-        $rsm_users = null;
+        $users_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
 
         // Get user list of only assigned states if admin is an RSM
         if ( $admin->rsm != null ) {
             $states = DB::table('usa_states')->where('rep', $admin->rsm)->get();
             if ( count( $states ) > 0 ) {
-                $user_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
                 foreach ($states as $state) {
-                    $user_temp->orWhere('states', $state->abbrev );
+                    $users_temp->orWhere('states', $state->abbrev );
                 }
-                $users = $user_temp->get();
             }
+        //Check if the admin is a partner
         } elseif ( $admin->partner != null ) {
-            $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->where('referer', $admin->partner)->get();
-        } else {
-            $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
+            $users_temp->where('referer', $admin->partner);
         }
 
-        $users_count = (is_null( $users ) ) ? 0 : $users->count();
+        if ( request()->filled('search') || !empty(session('search')) ) {
+            session(['search' => request()->search]);
+            $search = request()->search;
+            $users_temp->where('first_name', 'LIKE', '%' . $search . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $search . '%')
+                ->orWhere('states', 'LIKE', '%' . $search . '%')
+                ->orWhere('email', 'LIKE', '%' . $search . '%')
+                ->orWhere('companies', 'LIKE', '%' . $search . '%');
+        }
+
+        $tot_count = $users_temp->get();
+
+        $users = $users_temp->paginate(15);
+        if ( session('search') ) {
+            $users->appends(['search'=> $search]);
+        }
 
         // counts for certs and training
-        $certs = User::whereNotNull('cert')->count();
-        $unfinished = UserActivity::whereNull('training_done')->count();
-        $finished = DB::table('users')
-            ->join('user_activities', function(JoinClause $join) {
-                $join->on('users.id', '=', 'user_activities.user_id')
-                    ->whereNull('users.cert')
-                    ->whereNotNull('user_activities.training_done');
-            })
-            ->count();
+        $users_count = ( is_null( $tot_count->count() ) ) ? 0 : $tot_count->count();
+        $certs      = 0;
+        $unfinished = 0;
+        $finished   = 0;
+
+        foreach( $tot_count as $user ) {
+            if ( !empty( $user->cert ) ) {
+                $certs++;
+            }
+            elseif ( !empty( $user->training_done ) ) {
+                $finished++;
+            }
+            else {
+                $unfinished++;
+            }
+        }
 
         $user_stats = [
             'certs' => $certs,
