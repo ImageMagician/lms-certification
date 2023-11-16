@@ -315,6 +315,11 @@ select {
     }
 }
 
+input#user_search {
+    background: transparent;
+    vertical-align: middle;
+}
+
 .btn {
     transition: all .15s ease-in-out;
 

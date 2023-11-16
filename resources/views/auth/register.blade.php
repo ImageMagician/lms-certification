@@ -65,7 +65,7 @@
 
                     <div class="row mb-3">
                         <label for="companies" class="col-md-4 col-form-label text-md-end">
-                            {{ __('Associated Company') }}
+                            {{ __('Employer') }}
                             <i id="companies_question" class="fa fa-question-circle ms-1 position-relative" onmouseover="showCos()" onmouseout="hideCos()">
                                 <div id="companies_explainer" class="explainer yyz-card p-2 position-absolute">
                                     List the company for whom you install solar products.
