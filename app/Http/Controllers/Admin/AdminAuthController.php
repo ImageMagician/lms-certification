@@ -74,21 +74,46 @@ class AdminAuthController extends Controller
     public function adminIndex(Request $request) {
         $admin = auth()->guard('admin')->user();
         $modules = Module::all();
+        $all_users = null;
+        $tab_select = null;
+
+        // check if tabs have been selected. These params will pass from pagination clicks
+        // This will ativate the proper tab
+        if (!empty( $request->get('allusers') ) ) {
+            $tab_select = 'allusers';
+        }
+        elseif (!empty( $request->get('standardusers') ) ) {
+            $tab_select = 'standardusers';
+        }
+
+
+        // Combine the user account information with their activities in the separate table
         $users_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
 
         // Get user list of only assigned states if admin is an RSM
-        if ( $admin->rsm != null ) {
+        if ( !empty( $admin->rsm ) ) {
+
+            // This is for the one person who is both a super admin AND an RSM
+            // This allows them to see both his RSM list and the full list
+            if ( !empty( $admin->super_admin ) ) {
+               $all_users = $users_temp->paginate(15, ['*'], 'allusers');
+            }
+
             $states = DB::table('usa_states')->where('rep', $admin->rsm)->get();
             if ( count( $states ) > 0 ) {
                 foreach ($states as $state) {
                     $users_temp->orWhere('states', $state->abbrev );
                 }
             }
+        }
+
+
         //Check if the admin is a partner
-        } elseif ( $admin->partner != null ) {
+        elseif ( !empty( $admin->partner ) ) {
             $users_temp->where('referer', $admin->partner);
         }
 
+        // Check if search field is used
         if ( request()->filled('search') || !empty(session('search')) ) {
             session(['search' => request()->search]);
             $search = request()->search;
@@ -101,13 +126,16 @@ class AdminAuthController extends Controller
 
         $tot_count = $users_temp->get();
 
-        $users = $users_temp->paginate(15);
+        // Do the final pull of users
+        $users = $users_temp->paginate(15, ['*'], 'standardusers');
+
+        // Check for a search
         if ( session('search') ) {
             $users->appends(['search'=> $search]);
         }
 
         // counts for certs and training
-        $users_count = ( is_null( $tot_count->count() ) ) ? 0 : $tot_count->count();
+        $users_count = ( is_null( $tot_count ) ) ? 0 : $tot_count->count();
         $certs      = 0;
         $unfinished = 0;
         $finished   = 0;
@@ -131,7 +159,7 @@ class AdminAuthController extends Controller
             'total' => $users_count,
         ];
 
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'stats'=>$user_stats]);
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'all_users'=>$all_users, 'modules'=>$modules, 'stats'=>$user_stats, 'tab_select'=>$tab_select]);
     }
 
     public function userDetail($id) {
