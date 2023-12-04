@@ -43,7 +43,7 @@
                         </a>
                     </li>
                     @endif
-                    @if( $admin->super_admin == 1)
+                    @if( is_null($admin->partner) )
                     <li>
                         <a href="{{ route('rsm-map') }}">
                             RSM Regions

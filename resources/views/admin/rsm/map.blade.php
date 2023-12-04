@@ -23,6 +23,7 @@
                                 </div>
                             </div>
                         </div>
+                        @if ( $admin->super_admin )
                         <div class="text-center">
                             <div id="form-container" class="border border-1 p-1">
                                 <form id="states_form" action="{{route('rsm-map-submit')}}" method="post">
@@ -39,6 +40,7 @@
                                 </form>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
                     <svg id="map" class="map svg-content-responsive" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin meet" viewBox="0 0 960  550">
@@ -235,11 +237,12 @@
             const select = document.getElementById('region');
             let i;
 
-            for (i = 0; i < states.length; i++) {
-                states[i].addEventListener('click', statesToggle);
+            if ( select != null ) {
+                for (i = 0; i < states.length; i++) {
+                    states[i].addEventListener('click', statesToggle);
+                }
+                select.addEventListener('change', assignToggledStates);
             }
-
-            select.addEventListener('change', assignToggledStates);
         }, 500);
 
         function statesToggle() {

@@ -71,40 +71,86 @@ class AdminAuthController extends Controller
         return redirect()->route('adminLogin');
     }
 
-    public function adminIndex() {
+    public function adminIndex(Request $request) {
         $admin = auth()->guard('admin')->user();
         $modules = Module::all();
-        $users = null;
-        $rsm_users = null;
+        $all_users = null;
+        $tab_select = null;
 
-        // Get user list of only assigned states if admin is an RSM
-        if ( $admin->rsm != null ) {
-            $states = DB::table('usa_states')->where('rep', $admin->rsm)->get();
-            if ( count( $states ) > 0 ) {
-                $user_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
-                foreach ($states as $state) {
-                    $user_temp->orWhere('states', $state->abbrev );
-                }
-                $users = $user_temp->get();
-            }
-        } elseif ( $admin->partner != null ) {
-            $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->where('referer', $admin->partner)->get();
-        } else {
-            $users = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')->get();
+        // check if tabs have been selected. These params will pass from pagination clicks
+        // This will ativate the proper tab
+        if (!empty( $request->get('allusers') ) ) {
+            $tab_select = 'allusers';
+        }
+        elseif (!empty( $request->get('standardusers') ) ) {
+            $tab_select = 'standardusers';
         }
 
-        $users_count = (is_null( $users ) ) ? 0 : $users->count();
+
+        // Combine the user account information with their activities in the separate table
+        $users_temp = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
+
+        // Get user list of only assigned states if admin is an RSM
+        if ( !empty( $admin->rsm ) ) {
+
+            // This is for the one person who is both a super admin AND an RSM
+            // This allows them to see both his RSM list and the full list
+            if ( !empty( $admin->super_admin ) ) {
+               $all_users = $users_temp->paginate(15, ['*'], 'allusers');
+            }
+
+            $states = DB::table('usa_states')->where('rep', $admin->rsm)->get();
+            if ( count( $states ) > 0 ) {
+                foreach ($states as $state) {
+                    $users_temp->orWhere('states', $state->abbrev );
+                }
+            }
+        }
+
+
+        //Check if the admin is a partner
+        elseif ( !empty( $admin->partner ) ) {
+            $users_temp->where('referer', $admin->partner);
+        }
+
+        // Check if search field is used
+        if ( request()->filled('search') || !empty(session('search')) ) {
+            session(['search' => request()->search]);
+            $search = request()->search;
+            $users_temp->where('first_name', 'LIKE', '%' . $search . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $search . '%')
+                ->orWhere('states', 'LIKE', '%' . $search . '%')
+                ->orWhere('email', 'LIKE', '%' . $search . '%')
+                ->orWhere('companies', 'LIKE', '%' . $search . '%');
+        }
+
+        $tot_count = $users_temp->get();
+
+        // Do the final pull of users
+        $users = $users_temp->paginate(15, ['*'], 'standardusers');
+
+        // Check for a search
+        if ( session('search') ) {
+            $users->appends(['search'=> $search]);
+        }
 
         // counts for certs and training
-        $certs = User::whereNotNull('cert')->count();
-        $unfinished = UserActivity::whereNull('training_done')->count();
-        $finished = DB::table('users')
-            ->join('user_activities', function(JoinClause $join) {
-                $join->on('users.id', '=', 'user_activities.user_id')
-                    ->whereNull('users.cert')
-                    ->whereNotNull('user_activities.training_done');
-            })
-            ->count();
+        $users_count = ( is_null( $tot_count ) ) ? 0 : $tot_count->count();
+        $certs      = 0;
+        $unfinished = 0;
+        $finished   = 0;
+
+        foreach( $tot_count as $user ) {
+            if ( !empty( $user->cert ) ) {
+                $certs++;
+            }
+            elseif ( !empty( $user->training_done ) ) {
+                $finished++;
+            }
+            else {
+                $unfinished++;
+            }
+        }
 
         $user_stats = [
             'certs' => $certs,
@@ -113,7 +159,7 @@ class AdminAuthController extends Controller
             'total' => $users_count,
         ];
 
-        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'stats'=>$user_stats]);
+        return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'all_users'=>$all_users, 'modules'=>$modules, 'stats'=>$user_stats, 'tab_select'=>$tab_select]);
     }
 
     public function userDetail($id) {
@@ -231,7 +277,7 @@ class AdminAuthController extends Controller
                 if ( $rsm ) {
                     $rsm->notify(new RSM([
                         'subject' => 'Lion Energy Certification',
-                        'intro'   => $user->first_name . ' ' . $user->last_name . ' (' . $user->companies . ') is now a certified installer in the state of ' . ucwords($state->name) . '.',
+                        'intro'   => $user->first_name . ' ' . $user->last_name . ' (Company: ' . $user->companies . ') is now a certified installer in the state of ' . ucwords($state->name) . '.',
                         'message' => 'Lion Energy has confirmed the completion of their training and issued them a certification number.' . '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
                     ]));        }
                 }
