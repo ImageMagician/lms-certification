@@ -544,35 +544,38 @@ class AdminAuthController extends Controller
             'email' => 'required|email:rfc,dns'
         ]);
 
-        $data = new AdminReset;
-        $token = Hash::make(rand(24,24));
-
-        // upsert updates an existing record or inserts a new one
-        // https://laravel.com/docs/9.x/queries#upserts
-        $data->upsert([
-            [
-                'email' => $request->email,
-                'token' => $token
-            ]
-        ],
-            ['email'],
-            ['token']
-        );
-
         // Send email with password reset link
         $user = Admin::where('email', $request->email)->first();
 
-        $url = config('app.url');
+        if (!is_null($user)) {
+            $data = new AdminReset;
+            $token = Hash::make(rand(24,24));
 
-        $link = $url . '/admin/reset-password?token=' . $token . '&email=' . $request->email;
-        $notify_data = [
-            'intro' => 'You have requested to have your admin password reset for https://certification.lionenergy.com',
-            'url' => $link,
-        ];
+            // upsert updates an existing record or inserts a new one
+            // https://laravel.com/docs/9.x/queries#upserts
+            $data->upsert([
+                [
+                    'email' => $request->email,
+                    'token' => $token
+                ]
+            ],
+                ['email'],
+                ['token']
+            );
 
-        $user->notify( new AdminPasswordReset($notify_data) );
 
-        Session::flash('status', 'Thank you. Your password reset link has been sent to your email.');
+            $url = config('app.url');
+
+            $link = $url . '/admin/reset-password?token=' . $token . '&email=' . $request->email;
+            $notify_data = [
+                'intro' => 'You have requested to have your admin password reset for https://certification.lionenergy.com',
+                'url' => $link,
+            ];
+
+            $user->notify( new AdminPasswordReset($notify_data) );
+        }
+
+        Session::flash('status', 'Thank you. If your email was found in our system, your password reset link has been sent.');
         return redirect()->back();
     }
 
