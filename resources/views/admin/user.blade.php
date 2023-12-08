@@ -185,6 +185,9 @@
         function processingOverlay() {
             document.getElementById('main_overlay_bg').classList.toggle('show');
             document.getElementById('main_overlay_content').classList.toggle('show');
+
+            document.getElementById('overlay_bg').classList.remove('show');
+            document.getElementById('overlay_content').classList.remove('show');
         }
 
         setInterval(function() {

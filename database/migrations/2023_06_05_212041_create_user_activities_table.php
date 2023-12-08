@@ -26,9 +26,6 @@ return new class extends Migration
             $table->dateTime('module_10')->nullable();
             $table->dateTime('module_11')->nullable();
             $table->dateTime('module_12')->nullable();
-            $table->dateTime('review_end')->nullable();
-            $table->dateTime('review_end_admin_request')->nullable();
-            $table->dateTime('reivew_end_user_request')->nullable();
             $table->tinyInteger('training_done')->nullable();
             $table->timestamps();
         });
