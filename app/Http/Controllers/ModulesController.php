@@ -50,7 +50,7 @@ class ModulesController extends Controller
 
         // make sure the module id pulls an existing module
         // else redirect to home
-        if  ( !is_null( $module ) &&$activity->$prev_mod == 100 )
+        if  ( !is_null( $module ) && ( $activity->$prev_mod == 100 || $prev == 0 ) )
         {
             return view('modules', [ 'module'=>$module, 'user'=>$user, 'activity'=>$activity, 'docs'=>$docs, 'note'=>$note, 'msgs' => $msgs ]);
         }
