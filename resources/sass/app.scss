@@ -387,11 +387,16 @@ input#user_search {
 }
 
 .badge-danger {
-    background: red;
+    background: $medRed;
 }
 
 .badge-secondary {
     background: #6c757d;
+}
+
+/* -----   BUTTON COLORS   -----*/
+.btn-danger {
+    background: $medRed;
 }
 
 /* -----   Admin - User   ----- */
@@ -964,7 +969,7 @@ span.step-name {
 
     .table.table-tile {
         tr {
-            border-top-width:0;
+            border-bottom-width:0;
             border-right-width:0;
             border-left-width:0;
 
@@ -974,6 +979,14 @@ span.step-name {
                 color: black;
                 font-weight: normal;
                 letter-spacing: 0px;
+            }
+
+            &:first-child {
+                border-top-width:0;
+            }
+
+            &:last-child {
+                border-bottom-width:1px;
             }
         }
     }

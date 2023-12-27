@@ -32,6 +32,7 @@ Route::post('/home/step-6-change', [HomeController::class, 'step6DateChange'])->
 Route::post('/home/step-6-accept', [HomeController::class, 'step6DateAccept'])->name('userStep6Accept');
 
 Route::group(['prefix' => 'modules'], function() {
+    Route::get('/', [ModulesController::class, 'home'])->name('modules_home');
     Route::get('/{id}',[ModulesController::class, 'index'])->name('modules');
     Route::get('/{id}/quiz', [ModulesController::class, 'quiz'])->name('quiz');
     Route::put('/{id}/restart', [ModulesController::class, 'restartQuiz'])->name('quiz_restart');

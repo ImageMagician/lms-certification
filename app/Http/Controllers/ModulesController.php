@@ -27,6 +27,8 @@ use Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
 
 class ModulesController extends Controller
 {
+    // Used to get all the quiz results for the current user
+    // App/Traits/QuizResults.php
     use QuizResults;
 
     public function __construct()
@@ -42,15 +44,25 @@ class ModulesController extends Controller
         $note     = Note::where('user_id', $user->id)->where('module_id', $id)->where('admin_id', null)->first();
         $msgs     = Message::where('user_id', $user->id)->get();
 
+        // used to check for activity of the previous module
+        $prev     = sprintf('%02d',$id - 1);
+        $prev_mod = 'module_' . $prev;
+
         // make sure the module id pulls an existing module
         // else redirect to home
-        if  ($module ?? null ) {
-            return view('modules',[ 'module'=>$module, 'user'=>$user, 'activity'=>$activity, 'docs'=>$docs, 'note'=>$note, 'msgs' => $msgs ]);
+        if  ( !is_null( $module ) &&$activity->$prev_mod == 100 )
+        {
+            return view('modules', [ 'module'=>$module, 'user'=>$user, 'activity'=>$activity, 'docs'=>$docs, 'note'=>$note, 'msgs' => $msgs ]);
         }
         else {
             return redirect()->route('home');
         }
 
+    }
+
+    function home () {
+        // Used when user removes module number from URI.
+        return redirect()->route('home');
     }
 
     function quiz($id) {

@@ -91,11 +91,17 @@
                                 @endphp
                                 @if ( $activity != null )
                                     <tr class="d-block mb-3 mb-sm-0 d-sm-table-row p-2 p-sm-2
-                                        @if ($m->id > 1 && $activity->$module_prev == null) disabled @endif
+                                        @if ( $m->id > 1 && ( $activity->$module_prev == null || $activity->$module_prev < 100 ) )
+                                            disabled
+                                        @endif
 
-                                        @if ( $m->id == 1 && $activity->$module_id == null )
+                                        @if ( $m->id == 1 && ( is_null( $activity->$module_id )|| $activity->$module_id < 100 ) )
                                             focus
-                                        @elseif ( $m->id != 1 && $activity->$module_id == null && $activity->$module_prev !== null )
+                                        @elseif (
+                                            $m->id > 1 &&
+                                            $activity->$module_id < 100 &&
+                                            $activity->$module_prev == 100
+                                        )
                                             focus
                                         @endif
                                    ">
@@ -106,8 +112,10 @@
                                         <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                             <div class="d-sm-none text-right w-33 pe-2"><strong>Status:</strong></div>
                                             <div>
-                                                @if ( $activity->$module_id !== null)
-                                                    <span class="badge badge-success d-inline-block ms-2 vertical-align-middle">Complete</span>
+                                                @if ( $activity->$module_id == 100 )
+                                                    <span class="badge badge-success d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Complete</span>
+                                                @elseif ( $activity->$module_id > 0 && $activity->$module_id < 100 )
+                                                    <span class="badge badge-danger d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Retake</span>
                                                 @endif
                                             </div>
                                         </td>
@@ -163,7 +171,10 @@
                                                     @endif
                                                     ">Restart Quiz</button>
                                                 </form>
-                                                @elseif ( ( $activity->$module_id == null && $activity->$module_prev ) || ( $activity->$module_id == null && $m->id == 1))
+                                                @elseif (
+                                                    ( $activity->$module_id == null && !is_null( $activity->$module_prev ) && $activity->$module_prev == 100 ) ||
+                                                    ( is_null( $activity->$module_id ) && $m->id == 1)
+                                                )
                                                     <a class="btn btn-primary btn-small w-100" href="/modules/{{ $m['id'] }}">Watch Video &amp; Take Quiz</a>
                                                 @endif
                                             </div>

@@ -12,6 +12,9 @@
                         You have answered {{ $answers[$module->id] }} of the {{ $q_tot[$module->id] }} questions correctly.
                     @endif
                 </h3>
+                @if ( $answers[$module->id] < $q_tot[$module->id] )
+                    <p class="text-danger">You must answer 100% of the questions correctly to move on to the next module. Please watch the video segments below for the questions you got incorrect and retake the quiz.</p>
+                @endif
                     @if ( $answers[$module->id] < $q_tot[$module->id] )
                     <div class="upload_container">
 
@@ -59,11 +62,13 @@
                         <button type="submit" class="btn btn-tertiary w-100">Rewatch Video</button>
                     </form>
                     <a href="/home" class="btn @if ($mod_check == null) btn-primary @else btn-tertiary @endif me-2 mb-2 w-100 w-sm-auto vertical-align-bottom">Main Menu</a>
-                    @if ( $mod_check != null)
-                        <a href="/modules/{{ $next }}" class="btn btn-primary me-2 mb-2 w-100 w-sm-auto vertical-align-bottom">Next Module</a>
-                    @else
+                    @if ( $mod_check != null )
+                        @if ( $answers[$module->id] == $q_tot[$module->id] )
+                            <a href="/modules/{{ $next }}" class="btn btn-primary me-2 mb-2 w-100 w-sm-auto vertical-align-bottom">Next Module</a>
+                        @endif
+                    @elseif ($answers[$module->id] == $q_tot[$module->id] )
                         <h4 class="mt-3">Training complete</h4>
-                        @if ( $activity->training_done == null)
+                        @if ( $activity->training_done == null )
                         <p>
                             You have completed the video training for certification. Click the button below to submit your request for a certification number.
                             A Lion Energy representative will reach out to you via email or phone to complete your training and provide you a certification number
