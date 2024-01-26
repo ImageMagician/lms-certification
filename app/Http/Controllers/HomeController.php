@@ -230,6 +230,7 @@ class HomeController extends Controller
                 'last_name' => $request->last_name,
                 'phone' => $request->phone,
                 'companies' => $request->companies,
+                'states' => $request->states,
             ]);
 
         }
