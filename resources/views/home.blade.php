@@ -21,14 +21,17 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     Phone number: {{ $user->phone }}
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     Email: {{ $user->email }}
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     Company: {{ $user->companies }}
+                </div>
+                <div class="col-sm-3">
+                    State: {{ $user->states }}
                 </div>
             </div>
         </div>

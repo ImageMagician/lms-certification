@@ -83,7 +83,17 @@
                                 <label for="states" class="col-md-4 col-form-label text-md-end">{{ __('States where certified') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="states" type="companies" class="form-control" name="states" value="{{ $user->states }}">
+                                    <select id="states" type="companies" class="form-control" name="states">
+                                        @foreach( $states as $state )
+                                            <option value="{{ $state->abbrev }}"
+                                                @if ( $user->states == $state->abbrev)
+                                                    selected
+                                                @endif
+                                            >
+                                                {{ $state->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
 
                                     @error('companies')
                                     <span class="invalid-feedback" role="alert">

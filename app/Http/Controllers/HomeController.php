@@ -16,6 +16,7 @@ use App\Traits\QuizResults;
 use Auth;
 use Illuminate\Support\Facades\Session;
 use App\Notifications\Step3;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -220,7 +221,12 @@ class HomeController extends Controller
 
     public function info() {
         $user_info = $this->userPull();
-        return view('contact')->with(["user"=>$user_info['user']]);
+        $states = DB::table('usa_states')->get();
+        return view('contact')
+            ->with([
+                "user"=>$user_info['user'],
+                "states"=>$states ]
+            );
     }
 
     public function infoProcess(Request $request) {
