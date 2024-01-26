@@ -238,7 +238,6 @@ class HomeController extends Controller
                 'companies' => $request->companies,
                 'states' => $request->states,
             ]);
-
         }
         return redirect()->route('home', ["update"=>'user']);
     }
