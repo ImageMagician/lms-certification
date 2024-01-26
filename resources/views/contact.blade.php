@@ -11,7 +11,7 @@
                         <p>Update your contact information</p>
                         <form method="post" action="{{ route('info-process') }}">
                             <div class="row mb-3">
-                                <label for="first_name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
+                                <label for="first_name" class="col-md-4 col-form-label text-md-end">{{ __('First Name') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="first_name" value="{{ $user->first_name }}" required autocomplete="name" autofocus>
@@ -25,7 +25,7 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
+                                <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Last Name') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="last_name" type="text" class="form-control @error('name') is-invalid @enderror" name="last_name" value="{{ $user->last_name }}" required autocomplete="name" autofocus>
