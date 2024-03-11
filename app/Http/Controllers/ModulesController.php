@@ -156,9 +156,15 @@ class ModulesController extends Controller
                     if ($rep) {
                         $rep->notify(new RSM([
                             'subject' => 'User Certification',
-                            'intro' => '<strong>User training completion.</strong>',
-                            'message' => $user->first_name . ' ' . $user->last_name . ' (company: ' . $user->companies . ', state: ' . $state->name .') has completed the Sanctuary certification training.' .
-                                '<p>The ESS Team has been notified. Please verify that this user gets certified in a timely manner.</p>',
+                            'intro'   => '<strong>User training completion.</strong>',
+                            'message' => 'The following person has completed the Sanctuary certification training.</p><p>The ESS Team has been notified. Please verify that this user gets certified in a timely manner.</p>
+                                       <ul>
+                                        <li>' . $user->first_name . ' ' . $user->last_name . '</li>
+                                        <li>Company: ' . $user->companies . '</li>
+                                        <li>State: ' . $state->name . '</li>
+                                        <li>Email: ' . $user->email . '</li>
+                                        <li>Phone: ' . $user->phone . '</li>
+                                      </ul>',
                         ]));
                     }
                 }
@@ -167,8 +173,14 @@ class ModulesController extends Controller
                 $admin->notify(new Step3([
                     'subject' => 'User Certification',
                     'intro'   => '<strong>User training completion.</strong>',
-                    'message' => $user->first_name . ' ' . $user->last_name . ' (company: ' . $user->companies . ', state: ' . $state->name . ') has completed the Sanctuary certification training and is ready to be registered as a certified installer',
-                    'outtro'  => 'Click the button to review their progress and certify them.',
+                    'message' => '<p>The following person has completed the Sanctuary certification training and is ready to be registered as a certified installer</p>',
+                    'outtro'  => '<ul>
+                                        <li>' . $user->first_name . ' ' . $user->last_name . '</li>
+                                        <li>Company: ' . $user->companies . '</li>
+                                        <li>State: ' . $user->states . '</li>
+                                        <li>Email: ' . $user->email . '</li>
+                                        <li>Phone: ' . $user->phone . '</li>
+                                      </ul>',
                     'url'     => route('userDetail', ['id' => $user->id]),
                 ]));
 
@@ -177,8 +189,14 @@ class ModulesController extends Controller
                     $s->notify(new Step3([
                         'subject' => 'User Certification',
                         'intro'   => '<strong>User training completion.</strong>',
-                        'message' => $user->first_name . ' ' . $user->last_name . ' (company: ' . $user->companies . ', state: ' . $state->name . ') has completed the Sanctuary certification training.',
-                        'outtro'  => 'The ESS Team has been notified. Please verify that this user gets certified in a timely manner.',
+                        'message' => 'The following person has completed the Sanctuary certification training.</p><p>The ESS Team has been notified. Please verify that this user gets certified in a timely manner.</p>',
+                        'outtro'  => '<ul>
+                                        <li>' . $user->first_name . ' ' . $user->last_name . '</li>
+                                        <li>Company: ' . $user->companies . '</li>
+                                        <li>State: ' . $user->states . '</li>
+                                        <li>Email: ' . $user->email . '</li>
+                                        <li>Phone: ' . $user->phone . '</li>
+                                      </ul>',
                         'url'     => route('userDetail', ['id' => $user->id]),
                     ]));
                 }

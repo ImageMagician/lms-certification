@@ -277,8 +277,8 @@ class AdminAuthController extends Controller
                 if ( $rsm ) {
                     $rsm->notify(new RSM([
                         'subject' => 'Lion Energy Certification',
-                        'intro'   => $user->first_name . ' ' . $user->last_name . ' (Company: ' . $user->companies . ') is now a certified installer in the state of ' . ucwords($state->name) . '.',
-                        'message' => 'Lion Energy has confirmed the completion of their training and issued them a certification number.' . '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
+                        'intro'   => '<p>The following person is now a certified installer: </p><ul><li>' . $user->first_name . ' ' . $user->last_name . '</li><li>Company: ' . $user->companies . '</li><li>Email: ' . $user->email  .'</li><li>Phone: ' . $user->phone . '</li><li>State:  ' . ucwords($state->name) . '</li></ul>',
+                        'message' => '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
                     ]));        }
                 }
             }
