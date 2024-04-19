@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('title')
-    User Detail : {{ $user->name }}
+    User Detail : {{ $user->first_name }} {{ $user->last_name }}
 @endsection
 
 @section('content')
