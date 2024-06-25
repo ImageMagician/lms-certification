@@ -11,74 +11,70 @@
                     <div class="col-lg-3 col-xl-2 py-3 pe-2 ps-3">
                         <div class="p-3 bg-white border mb-3 mb-lg-0 border-r-6">
                             <h2 class="h4">User Stats</h2>
-                            <div class="row m-0">
+                            <div class="row m-0 @if( empty($_GET['filter']) || ( !empty( $_GET['filter'] ) && $_GET['filter'] === 'all' ) ) border border-primary @else border-bottom @endif">
                                 <div class="p-2 col-6 border-bottom">
                                     Total users:
                                 </div>
                                 <div class="p-2 col-6 border-bottom">
                                     {{ $stats['total'] }}
+                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
+                                        <input type="hidden" name="filter" value="">
+                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="row m-0">
-                                <div class="p-2 col-6 border-bottom">
+                            <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'certified' ) border border-primary @else border-bottom @endif">
+                                <div class="p-2 col-6">
                                     Certified:
                                 </div>
-                                <div class="p-2 col-6 border-bottom">
+                                <div class="p-2 col-6">
                                     {{ $stats['certs'] }}
+                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
+                                        <input type="hidden" name="filter" value="certified">
+                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="row m-0">
-                                <div class="p-2 col-6 border-bottom">
+                            <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'finished' ) border border-primary @else border-bottom @endif">
+                                <div class="p-2 col-6">
                                     Cert ready:
                                 </div>
-                                <div class="p-2 col-6 border-bottom">
+                                <div class="p-2 col-6">
                                     {{ $stats['finished'] }}
+                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
+                                        <input type="hidden" name="filter" value="finished">
+                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="row m-0">
+                            <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'unfinished' ) border border-primary @else border-bottom @endif">
                                 <div class="p-2 col-6">
                                     In progress:
                                 </div>
                                 <div class="p-2 col-6">
                                     {{ $stats['unfinished'] }}
+                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
+                                        <input type="hidden" name="filter" value="unfinished">
+                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-9 col-xl-10 py-3 pe-3 ps-2">
                         <div class="p-3 bg-white border mb-3 mb-lg-0 border-r-6">
-                            <div class="position-relative clearfix">
+                            <div class="position-relative clearfix mb-2">
                                 <h1 class="h4 d-inline-block">
                                     Installer List
-                                    @if ( $admin->partner != null )
-                                        : {{ ucwords( $admin->partner ) }}
-                                    @endif
                                 </h1>
                                 <form method="get" action="{{ route('adminDashboard') }}" class="float-right form-control w-sm-auto p-0 ps-1 focus-0">
-                                    <input id="user_search" name="search" type="text" class="d-inline-block border-0" placeholder="Search users&hellip;" value="{{ request()->search; }}">
-                                    <button type="submit" class="btn">&#128269;</button>
+                                    <input id="user_search" name="search" type="text" class="d-inline-block border-0" placeholder="Search users&hellip;" value="{{ session('search') }}">
+                                    <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 </form>
                             </div>
-
-                            @if ( !empty( $all_users ) )
-                                <ul class="nav nav-tabs" id="MyTabs" role="tablist">
-                                    <li class="nav-item">
-                                        <a class="nav-link @if( $tab_select == 'standardusers' || is_null($tab_select) ) active @endif" href="#standardusers" id="standardusers-tab" data-toggle="tab" role="tab" aria-controls="standardusers" aria-selected="true">
-                                            Regional Users
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link @if( $tab_select == 'allusers' ) active @endif" href="#allusers" id="allusers-tab" data-toggle="tab" role="tab" aria-controls="allusers" aria-selected="true">
-                                            All Users
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content" id="MyTabsContent">
-                                    <div class="tab-pane fade show @if( $tab_select == 'standardusers' || is_null($tab_select) ) active @endif py-3" id="standardusers" role="tabpanel" aria-labelledby="allusers-tab">
+                            @if ( count($users) == 0 )
+                                <h2 class="text-center py-5" style="opacity:.5">No users found for &ldquo;{{ session('search') }}&rdquo;.</h2>
                             @else
-                                <div class="py-3">
-                            @endif
-
                             {{-- Pagination --}}
                             {{ $users->links() }}
 
@@ -93,223 +89,47 @@
                                         <th>Step {{ $m->id }}</th>
                                     @endforeach
                                 </tr>
-                                @if (is_null($users))
-                                @else
-                                    @foreach($users as $u)
-                                        @if ( $u->training_done == 1 && is_null( $u->cert ) )
-                                        <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                            <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
-                                            <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                            <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
-                                            <td class="name w-auto">{{$u->states}}</td>
-                                            <td class="table-action px-lg-2">
-                                                @if ( $u->cert === NULL )
-                                                    <a class="btn btn-small btn-primary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                        CERTIFY
-                                                    </a>
-                                                @else
-                                                    <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
-                                                        <strong>{{$u->cert}}</strong>
-                                                    </a>
-                                                @endif
-                                            </td>
-                                            @foreach($modules as $m)
-                                                <td>
-                                                    @php
-                                                        $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                    @endphp
-                                                    <span class="step-name">Step {{$m->id}}</span>
-                                                    <div class="text-center small py-1
-                                                                @if ( $u->$mod_id === NULL )
-                                                                    opacity-0 d-inline-block
-                                                                @elseif ( $u->$mod_id < 75 )
-                                                                    bg-red
-                                                                @else
-                                                                    bg-green
-                                                                @endif
-                                                            ">
-                                                        {{ $u->$mod_id }}%
-                                                    </div>
-                                                </td>
-                                            @endforeach
-                                        </tr>
-                                        @endif
-                                    @endforeach
-                                @endif
-                                </tr>
-                                <tr class="border-0 p-0"><td colspan="17" class="p-0 border-black w-100"></td></tr>
-                                @if( is_null( $users ) )
-                                    <tr>
-                                        <td colspan="17">
-                                            <h3 class="py-3 text-center" style="opacity:.5">
-                                                No users registered in your region.
-                                            </h3>
+                                @foreach($users as $u)
+                                    <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
+                                        <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
+                                        <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
+                                        <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
+                                        <td class="name w-auto">{{$u->states}}</td>
+                                        <td class="table-action px-lg-2">
+                                            @if ( $u->cert === null )
+                                                <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
+                                                    VIEW
+                                                </a>
+                                            @else
+                                                <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
+                                                    <strong>{{$u->cert}}</strong>
+                                                </a>
+                                            @endif
                                         </td>
-                                    </tr>
-                                @else
-                                    @foreach($users as $u)
-                                        @if (( $u->training_done == null && $u->cert == null ) || $u->cert !== NULL )
-                                            <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                                <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
-                                                <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                                <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
-                                                <td class="name w-auto">{{$u->states}}</td>
-                                                <td class="table-action px-lg-2">
-                                                    @if ( $u->cert == null )
-                                                        <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                            VIEW
-                                                        </a>
+                                        @foreach($modules as $m)
+                                            <td>
+                                                @php
+                                                    $mod_id = 'module_' . sprintf("%02d", $m->id);
+                                                @endphp
+                                                <span class="step-name">Step {{$m->id}}</span>
+                                                <div class="text-center small py-1
+                                                    @if ( is_null( $u->$mod_id ) )
+                                                        opacity-0 d-inline-block
+                                                    @elseif ( $u->$mod_id < 75 )
+                                                        bg-red
                                                     @else
-                                                        <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
-                                                            <strong>{{$u->cert}}</strong>
-                                                        </a>
+                                                        bg-green
                                                     @endif
-                                                </td>
-                                                @foreach($modules as $m)
-                                                    <td>
-                                                        @php
-                                                            $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                        @endphp
-                                                        <span class="step-name">Step {{$m->id}}</span>
-                                                        <div class="text-center small py-1
-                                                            @if ( is_null( $u->$mod_id ) )
-                                                                opacity-0 d-inline-block
-                                                            @elseif ( $u->$mod_id < 75 )
-                                                                bg-red
-                                                            @else
-                                                                bg-green
-                                                            @endif
-                                                        ">
-                                                            {{ $u->$mod_id }}%
-                                                        </div>
-                                                    </td>
-                                                @endforeach
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                @endif
+                                                ">
+                                                    {{ $u->$mod_id }}%
+                                                </div>
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
                             </table>
 
                             {{ $users->links() }}
-
-                            @if (!empty( $all_users))
-                                    </div>
-                                    <div class="tab-pane fade show @if( $tab_select == 'allusers' ) active @endif py-3" id="allusers" role="tabpanel" aria-labelledby="allusers-tab">
-                                        {{-- Pagination --}}
-                                        {{ $all_users->links() }}
-
-                                        <table class="table admin-table">
-                                            <tr class="th-header">
-                                                <th>First name</th>
-                                                <th>Last Name</th>
-                                                <th>Company</th>
-                                                <th>State</th>
-                                                <th>Action</th>
-                                                @foreach($modules as $m)
-                                                    <th>Step {{ $m->id }}</th>
-                                                @endforeach
-                                            </tr>
-                                            @if (is_null($all_users))
-                                            @else
-                                                @foreach($all_users as $u)
-                                                    @if ( $u->training_done == 1 && is_null( $u->cert ) )
-                                                        <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                                            <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
-                                                            <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                                            <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
-                                                            <td class="name w-auto">{{$u->states}}</td>
-                                                            <td class="table-action px-lg-2">
-                                                                @if ( $u->cert === NULL )
-                                                                    <a class="btn btn-small btn-primary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                                        CERTIFY
-                                                                    </a>
-                                                                @else
-                                                                    <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
-                                                                        <strong>{{$u->cert}}</strong>
-                                                                    </a>
-                                                                @endif
-                                                            </td>
-                                                            @foreach($modules as $m)
-                                                                <td>
-                                                                    @php
-                                                                        $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                                    @endphp
-                                                                    <span class="step-name">Step {{$m->id}}</span>
-                                                                    <div class="text-center small py-1
-                                                                @if ( $u->$mod_id === NULL )
-                                                                    opacity-0 d-inline-block
-                                                                @elseif ( $u->$mod_id < 75 )
-                                                                    bg-red
-                                                                @else
-                                                                    bg-green
-                                                                @endif
-                                                            ">
-                                                                        {{ $u->$mod_id }}%
-                                                                    </div>
-                                                                </td>
-                                                            @endforeach
-                                                        </tr>
-                                                        @endif
-                                                        @endforeach
-                                                        @endif
-                                                        </tr>
-                                                        <tr class="border-0 p-0"><td colspan="17" class="p-0 border-black w-100"></td></tr>
-                                                        @if( is_null( $all_users ) )
-                                                            <tr>
-                                                                <td colspan="17">
-                                                                    <h3 class="py-3 text-center" style="opacity:.5">
-                                                                        No users registered in your region.
-                                                                    </h3>
-                                                                </td>
-                                                            </tr>
-                                                        @else
-                                                            @foreach($all_users as $u)
-                                                                @if (( $u->training_done == null && $u->cert == null ) || $u->cert !== NULL )
-                                                                    <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                                                        <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
-                                                                        <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                                                        <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
-                                                                        <td class="name w-auto">{{$u->states}}</td>
-                                                                        <td class="table-action px-lg-2">
-                                                                            @if ( $u->cert == null )
-                                                                                <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                                                    VIEW
-                                                                                </a>
-                                                                            @else
-                                                                                <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
-                                                                                    <strong>{{$u->cert}}</strong>
-                                                                                </a>
-                                                                            @endif
-                                                                        </td>
-                                                                        @foreach($modules as $m)
-                                                                            <td>
-                                                                                @php
-                                                                                    $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                                                @endphp
-                                                                                <span class="step-name">Step {{$m->id}}</span>
-                                                                                <div class="text-center small py-1
-                                                            @if ( is_null( $u->$mod_id ) )
-                                                                opacity-0 d-inline-block
-                                                            @elseif ( $u->$mod_id < 75 )
-                                                                bg-red
-                                                            @else
-                                                                bg-green
-                                                            @endif
-                                                        ">
-                                                                                    {{ $u->$mod_id }}%
-                                                                                </div>
-                                                                            </td>
-                                                                        @endforeach
-                                                                    </tr>
-                                                                @endif
-                                                            @endforeach
-                                                        @endif
-                                        </table>
-                                        {{ $all_users->links() }}
-                                    </div>
-                                </div>
-                            @else
-                                </div>
                             @endif
                         </div>
                     </div>
