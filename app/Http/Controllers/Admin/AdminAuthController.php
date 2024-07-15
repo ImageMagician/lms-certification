@@ -796,3 +796,55 @@ class AdminAuthController extends Controller
     }
 
 }
+ $admin = auth()->guard('admin')->user();
+        $list = Admin::all();
+
+        return view('admin.admins-view')->with(['admin'=>$admin, 'list'=>$list]);
+    }
+
+    function adminIndividual($id) {
+        $admin = auth()->guard('admin')->user();
+        $user = Admin::where('id', $id)->first();
+
+        return view('admin.admins-individual')->with(['admin'=>$admin, 'user'=>$user]);
+    }
+
+    function adminIndividualDelete(Request $request) {
+        $user = Admin::where('id', $request->id)->delete();
+        if ( $user == 1) {
+            Session::flash('success','The user has been deleted.');
+        }
+        else {
+            Session::flash('error','There was a problem deleting the user.');
+        }
+
+        return redirect(route('admin-list'));
+    }
+
+}
+ $admin = auth()->guard('admin')->user();
+        $list = Admin::all();
+
+        return view('admin.admins-view')->with(['admin'=>$admin, 'list'=>$list]);
+    }
+
+    function adminIndividual($id) {
+        $admin = auth()->guard('admin')->user();
+        $user = Admin::where('id', $id)->first();
+
+        return view('admin.admins-individual')->with(['admin'=>$admin, 'user'=>$user]);
+    }
+
+    function adminIndividualDelete(Request $request) {
+        $user = Admin::where('id', $request->id)->delete();
+        if ( $user == 1) {
+            Session::flash('success','The user has been deleted.');
+        }
+        else {
+            Session::flash('error','There was a problem deleting the user.');
+        }
+
+        return redirect(route('admin-list'));
+    }
+
+}

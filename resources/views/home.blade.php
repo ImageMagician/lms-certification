@@ -84,6 +84,7 @@
                         </tr>
                             @foreach ($modules as $m)
                                 @php
+                                    $perc = 0;
                                     $prev_id = ( $m['id']-1 <= 1 ) ? 1 : $m['id']-1;
                                     $mod_prev = ( $m['id']-2 <= 0 ) ? 0 : $m['id']-2;
 
@@ -92,7 +93,7 @@
                                     $module_prev = 'module_' . sprintf('%02d', $prev_id);
                                     $module_date = $module_id . '_date';
                                 @endphp
-                                @if ( $activity != null )
+                                @if ( !is_null($activity) )
                                     <tr class="d-block mb-3 mb-sm-0 d-sm-table-row p-2 p-sm-2
                                         @if ( $m->id > 1 && ( $activity->$module_prev == null || $activity->$module_prev < 100 ) )
                                             disabled
@@ -144,7 +145,7 @@
                                                             <span class="text-danger"><strong>
                                                         @endif
                                                         {{ $answers[$m->id] }} /
-                                                        {{ $questions[$m->id] }} correct
+                                                         {{ $questions[$m->id] }} correct
                                                         ({{ $perc }}%)
                                                         @if ( $perc < 75 )
                                                             </strong></span>
@@ -160,7 +161,7 @@
                                             <div class="d-block w-67 w-sm-100">
                                                 @if ( $activity->$module_id !== null )
                                                 <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block d-sm-block my-sm-2 my-xxl-0 d-xxl-inline-block me-2 me-sm-0 me-xxl-2 text-nowrap
-                                                    @if ($perc < 75)
+                                                    @if ($perc < 100)
                                                         btn-danger
                                                     @endif
                                                 ">Replay Video</a>
@@ -169,7 +170,7 @@
                                                     <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
                                                     <input type="hidden" name="_method" value="PUT">
                                                     <button type="submit" class="btn btn-tertiary btn-small w-100 text-nowrap
-                                                    @if ($perc < 75)
+                                                    @if ($perc < 100)
                                                         btn-danger
                                                     @endif
                                                     ">Restart Quiz</button>

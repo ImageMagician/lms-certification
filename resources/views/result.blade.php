@@ -120,11 +120,15 @@
             document.getElementById('close_btn').addEventListener('click', toggleVid, false);
 
             // disable the cert button when clicked
-            document.getElementById('cert_request').addEventListener('click', ()=> {
-                document.getElementById('overlay_bg').removeEventListener('click', toggleVid);
-                document.getElementById('overlay_bg').classList.toggle('show');
-                document.getElementById('overlay_bullets').classList.toggle('show');
-            });
+            const cert_request =  document.getElementById('cert_request');
+
+            if ( cert_request !== null ) {
+                cert_request.addEventListener('click', () => {
+                    document.getElementById('overlay_bg').removeEventListener('click', toggleVid);
+                    document.getElementById('overlay_bg').classList.toggle('show');
+                    document.getElementById('overlay_bullets').classList.toggle('show');
+                });
+            }
         }, 250);
 
         function showVid() {

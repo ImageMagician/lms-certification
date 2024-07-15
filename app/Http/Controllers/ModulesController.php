@@ -65,8 +65,25 @@ class ModulesController extends Controller
         return redirect()->route('home');
     }
 
+    function videoEnd(Request $request) {
+        $user = Auth::user();
+        $video = sprintf('%02d', $request->input('video'));
+        $video = 'module_' . $video . '_video';
+        DB::table('user_activities')->where('user_id', $user->id)->update([$video => 1]);
+    }
+
     function quiz($id) {
         $user = Auth::user();
+
+        //Check if the video has been watched by the user
+        $double_id = sprintf("%02d", $id);
+        $video = 'module_' . $double_id . '_video';
+
+        $videoCheck = UserActivity::where('user_id', $user->id)->first();
+
+        if ( is_null( $videoCheck->$video ) ) {
+            return redirect()->route('modules', ['id' => $id]);
+        }
 
         $module = Module::find($id);
 
@@ -75,51 +92,44 @@ class ModulesController extends Controller
         $qNa = $this->getQuizResults();
 
         // Don't allow  for someone to put in a module id that doesn't exist in the db
-        if ($qNa['t'][$id] ?? null) {
-        } else {
+        if (is_null($qNa['t'][$id])) {
             return redirect()->route('home');
         }
 
-        // If no questions are found, notify the user
-        if ( $qNa['t'][$id] == 0 ) {
-            return redirect()->route('home');
+        // pull last answered question by user for that module and add 1.
+        $last = ModuleAnswer::where('user_id', $user->id)
+            ->where('module_id', $module->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $next1 = ( $last == null ) ? 1 : $last->q_id + 1;
+
+        // Get the next question. If nothing there, go to results
+        $quiz = ModuleQuiz::where('module_id', $module->id)
+            ->where('q_id', $next1)
+            ->get();
+
+        if ( count($quiz) > 0 ) {
+            return view('quiz',['module'=>$module, 'quiz'=>$quiz, 'user'=>$user]);
         }
         else {
-            // pull last answered question by user for that module and add 1.
-            $last = ModuleAnswer::where('user_id', $user->id)
-                ->where('module_id', $module->id)
-                ->orderBy('id', 'desc')
-                ->first();
+            $mod_id = 'module_' . sprintf("%02d", $module->id);
 
-            $next1 = ( $last == null ) ? 1 : $last->q_id + 1;
+            $next_mod = $module->id + 1;
 
-            // Get the next question. If nothing there, go to results
-            $quiz = ModuleQuiz::where('module_id', $module->id)
-                ->where('q_id', $next1)
-                ->get();
+            $mod_check = Module::where('id', $next_mod)->first();
+            $q_list = ModuleQuiz::where('module_id', $module->id)->get();
+            $a_list = ModuleAnswer::where('module_id', $module->id)->where('user_id', $user->id)->get();
+            $activity = UserActivity::where('user_id', $user->id)->first();
 
-            if ( count($quiz) > 0 ) {
-                return view('quiz',['module'=>$module, 'quiz'=>$quiz, 'user'=>$user]);
-            }
-            else {
-                $mod_id = 'module_' . sprintf("%02d", $module->id);
+            $perc = $qNa['a'][$module->id] / $qNa['t'][$module->id] * 100;
 
-                $next_mod = $module->id + 1;
-
-                $mod_check = Module::where('id', $next_mod)->first();
-                $q_list = ModuleQuiz::where('module_id', $module->id)->get();
-                $a_list = ModuleAnswer::where('module_id', $module->id)->where('user_id', $user->id)->get();
-                $activity = UserActivity::where('user_id', $user->id)->first();
-
-                $perc = $qNa['a'][$module->id] / $qNa['t'][$module->id] * 100;
-
-                // Post percentage to user_activities
-                UserActivity::where('user_id', $user->id)
-                    ->update([
-                        $mod_id=>$perc
-                    ]);
-                return view('result', ['module'=>$module, 'user'=>$user, 'activity'=>$activity,'next'=>$next_mod, 'mod_check'=>$mod_check, 'q_tot'=>$qNa['t'], 'questions'=>$qNa['q'], 'answers'=>$qNa['a'], 'q_list'=>$q_list, 'a_list'=>$a_list]);
-            }
+            // Post percentage to user_activities
+            UserActivity::where('user_id', $user->id)
+                ->update([
+                    $mod_id=>$perc
+                ]);
+            return view('result', ['module'=>$module, 'user'=>$user, 'activity'=>$activity,'next'=>$next_mod, 'mod_check'=>$mod_check, 'q_tot'=>$qNa['t'], 'questions'=>$qNa['q'], 'answers'=>$qNa['a'], 'q_list'=>$q_list, 'a_list'=>$a_list]);
         }
     }
 
