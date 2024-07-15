@@ -164,7 +164,7 @@
                                                         btn-danger
                                                     @endif
                                                 ">Replay Video</a>
-                                                <form action="/modules/@php echo sprintf("%02d", $m->id); @endphp/restart" method="post" class="me-2 me-sm-0 me-xxl-2 my-sm-2 my-xxl-0 d-inline-block d-sm-block d-xxl-inline-block">
+                                                <form action="/modules/@php echo sprintf('%02d', $m->id); @endphp/restart" method="post" class="me-2 me-sm-0 me-xxl-2 my-sm-2 my-xxl-0 d-inline-block d-sm-block d-xxl-inline-block">
                                                     @csrf
                                                     <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
                                                     <input type="hidden" name="_method" value="PUT">
