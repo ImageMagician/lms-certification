@@ -38,16 +38,31 @@
 @endsection
 
 @section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         setTimeout( () => {
             const vid_player = document.getElementById('video_player');
-            if ( vid_player !== null ) {
-                vid_player.addEventListener('ended', () => {
-                    document.getElementById('quiz_btn_overlay').className = 'show';
+            $(vid_player).on('ended', () => {
+                document.getElementById('quiz_btn_overlay').className = 'show';
+                $.ajax({
+                    url: "{{ route('video-end', ['id' => $module->id ]) }}",
+                    type: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        user: {{ $user->id }},
+                        video: {{ $module->id }}
+                    },
+                    success: (response) => {
+                        console.log('video completion logged.');
+                    },
+                    error: (xhr, status, error) => {
+                        console.error('video log couldn\'t be completed.', error);
+                }
                 });
-            }
+            });
 
-            const btn_restart = document.getElementById('btn_restart_video');
+
+        const btn_restart = document.getElementById('btn_restart_video');
             btn_restart.addEventListener('click', function () {
                 document.getElementById('quiz_btn_overlay').classList.remove('show');
                 vid_player.play();

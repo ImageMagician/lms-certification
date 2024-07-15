@@ -35,6 +35,7 @@ Route::group(['prefix' => 'modules'], function() {
     Route::get('/', [ModulesController::class, 'home'])->name('modules_home');
     Route::get('/{id}',[ModulesController::class, 'index'])->name('modules');
     Route::get('/{id}/quiz', [ModulesController::class, 'quiz'])->name('quiz');
+    Route::post('{id}/video-end', [ModulesController::class, 'videoEnd'])->name('video-end');
     Route::put('/{id}/restart', [ModulesController::class, 'restartQuiz'])->name('quiz_restart');
     Route::put('/{id}/rewatch', [ModulesController::class, 'restartVideo'])->name('video_restart');
     Route::post('/add-message', [ModulesController::class, 'add_message'])->name('add-message');
