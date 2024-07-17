@@ -48,7 +48,7 @@ class Step3 extends Notification
             ->line(new HtmlString($this->notify_data['intro']))
             ->line(new HtmlString($this->notify_data['message']))
             ->line(new HtmlString($this->notify_data['outtro']))
-            ->action('View Dashboard', $this->notify_data['url']);
+            ->action($this->notify_data['url_display'], $this->notify_data['url']);
     }
 
     /**

@@ -21,7 +21,7 @@ class RSM extends Notification
         $this->notify_data = $notify_data;
     }
 
-    /**
+     /**
      * Get the notification's delivery channels.
      *
      * @return array<int, string>

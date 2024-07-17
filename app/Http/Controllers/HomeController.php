@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\ModuleAnswer;
 use App\Models\ModuleQuiz;
+use App\Models\UserInvite;
 use Illuminate\Http\Request;
 use App\Models\UserActivity;
 use App\Models\Message;
@@ -30,7 +31,7 @@ class HomeController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth', 'verified']);
+        $this->middleware(['auth', 'verified'], ['except' =>'inviteAccept']);
     }
 
     // Use this function to get all the information on the user for use in views and functions
@@ -242,4 +243,23 @@ class HomeController extends Controller
         return redirect()->route('home' );
     }
 
+    public function inviteAccept() {
+        // check for token and email params
+        if (!$_GET || !$_GET['token'] || !$_GET['email'] ) {
+            return redirect()->route('index');
+        }
+
+        // filter params
+        $token = filter_var($_GET['token']);
+        $email = filter_var($_GET['email']);
+
+        // check if user is found in the user_invites table and the token matches the db
+        $invite = UserInvite::where('email', $email)->first();
+
+        if ( is_null( $invite ) || $invite->token !== $token) {
+            return redirect()->route('index');
+        }
+
+        return view('invite-accept', ['admin' => $invite->admin_id, 'user' => $invite]);
+    }
 }

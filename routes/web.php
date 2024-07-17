@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\RsmController;
 */
 
 Route::get('/', [IndexController::class, 'index'])->name('index');
+Route::get('/invite-accept', [HomeController::class, 'inviteAccept'])->name('inviteAccept');
 
 Auth::routes(['verify' => true]);
 
@@ -68,9 +69,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
       Route::get('/user/{id}', [AdminAuthController::class, 'userDetail'])->name('userDetail');
       Route::get('/user/{id}/{step}', [AdminAuthController::class, 'userDetailStep'])->name('userDetailStep');
       Route::post('/user/update', [AdminAuthController::class, 'userDetailPost'])->name('userDetailPost');
-      Route::post('/user/appt', [AdminAuthController::class, 'step3date'])->name('apptSet');
-      Route::post('/user/final-suggest', [AdminAuthController::class, 'step6Date'])->name('final-suggest');
-      Route::post('/user/final', [AdminAuthController::class,'finalInspectDate'])->name('final-inspect');
+//      Route::post('/user/appt', [AdminAuthController::class, 'step3date'])->name('apptSet');
+//      Route::post('/user/final-suggest', [AdminAuthController::class, 'step6Date'])->name('final-suggest');
+//      Route::post('/user/final', [AdminAuthController::class,'finalInspectDate'])->name('final-inspect');
       Route::post('/user/admin-msg', [AdminAuthController::class, 'admin_msg'])->name('admin-msg');
       Route::post('/user/admin-module-note', [AdminAuthController::class, 'adminModuleNote'])->name('admin-module-note');
 
@@ -85,6 +86,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
       Route::get('/rsm/regions', [RsmController::class, 'RsmMap'])->name('rsm-map');
       Route::post('/rsm/process', [RsmController::class, 'RsmMapSubmit'])->name('rsm-map-submit');
+
+      Route::get('/invite', [AdminAuthController::class, 'inviteInstaller'])->name('invite-installer');
+      Route::get('/invite-process', [AdminAuthController::class, 'inviteInstallerProcess'])->name('invite-installer-process');
 });
 
 Auth::routes();

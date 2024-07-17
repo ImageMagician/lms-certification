@@ -21,6 +21,7 @@ use Illuminate\Support\HtmlString;
 use App\Models\Admin;
 use App\Models\AdminReset;
 use App\Models\User;
+use App\Models\UserInvite;
 use App\Models\UserActivity;
 use App\Models\Module;
 use App\Models\InstallImage;
@@ -309,6 +310,7 @@ class AdminAuthController extends Controller
                 'message' => 'Lion Energy has confirmed the completion of your training and issued you a certification number. This allows you to install the Lion Sanctuary system.',
                 'outtro'  => '<strong>Certification number: ' . $cert_pull . '</strong>',
                 'url'     => route('home'),
+                'url_display' => 'View Dashboard',
             ]));
 
             // send notification to RSM that they have been certified
@@ -329,120 +331,120 @@ class AdminAuthController extends Controller
         return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
     }
 
-    public function step3date(Request $request) {
-        $r_num = 'review_03';
-        $r_date = $r_num . '_date';
-        $r_time = $r_num . '_time';
-
-        $new_datetime = htmlentities($request->$r_date) . ' ' . htmlentities($request->$r_time);
-
-        $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
-
-        $update_data = [
-            $r_num => $review_date,
-            'review_03_user_request' => null
-        ];
-
-        if ( UserActivity::where('user_id', $request->session()->get('user'))->update(
-            $update_data
-        )
-        ) {
-            Session::flash('success' . $request->session()->get('step'),'User information updated.');
-        }
-        else {
-            Session::flash('error' . $request->session()->get('step'),'User information could not be updated.');
-        }
-
-        // Send notification to user
-        $user = User::where('id', $request->session()->get('user'))->first();
-
-        $notify_data = [
-            'subject' => 'Appointment Set',
-            'intro'   => 'Lion Energy has set an appointment with you for the following date and time',
-            'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
-            'outtro'  => 'Make sure all documents on Step 4 are uploaded before this date.',
-            'url'     => secure_url( route('home' ) ),
-        ];
-
-        $user->notify( new Step3($notify_data) );
-
-        return redirect()->back();
-    }
-
-    public function step6Date(Request $request) {
-        $r_num  = 'review_06';
-        $r_date = $r_num . '_date';
-        $r_time = $r_num . '_time';
-
-        $new_datetime = htmlentities($request->$r_date) . ' ' . htmlentities($request->$r_time);
-
-        $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
-
-        $update_data = [
-            'review_06_admin_request' => $review_date,
-            'review_06_user_request'  => null
-        ];
-
-        if ( UserActivity::where('user_id', $request->session()->get('user'))->update(
-            $update_data
-        )
-        ) {
-            Session::flash('success6','User information updated.');
-        }
-        else {
-            Session::flash('error6','User information could not be updated.');
-        }
-
-        // Send notification to user
-        $user = User::where('id', $request->session()->get('user'))->first();
-
-        $notify_data = [
-            'subject' => 'Final Inspection Change',
-            'intro'   => 'Lion Energy has suggested change to your appointment for the <strong>final inspection</strong>.',
-            'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
-            'outtro'  => 'Click below to review this appointment.',
-            'url'     => secure_url( route('modules',['id' => $request->session()->get('user')] ) ),
-        ];
-
-        $user->notify( new Step3($notify_data) );
-
-        return redirect()->back();
-    }
-
-    public function finalInspectDate(Request $request) {
-        $user =  $request->session()->get('user', 'default');
-
-        $review_date = date("Y-m-d", strtotime($request->review_06_date) );
-        $review_time = date('H:i:s', strtotime($request->review_06_time) );
-
-        $review_date_time = $review_date . ' ' . $review_time;
-
-        if ( UserActivity::where('user_id', $user)->update(
-            [
-                'review_06' => $review_date_time,
-                'review_06_user_request' => null
-            ])
-        ) {
-            Session::flash('success','On-site inspection date updated.');
-        }
-        else {
-            Session::flash('error','Inspection date could not be updated. Contact tech support for help.');
-        }
-
-        $notify_data = [
-            'subject' => 'Appointment Set',
-            'intro'   => 'Lion Energy has set an appointment with you for the <strong>final inspection</strong> of your installation for the following date and time.',
-            'message' => date('M d, Y @ h:i A', strtotime( $review_date_time ) ),
-            'outtro'  => 'Make sure the installation is fully complete before this date.',
-            'url'     => secure_url( route('home' ) ),
-        ];
-
-        $user_data = User::where('id', $user)->first();
-
-        $user_data->notify( new Step3($notify_data) );
-
-        return redirect()->route('userDetail', ['id'=>$user]);
-    }
+//    public function step3date(Request $request) {
+//        $r_num = 'review_03';
+//        $r_date = $r_num . '_date';
+//        $r_time = $r_num . '_time';
+//
+//        $new_datetime = htmlentities($request->$r_date) . ' ' . htmlentities($request->$r_time);
+//
+//        $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
+//
+//        $update_data = [
+//            $r_num => $review_date,
+//            'review_03_user_request' => null
+//        ];
+//
+//        if ( UserActivity::where('user_id', $request->session()->get('user'))->update(
+//            $update_data
+//        )
+//        ) {
+//            Session::flash('success' . $request->session()->get('step'),'User information updated.');
+//        }
+//        else {
+//            Session::flash('error' . $request->session()->get('step'),'User information could not be updated.');
+//        }
+//
+//        // Send notification to user
+//        $user = User::where('id', $request->session()->get('user'))->first();
+//
+//        $notify_data = [
+//            'subject' => 'Appointment Set',
+//            'intro'   => 'Lion Energy has set an appointment with you for the following date and time',
+//            'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
+//            'outtro'  => 'Make sure all documents on Step 4 are uploaded before this date.',
+//            'url'     => secure_url( route('home' ) ),
+//        ];
+//
+//        $user->notify( new Step3($notify_data) );
+//
+//        return redirect()->back();
+//    }
+//
+//    public function step6Date(Request $request) {
+//        $r_num  = 'review_06';
+//        $r_date = $r_num . '_date';
+//        $r_time = $r_num . '_time';
+//
+//        $new_datetime = htmlentities($request->$r_date) . ' ' . htmlentities($request->$r_time);
+//
+//        $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
+//
+//        $update_data = [
+//            'review_06_admin_request' => $review_date,
+//            'review_06_user_request'  => null
+//        ];
+//
+//        if ( UserActivity::where('user_id', $request->session()->get('user'))->update(
+//            $update_data
+//        )
+//        ) {
+//            Session::flash('success6','User information updated.');
+//        }
+//        else {
+//            Session::flash('error6','User information could not be updated.');
+//        }
+//
+//        // Send notification to user
+//        $user = User::where('id', $request->session()->get('user'))->first();
+//
+//        $notify_data = [
+//            'subject' => 'Final Inspection Change',
+//            'intro'   => 'Lion Energy has suggested change to your appointment for the <strong>final inspection</strong>.',
+//            'message' => date('M d, Y @ h:i A', strtotime( $new_datetime ) ),
+//            'outtro'  => 'Click below to review this appointment.',
+//            'url'     => secure_url( route('modules',['id' => $request->session()->get('user')] ) ),
+//        ];
+//
+//        $user->notify( new Step3($notify_data) );
+//
+//        return redirect()->back();
+//    }
+//
+//    public function finalInspectDate(Request $request) {
+//        $user =  $request->session()->get('user', 'default');
+//
+//        $review_date = date("Y-m-d", strtotime($request->review_06_date) );
+//        $review_time = date('H:i:s', strtotime($request->review_06_time) );
+//
+//        $review_date_time = $review_date . ' ' . $review_time;
+//
+//        if ( UserActivity::where('user_id', $user)->update(
+//            [
+//                'review_06' => $review_date_time,
+//                'review_06_user_request' => null
+//            ])
+//        ) {
+//            Session::flash('success','On-site inspection date updated.');
+//        }
+//        else {
+//            Session::flash('error','Inspection date could not be updated. Contact tech support for help.');
+//        }
+//
+//        $notify_data = [
+//            'subject' => 'Appointment Set',
+//            'intro'   => 'Lion Energy has set an appointment with you for the <strong>final inspection</strong> of your installation for the following date and time.',
+//            'message' => date('M d, Y @ h:i A', strtotime( $review_date_time ) ),
+//            'outtro'  => 'Make sure the installation is fully complete before this date.',
+//            'url'     => secure_url( route('home' ) ),
+//        ];
+//
+//        $user_data = User::where('id', $user)->first();
+//
+//        $user_data->notify( new Step3($notify_data) );
+//
+//        return redirect()->route('userDetail', ['id'=>$user]);
+//    }
 
     public function adminCreate() {
         $admin    = auth()->guard('admin')->user();
@@ -514,6 +516,7 @@ class AdminAuthController extends Controller
                 'message' => 'Lion Energy has created an administrator account for you. Click the link to create your password and sign in.',
                 'outtro'  => '',
                 'url'     => secure_url( $link ),
+                'url_display' => 'View Dashboard',
             ];
 
             $admin_user = Admin::latest()->first();
@@ -793,6 +796,65 @@ class AdminAuthController extends Controller
         }
 
         return redirect(route('admin-list'));
+    }
+
+    function inviteInstaller() {
+        $admin = auth()->guard('admin')->user();
+        if (is_null($admin)) {
+            return redirect()->route('adminLogin');
+        }
+        return view('admin.invite', ['admin' => $admin]);
+    }
+
+    function inviteInstallerProcess(Request $request) {
+        $admin = auth()->guard('admin')->user();
+        $validated = $request->validate([
+            'email'      => 'required|email:rfc,dns',
+            'first_name' => 'required',
+            'last_name'  => 'required',
+        ]);
+
+        // Filter inputs
+        $email      = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL);
+        $first_name = filter_var($request->input('first_name'));
+        $last_name  = filter_var($request->input('last_name'));
+
+        $check_email = User::firstWhere('email', $email);
+
+        if ( is_null($check_email) ) {
+            $user = new UserInvite;
+
+            $user->admin_id     = $admin->id;
+            $user->first_name   = $first_name;
+            $user->last_name    = $last_name;
+            $user->email        = $email;
+            $user->token        = bin2hex(random_bytes(32));
+
+            $user->save();
+
+            $url = config('app.url');
+            $link = $url . '/invite-accept?token=' . $user->token . '&email=' . $user->email;
+
+            $notify_data = [
+                'subject' => 'Invitation to Certify',
+                'intro'   => 'Sanctuary Installation Certification',
+                'message' => 'Lion Energy has invited you to certify as an installer for their Sanctuary home battery backup system.',
+                'outtro'  => '',
+                'url'     => secure_url( $link ),
+                'url_display' => 'Register Now',
+            ];
+
+            $new_user = UserInvite::latest()->first();
+
+            $new_user->notify( new Step3($notify_data) );
+
+            $request->session()->flash('status','Installer added to the system.');
+        }
+        else {
+            $request->session()->flash('duplicate','Email already exists in the system.');
+        }
+
+        return redirect()->route('invite-installer', ['admin'=> $admin]);
     }
 
 }

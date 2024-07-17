@@ -58,7 +58,7 @@ class RegisterController extends Controller
             'phone'      => ['required', 'min:10', new PhoneValidation],
             'companies'  => ['required', 'string'],
             'states'     => ['required', 'string'],
-            'password'   => ['required', 'string', 'min:8', 'confirmed'],
+            'password'   => ['required', 'string', 'min:12', 'confirmed'],
         ]);
     }
 
@@ -70,6 +70,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $this->validator($data)->validate();
         // Format the phone number as (XXX) XXX-XXXX
 
         // remove everything except numbers
@@ -85,12 +86,15 @@ class RegisterController extends Controller
         $phone = substr_replace($phone, ') ', 3, 0);
         $phone = substr_replace($phone, '(', 0, 0);
 
-        $first_name = $this->clearSpecial($data['first_name']);
-        $last_name  = $this->clearSpecial($data['last_name']);
-        $email      = $this->clearSpecial($data['email']);
-        $company    = $this->clearSpecial($data['companies']);
-        $states     = $this->clearSpecial($data['states']);
-        $referer    = $this->clearSpecial($data['ref']);
+        $first_name = filter_var($data['first_name']);
+        $last_name  = filter_var($data['last_name']);
+        $email      = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+        $company    = filter_var($data['companies']);
+        $states     = filter_var($data['states']);
+        $referer    = filter_var($data['ref']);
+        if ( !empty( $data['admin'] ) ) {
+            $admin = filter_var($data['admin'], FILTER_SANITIZE_NUMBER_INT);
+        }
 
         $user_id = User::insertGetId([
             'first_name' => $first_name,
@@ -100,7 +104,8 @@ class RegisterController extends Controller
             'companies'  => $company,
             'states'     => $states,
             'password'   => Hash::make($data['password']),
-            'referer'    => $referer
+            'referer'    => $referer,
+            'admin_id'   => $admin,
         ]);
 
         // Create a row in the user_activity table for the user
@@ -111,10 +116,5 @@ class RegisterController extends Controller
         $new_user = User::find($user_id);
 
         return $new_user;
-    }
-
-    // Clear all special characters for input fields
-    protected function clearSpecial($item) {
-        return preg_replace('/[^A-Za-z0-9\-.@\s+]/', '', $item);
     }
 }
