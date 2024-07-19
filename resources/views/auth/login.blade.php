@@ -33,7 +33,7 @@
                             </div>
                             <div class="input-group input-group-merge form-password-toggle">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror form-control-merge" name="password" required autocomplete="current-password" tabindex="2" />
-                                <span id="password_eye" onclick="showPassword()" class="input-group-text cursor-pointer" tabindex="3"><i id="eye_icon" class="fa fa-eye"></i></span>
+                                <span id="password_eye" onclick="showPassword(this)" class="input-group-text cursor-pointer" tabindex="3"><i id="eye_icon" class="fa fa-eye"></i></span>
                             </div>
                             @error('password')
                                 <span class="invalid-feedback" role="alert">
@@ -73,19 +73,4 @@
 @endsection
 @section('scripts')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-    <script>
-        function showPassword() {
-            const obj = document.getElementById('password');
-            const eye = document.getElementById('eye_icon');
-            if (obj.getAttribute('type') == 'password') {
-                obj.setAttribute('type', 'text');
-                eye.classList.remove('fa-eye');
-                eye.classList.add('fa-eye-slash');
-            } else {
-                obj.setAttribute('type', 'password');
-                eye.classList.add('fa-eye');
-                eye.classList.remove('fa-eye-slash');
-            }
-        }
-    </script>
 @endsection

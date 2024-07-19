@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserInvite;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\UserActivity;
@@ -58,17 +59,22 @@ class RegisterController extends Controller
             'phone'      => ['required', 'min:10', new PhoneValidation],
             'companies'  => ['required', 'string'],
             'states'     => ['required', 'string'],
-            'password'   => ['required', 'string', 'min:12', 'confirmed'],
+            'password'   => ['required', 'string', 'min:12', 'same:password_confirmation'],
+            'password_confirmation' => ['required', 'string', 'min:12', 'same:password'],
+        ],
+        [
+            'required' => 'The :attribute field is required.',
+            'password.same' => 'The password fields must match.',
         ]);
     }
 
-    /**
+    /*
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    protected function create(array $data) : array
     {
         $this->validator($data)->validate();
         // Format the phone number as (XXX) XXX-XXXX
@@ -114,6 +120,12 @@ class RegisterController extends Controller
         ]);
 
         $new_user = User::find($user_id);
+
+        // Remove user from invitation table if there is an admin_id
+        if (!empty( $admin ) ) {
+            $invited = UserInvite::where('email', $email)->first();
+            $invited->delete();
+        }
 
         return $new_user;
     }

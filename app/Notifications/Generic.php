@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 
-class Step3 extends Notification
+class Generic extends Notification
 {
     use Queueable;
 
@@ -46,9 +46,7 @@ class Step3 extends Notification
         return (new MailMessage)
             ->subject($this->notify_data['subject'])
             ->greeting($this->notify_data['greeting'])
-            ->line(new HtmlString($this->notify_data['intro']))
             ->line(new HtmlString($this->notify_data['message']))
-            ->line(new HtmlString($this->notify_data['outtro']))
             ->action($this->notify_data['url_display'], $this->notify_data['url']);
     }
 

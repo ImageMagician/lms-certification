@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/solid.min.css" integrity="sha512-Hp+WwK4QdKZk9/W0ViDvLunYjFrGJmNDt6sCflZNkjgvNq9mY+0tMbd6tWMiAlcf1OQyqL4gn2rYp7UsfssZPA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/js/functions.js'])
 </head>
 
 <body>
@@ -32,30 +32,30 @@
 
             <div class="collapse navbar-collapse ms-4" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
+                @if ( !empty($admin) )
                 <ul class="navbar-nav left-nav me-auto">
                     <li>
                         <a href="{{ route('adminDashboard') }}">
                             Dashboard
                         </a>
                     </li>
-                    @if ( is_null($admin->partner) )
+                    @if ( empty($admin->partner) )
                     <li>
                         <a href="{{ route('admin-list') }}">
                             Admin List
                         </a>
                     </li>
                     @endif
-                    @if( is_null($admin->partner) )
+                    @if( empty($admin->partner) )
                     <li>
-                        <a href="{{ route('rsm-map') }}">
-                            RSM Regions
+                        <a href="{{ route('invite-installer') }}">
+                            Invite Installer
                         </a>
                     </li>
                     @endif
                 </ul>
 
                 <!-- Right Side Of Navbar -->
-                @if ( $admin != null )
                 <ul class="navbar-nav ms-auto">
                     <!-- Authentication Links -->
                     <li class="nav-item dropdown">
@@ -85,6 +85,13 @@
     <main>
         @yield('content')
     </main>
+
+    <div id="overlay_bg"></div>
+    <div id="overlay_content" class="text-center" style="color:white">
+        <span class="flashing-bullet">&bull;</span>
+        <span class="flashing-bullet">&bull;</span>
+        <span class="flashing-bullet">&bull;</span>
+    </div>
 </div>
 @yield('scripts')
 </body>

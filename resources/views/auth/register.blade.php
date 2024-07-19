@@ -157,8 +157,10 @@
                         <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
                         <div class="col-md-6">
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
+                            <div class="input-group input-group-merge form-password-toggle @error('password') is-invalid @enderror">
+                                <input id="password" type="password" class="form-control form-control-merge" name="password" required autocomplete="current-password" />
+                                <span onclick="showPassword(this)" class="input-group-text cursor-pointer" tabindex="3"><i id="eye_icon" class="fa fa-eye"></i></span>
+                            </div>
                             @error('password')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -171,7 +173,10 @@
                         <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 
                         <div class="col-md-6">
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                            <div class="input-group input-group-merge form-password-toggle">
+                                <input id="password_confirmation" type="password" class="form-control @error('password') is-invalid @enderror form-control-merge" name="password_confirmation" required autocomplete="current-password" />
+                                <span onclick="showPassword(this)" class="input-group-text cursor-pointer" tabindex="3"><i id="eye_icon" class="fa fa-eye"></i></span>
+                            </div>
                         </div>
                     </div>
 

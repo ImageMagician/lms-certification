@@ -34,8 +34,8 @@
                         </div>
                         <div>
                             @csrf
-                            <button type="submit" class="btn btn-primary me-2">Submit</button>
-                            <button type="reset" class="btn btn-tertiary">Clear</button>
+                            <button type="submit" class="btn btn-primary me-2" onclick="startFlashing()">Submit</button>
+                            <a href="{{ route('adminDashboard') }}" class="btn btn-tertiary me-2">Cancel</a>
                         </div>
                     </form>
                 </div>

@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/js/quizzes.js' /*, 'node_modules/bootstrap/js/src/tab.js' */])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/js/quizzes.js', 'resources/js/functions.js'])
 </head>
 <body>
     <div id="app">

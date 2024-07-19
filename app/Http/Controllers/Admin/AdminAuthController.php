@@ -11,6 +11,7 @@ use App\Notifications\AdminPasswordReset;
 use App\Notifications\UserNote;
 use App\Notifications\Step3;
 use App\Notifications\RSM;
+use App\Notifications\Generic;
 
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
@@ -39,6 +40,10 @@ class AdminAuthController extends Controller
 {
     use QuizResults;
 
+    function e($data) {
+        return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+    }
+
     public function getLogin() {
         return view('admin.login');
     }
@@ -49,10 +54,13 @@ class AdminAuthController extends Controller
             'password' => 'required',
         ]);
 
+        $email = filter_var($request->input('email'));
+        $password = filter_var($request->input('password'));
+
         if( auth()->guard('admin')
             ->attempt([
-                'email' => $request->input('email'),
-                'password' => $request->input('password'),
+                'email' => $email,
+                'password' => $password,
             ])
         ) {
             $user = auth()->guard('admin')->user();
@@ -61,7 +69,7 @@ class AdminAuthController extends Controller
             }
         }
         else {
-            return redirect()->route('adminLogin')->withErrors(['msg'=>'Invalid email and/or password.']);
+            return redirect()->route('adminLogin', ['email' => $this->e($email)])->withErrors(['msg'=>'Invalid email and/or password.']);
         }
     }
 
@@ -819,9 +827,19 @@ class AdminAuthController extends Controller
         $first_name = filter_var($request->input('first_name'));
         $last_name  = filter_var($request->input('last_name'));
 
+        // Check for user in current installer list
         $check_email = User::firstWhere('email', $email);
 
-        if ( is_null($check_email) ) {
+
+        if ( !is_null($check_email) ) {
+            $request->session()->flash('duplicate','Email already exists in the system.');
+            return redirect()->route('invite-installer', ['admin'=> $admin]);
+        }
+
+        // Check for current invitation
+        $invite_check = UserInvite::firstWhere('email', $email);
+
+        if ( is_null($invite_check) ) {
             $user = new UserInvite;
 
             $user->admin_id     = $admin->id;
@@ -831,28 +849,27 @@ class AdminAuthController extends Controller
             $user->token        = bin2hex(random_bytes(32));
 
             $user->save();
-
-            $url = config('app.url');
-            $link = $url . '/invite-accept?token=' . $user->token . '&email=' . $user->email;
-
-            $notify_data = [
-                'subject' => 'Invitation to Certify',
-                'intro'   => 'Sanctuary Installation Certification',
-                'message' => 'Lion Energy has invited you to certify as an installer for their Sanctuary home battery backup system.',
-                'outtro'  => '',
-                'url'     => secure_url( $link ),
-                'url_display' => 'Register Now',
-            ];
-
-            $new_user = UserInvite::latest()->first();
-
-            $new_user->notify( new Step3($notify_data) );
-
-            $request->session()->flash('status','Installer added to the system.');
+            $msg = $first_name . ' ' . $last_name . ' has been added and an email invitation has been sent.';
         }
         else {
-            $request->session()->flash('duplicate','Email already exists in the system.');
+            $user = $invite_check;
+            $msg = 'A reminder email has been sent to ' . $first_name . ' ' . $last_name . ' of your invitation to certify.';
         }
+
+        $url = config('app.url');
+        $link = $url . '/invite-accept?token=' . $user->token . '&email=' . $user->email;
+
+        $notify_data = [
+            'subject' => 'Invitation to Certify',
+            'greeting' => 'Hello ' . $first_name . ',',
+            'message' => 'Lion Energy has invited you to certify as an installer for their Sanctuary home battery backup system.',
+            'url'     => secure_url( $link ),
+            'url_display' => 'Register Now',
+        ];
+
+        $user->notify( new Generic($notify_data) );
+
+        $request->session()->flash('status', $msg);
 
         return redirect()->route('invite-installer', ['admin'=> $admin]);
     }

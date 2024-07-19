@@ -183,21 +183,50 @@
                         <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
                         <div class="col-md-6">
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                            <div class="input-group input-group-merge form-password-toggle">
+                                <input id="password"
+                                       type="password"
+                                       class="form-control @error('password') is-invalid @enderror"
+                                       name="password"
+                                       required
+                                       autocomplete="new-password"
+                                >
+                                <span id="password_confirmation_eye"
+                                      onclick="showPassword(this)"
+                                      class="@error('password_confirmation') is-invalid @enderror input-group-text cursor-pointer"
+                                      tabindex="3"
+                                ><i class="fa fa-eye"></i></span>
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
+                        <label for="password_confirmation" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 
                         <div class="col-md-6">
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                            <div class="input-group input-group-merge form-password-toggle">
+                                <input type="password"
+                                       class="form-control form-control-merge"
+                                       id="password_confirmation"
+                                       name="password_confirmation"
+                                       tabindex="2"
+                                />
+                                <span id="password_confirmation_eye"
+                                      onclick="showPassword(this)"
+                                      class="@error('password_confirmation') is-invalid @enderror input-group-text cursor-pointer"
+                                      tabindex="3"
+                                ><i id="eye_icon" class="fa fa-eye"></i></span>
+                                @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
