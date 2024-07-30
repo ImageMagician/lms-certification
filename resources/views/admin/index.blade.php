@@ -96,12 +96,12 @@
                                 </tr>
                                 @foreach($users as $u)
                                     <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                        <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}<span class="d-inline-block d-xl-none pe-1"></span></td>
-                                        <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}<span class="d-inline-block d-xl-none pe-3"></span></td>
-                                        <td class="w-auto">{{ $u->email }}<span class="d-inline-block d-xl-none pe-3">,</span></td>
-                                        <td class="w-auto text-wrap">{{ucwords(strtolower($u->companies))}}<span class="d-inline-block d-xl-none pe-3">,</span></td>
-                                        <td class="w-auto text-center">{{$u->states}}</td>
-                                        <td class="table-action px-lg-2">
+                                        <td class="name w-auto vertical-align-middle">{{ucwords(strtolower($u->first_name))}}<span class="d-inline-block d-xl-none pe-1"></span></td>
+                                        <td class="name w-auto vertical-align-middle">{{ucwords(strtolower($u->last_name))}}<span class="d-inline-block d-xl-none pe-3"></span></td>
+                                        <td class="w-auto vertical-align-middle">{{ $u->email }}<span class="d-inline-block d-xl-none pe-3">,</span></td>
+                                        <td class="w-auto text-wrap vertical-align-middle">{{ucwords(strtolower($u->companies))}}<span class="d-inline-block d-xl-none pe-3">,</span></td>
+                                        <td class="w-auto text-center vertical-align-middle">{{$u->states}}</td>
+                                        <td class="table-action px-lg-2 vertical-align-middle">
                                             @if ( !is_null($u->cert) )
                                                 <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
                                                     <strong>{{$u->cert}}</strong>
