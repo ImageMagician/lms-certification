@@ -6,6 +6,11 @@
         <div class="col-md-6 py-5">
             <div class="yyz-card p-3">
                 <h2 class="text-primary">{{ __('Finish Registration') }}</h2>
+                @if( Session::get('error'))
+                    <div class="alert alert-info">
+                        <p class="mb-0">We are sorry, but the invitation credentials do not mach our records. Contact us at <a href="mailto:ess.support@lionenergy.com">ess.support@lionenergy.com</a> for further assistance.</p>
+                    </div>
+                @else
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
@@ -79,7 +84,7 @@
                         <label for="phone" class="col-md-4 col-form-label text-md-end">{{ __('Phone') }}</label>
 
                         <div class="col-md-6">
-                            <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
+                            <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required tabindex="1">
 
                             @error('phone')
                                 <span class="invalid-feedback" role="alert">
@@ -100,7 +105,7 @@
                         </label>
 
                         <div class="col-md-6">
-                            <input id="companies" type="text" class="form-control @error('companies') is-invalid @enderror" name="companies" value="{{ old('companies') }}" required>
+                            <input id="companies" type="text" class="form-control @error('companies') is-invalid @enderror" name="companies" value="{{ old('companies') }}" required tabindex="2">
 
                             @error('companies')
                             <span class="invalid-feedback" role="alert">
@@ -116,7 +121,7 @@
                         </label>
 
                         <div class="col-md-6">
-                            <select id="states" name="states" class="form-control">
+                            <select id="states" name="states" class="form-control" tabindex="3">
                                 <option value="">&hellip;</option>
                                 <option value="AL" @if( old('states') == "AL") selected @endif>Alabama</option>
                                 <option value="AK" @if( old('states') == "AK") selected @endif>Alaska</option>
@@ -190,11 +195,12 @@
                                        name="password"
                                        required
                                        autocomplete="new-password"
+                                       tabindex="4"
                                 >
                                 <span id="password_confirmation_eye"
                                       onclick="showPassword(this)"
                                       class="@error('password_confirmation') is-invalid @enderror input-group-text cursor-pointer"
-                                      tabindex="3"
+                                      tabindex="5"
                                 ><i class="fa fa-eye"></i></span>
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -214,12 +220,12 @@
                                        class="form-control form-control-merge"
                                        id="password_confirmation"
                                        name="password_confirmation"
-                                       tabindex="2"
+                                       tabindex="6"
                                 />
                                 <span id="password_confirmation_eye"
                                       onclick="showPassword(this)"
                                       class="@error('password_confirmation') is-invalid @enderror input-group-text cursor-pointer"
-                                      tabindex="3"
+                                      tabindex="7"
                                 ><i id="eye_icon" class="fa fa-eye"></i></span>
                                 @error('password')
                                 <span class="invalid-feedback" role="alert">
@@ -234,12 +240,13 @@
                         <div class="col-md-6 offset-md-4">
                             <input type="hidden" name="ref" value="{{session('ref')}}">
                             <input type="hidden" name="admin" value="{{ $admin }}">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" tabindex="8">
                                 {{ __('Register') }}
                             </button>
                         </div>
                     </div>
                 </form>
+                @endif
             </div>
         </div>
     </div>
@@ -286,5 +293,9 @@
             const companies = document.getElementById('companies_explainer');
             companies.classList.remove('show');
         }
+        setTimeout( () => {
+            console.log('loaded');
+            document.getElementById('phone').focus();
+        }, 500);
     </script>
 @endsection
