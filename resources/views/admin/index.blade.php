@@ -102,13 +102,17 @@
                                         <td class="w-auto text-wrap">{{ucwords(strtolower($u->companies))}}<span class="d-inline-block d-xl-none pe-3">,</span></td>
                                         <td class="w-auto text-center">{{$u->states}}</td>
                                         <td class="table-action px-lg-2">
-                                            @if ( $u->cert === null )
-                                                <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                    VIEW
-                                                </a>
-                                            @else
+                                            @if ( !is_null($u->cert) )
                                                 <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
                                                     <strong>{{$u->cert}}</strong>
+                                                </a>
+                                            @elseif ( !is_null($u->training_done) )
+                                                <a class="btn btn-small btn-success w-100" href="{{ route('userDetail', $u->id) }}">
+                                                    <strong>CERTIFY</strong>
+                                                </a>
+                                            @else
+                                                <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
+                                                    VIEW
                                                 </a>
                                             @endif
                                         </td>
@@ -117,7 +121,7 @@
                                                 @php
                                                     $mod_id = 'module_' . sprintf("%02d", $m->id);
                                                 @endphp
-                                                <div class="step-name">Step {{$m->id}}</div>
+                                                <div class="step-name">{{$m->id}}</div>
                                                 <div style="height:18px; width:18px;" class="d-inline-block mx-auto rounded-circle vertical-align-middle
                                                     @if ( is_null( $u->$mod_id ) )
                                                         opacity-0 d-inline-block
