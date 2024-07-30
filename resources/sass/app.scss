@@ -829,6 +829,9 @@ span.step-name {
 .table {
     &.admin-table {
         tr {
+            th {
+                padding:0;
+            }
             td {
                 background: transparent;
                 padding: .875rem .0625rem;
@@ -836,6 +839,9 @@ span.step-name {
                 .btn-small {
                     padding-top: 0.45em;
                     padding-bottom: 0.45em;
+                }
+                .step-name {
+                    display:none;
                 }
             }
         }
@@ -849,12 +855,7 @@ span.step-name {
 /**********************
     MEDIA QUERIES
  */
-
-@media (max-width:993px) {
-    #overlay_content,
-    .overlay_content {
-        width: 75%;
-    }
+@media (max-width:1200px) {
 
     .table.admin-table,
     .table.admin-table > tbody {
@@ -871,43 +872,45 @@ span.step-name {
                 border-top: 1px solid rgba(0, 0, 0, .1);
 
                 &.th-header {
-                    display:none;
+                    display: none;
                 }
 
                 td {
                     padding: 0.5rem;
-                    display:block;
-                    width:33.333%;
-                    border-width:1px;
-                    margin-left:-1px;
-                    margin-top:-1px;
+                    display: block;
+                    width: 8.333%;
+                    border-width: 1px;
+                    margin-left: -1px;
+                    margin-top: -1px;
 
                     &.table-action {
-                        width:100%;
-                        border:none;
+                        width: 100%;
+                        border: none;
+                    }
+
+                    &.w-auto {
+                        font-size: larger;
+                        padding: 0;
+                        border: none;
                     }
 
                     &.name {
-                        font-size:larger;
-                        font-weight:700;
-                        padding:0 0 0 3px;
-                        border:none;
+                        font-weight: 700;
                     }
 
                     .step-name {
-                        display:inline-block;
-                        width:50%;
-                    }
-
-                    .bg-green,
-                    .bg-red {
-                        display:inline-block;
-                        padding:.25em 1em;
-                        width:50%;
+                        display: block;
                     }
                 }
             }
         }
+    }
+}
+
+@media (max-width:993px) {
+    #overlay_content,
+    .overlay_content {
+        width: 75%;
     }
 }
 
@@ -924,6 +927,18 @@ span.step-name {
     #overlay_content,
     .overlay_content {
         width:90%;
+    }
+}
+
+@media (max-width:600px) {
+    .table {
+        &.admin-table {
+            tr {
+                td {
+                    width: 25%;
+                }
+            }
+        }
     }
 }
 

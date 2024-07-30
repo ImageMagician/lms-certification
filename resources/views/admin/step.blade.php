@@ -513,7 +513,7 @@
             <button type="submit" class="btn btn-primary my-3">Add Message</button>
         </form>
     </div>
-
+{{--
     <div id="step6_overlay_bg" class="overlay_bg" onclick="step6change()"></div>
     <div id="step6_overlay_content" class="overlay_content yyz-card p-4" style="width:400px">
         <form id="change_date_form" action="{{ route('final-suggest') }}" method="post" onsubmit="processingOverlay()">
@@ -542,6 +542,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
+--}}
 
     <div id="main_overlay_bg" class="overlay_bg"></div>
     <div id="main_overlay_content" class="overlay_content text-center">

@@ -137,67 +137,39 @@ class ModulesController extends Controller
             $user = Auth::user();
 
             $activity = UserActivity::where('user_id', $user->id)->first();
-            $super = RegionalRep::all();
+            $super = Admin::where('super_admin', '1')->get();
 
             // check if the user has already been tagged as having finished their training
             // If not, pull the admin assigned to their account
             // Send the admin an email notifying them of the completion
-            if ( $activity->training_done == null ) {
+            if ( is_null($activity->training_done ) ) {
 
                 // get the user's admin to send them a notification
-                $admin = Admin::where('id', $user->admin_id)->first();
+                if ( !is_null($user->admin_id) ) {
+                    $admin = Admin::where('id', $user->admin_id)->first();
 
-                // if no returned admin or a mismatch occurred, default admin to first one found
-                if ($admin == null) {
-                    $admin = Admin::first();
+                    // send notification to the assigned admin that they have been certified
+                    $admin->notify(new Step3([
+                        'subject' => 'User Certification',
+                        'greeting' => 'Hello ' . $admin->first_name,
+                        'intro'   => '<strong>User training completion.</strong>',
+                        'message' => '<p>The following person has completed the Sanctuary certification training and is ready to be registered as a certified installer</p>',
+                        'outtro'  => '<ul>
+                                            <li>' . $user->first_name . ' ' . $user->last_name . '</li>
+                                            <li>Company: ' . $user->companies . '</li>
+                                            <li>State: ' . $user->states . '</li>
+                                            <li>Email: ' . $user->email . '</li>
+                                            <li>Phone: ' . $user->phone . '</li>
+                                          </ul>',
+                        'url'     => route('userDetail', ['id' => $user->id]),
+                    ]));
                 }
-
-                // Get user's specified state (NEED TO CREATE A JOIN FOR THIS AND THE RSM BELOW)
-                $state = DB::table('usa_states')->where('abbrev', strtoupper($user->states))->orWhere('name', ucwords($user->states))->first();
-
-                if ($state) {
-                    // Get RSM for user's state
-                    $rep = RegionalRep::where('id', $state->rep)->first();
-
-                    // Get all super_admins
-                    $super = Admin::where('id', '!=', $admin->id)->where('super_admin', 1)->get();
-
-                    // send notification to the RSM for the user's state
-                    if ($rep) {
-                        $rep->notify(new RSM([
-                            'subject' => 'User Certification',
-                            'intro'   => '<strong>User training completion.</strong>',
-                            'message' => 'The following person has completed the Sanctuary certification training.</p><p>The ESS Team has been notified. Please verify that this user gets certified in a timely manner.</p>
-                                       <ul>
-                                        <li>' . $user->first_name . ' ' . $user->last_name . '</li>
-                                        <li>Company: ' . $user->companies . '</li>
-                                        <li>State: ' . $state->name . '</li>
-                                        <li>Email: ' . $user->email . '</li>
-                                        <li>Phone: ' . $user->phone . '</li>
-                                      </ul>',
-                        ]));
-                    }
-                }
-
-                // send notification to the assigned admin that they have been certified
-                $admin->notify(new Step3([
-                    'subject' => 'User Certification',
-                    'intro'   => '<strong>User training completion.</strong>',
-                    'message' => '<p>The following person has completed the Sanctuary certification training and is ready to be registered as a certified installer</p>',
-                    'outtro'  => '<ul>
-                                        <li>' . $user->first_name . ' ' . $user->last_name . '</li>
-                                        <li>Company: ' . $user->companies . '</li>
-                                        <li>State: ' . $user->states . '</li>
-                                        <li>Email: ' . $user->email . '</li>
-                                        <li>Phone: ' . $user->phone . '</li>
-                                      </ul>',
-                    'url'     => route('userDetail', ['id' => $user->id]),
-                ]));
 
                 // Send notification to supers with slightly different wording.
                 foreach ( $super as $s ) {
                     $s->notify(new Step3([
                         'subject' => 'User Certification',
+                        'greeting' => 'Hello ' . $s->first_name,
                         'intro'   => '<strong>User training completion.</strong>',
                         'message' => 'The following person has completed the Sanctuary certification training.</p><p>The ESS Team has been notified. Please verify that this user gets certified in a timely manner.</p>',
                         'outtro'  => '<ul>
@@ -207,13 +179,14 @@ class ModulesController extends Controller
                                         <li>Email: ' . $user->email . '</li>
                                         <li>Phone: ' . $user->phone . '</li>
                                       </ul>',
+                        'url_display' => 'Review Installer',
                         'url'     => route('userDetail', ['id' => $user->id]),
                     ]));
                 }
 
                 UserActivity::where('user_id', $user->id)
                     ->update(['training_done' => 1 ]);
-           }
+            }
             return redirect()->route('home');
     }
 

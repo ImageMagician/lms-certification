@@ -313,11 +313,12 @@ class AdminAuthController extends Controller
 
             // send notification to user that they have been certified
             $user->notify(new Step3([
-                'subject' => 'Lion Energy Certification',
-                'intro'   => 'Congratulations, ' . $user->first_name,
-                'message' => 'Lion Energy has confirmed the completion of your training and issued you a certification number. This allows you to install the Lion Sanctuary system.',
-                'outtro'  => '<strong>Certification number: ' . $cert_pull . '</strong>',
-                'url'     => route('home'),
+                'subject'  => 'Lion Energy Certification',
+                'greeting' => 'Congratulations, ' . $user->first_name,
+                'intro'    => '',
+                'message'  => 'Lion Energy has confirmed the completion of your training and issued you a certification number. This allows you to install the Lion Sanctuary system.',
+                'outtro'   => '<strong>Certification number: ' . $cert_pull . '</strong>',
+                'url'      => route('home'),
                 'url_display' => 'View Dashboard',
             ]));
 

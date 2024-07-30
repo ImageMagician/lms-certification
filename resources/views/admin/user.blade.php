@@ -12,14 +12,14 @@
                     User Detail : {{ $user->first_name }} {{ $user->last_name }}
                     <a href="{{ route('adminDashboard') }}" class="btn btn-tertiary float-right">Admin Dashboard</a>
                 </h1>
-                <div class="row mb-4">
-                    <div class="col-sm-6">
-                        <div class="py-1 border-bottom-light">Phone: {{ $user->phone }}</div>
-                        <div class="py-1 border-bottom-light">Email: <a href="mailto:{{ $user->email }}">{{ $user->email }}</a></div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="py-1 border-bottom-light">States certified: {{ $user->states }}</div>
-                        <div class="py-1 border-bottom-light">Companies affiliated: {{ $user->companies }}</div>
+                <div class="d-flex mb-4 p-2" style="background-color:rgba(0,0,0,.05)">
+                    <div class="flex-fill mx-2 py-1"><span class="opacity-5">Phone:</span> {{ $user->phone }}</div>
+                    <div class="flex-fill mx-2 py-1">Email: <a href="mailto:{{ $user->email }}">{{ $user->email }}</a></div>
+                    <div class="flex-fill mx-2 py-1">States certified: {{ $user->states }}</div>
+                    <div class="flex-fill mx-2 py-1">Company: {{ $user->companies }}</div>
+                    <div class="flex-fill mx-2 py-1">RSM: {{ $user->admin_id }}</div>
+                    <div class="flex-auto vertical-align-middle">
+                        <a href="{{ route('adminDashboard') }}" class="btn btn-small px-2 py-1 btn-tertiary"><span class="fa fa-pencil"></span></a>
                     </div>
                 </div>
                 @if($user->cert)
