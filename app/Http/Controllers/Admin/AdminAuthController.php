@@ -857,14 +857,13 @@ class AdminAuthController extends Controller
             $msg = 'A reminder email has been sent to ' . $first_name . ' ' . $last_name . ' of your invitation to certify.';
         }
 
-        $url = config('app.url');
-        $link = $url . '/invite-accept?token=' . $user->token . '&email=' . $user->email;
+        $link = secure_url('/invite-accept?token=' . $user->token . '&email=' . $user->email);
 
         $notify_data = [
             'subject' => 'Invitation to Certify',
             'greeting' => 'Hello ' . $first_name . ',',
             'message' => 'Lion Energy has invited you to certify as an installer for their Sanctuary home battery backup system.',
-            'url'     => secure_url( $link ),
+            'url'     => $link,
             'url_display' => 'Register Now',
         ];
 
