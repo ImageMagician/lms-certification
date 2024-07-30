@@ -80,21 +80,27 @@
 
                             <table class="table admin-table">
                                 <tr class="th-header">
+                                    <th colspan="6" class="border-0 py-0"></th>
+                                    <th colspan="12" class="text-center border-0 py-0">Modules</th>
+                                </tr>
+                                <tr class="th-header">
                                     <th>First name</th>
                                     <th>Last Name</th>
+                                    <th>Email</th>
                                     <th>Company</th>
-                                    <th>State</th>
-                                    <th>Action</th>
+                                    <th class="text-center">State</th>
+                                    <th class="text-center">Action</th>
                                     @foreach($modules as $m)
-                                        <th>Step {{ $m->id }}</th>
+                                        <th class="text-center">{{ $m->id }}</th>
                                     @endforeach
                                 </tr>
                                 @foreach($users as $u)
                                     <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                        <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}</td>
-                                        <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}</td>
-                                        <td class="name w-auto">{{ucwords(strtolower($u->companies))}}</td>
-                                        <td class="name w-auto">{{$u->states}}</td>
+                                        <td class="name w-auto">{{ucwords(strtolower($u->first_name))}}<span class="d-inline-block d-xl-none pe-1"></span></td>
+                                        <td class="name w-auto">{{ucwords(strtolower($u->last_name))}}<span class="d-inline-block d-xl-none pe-3"></span></td>
+                                        <td class="w-auto">{{ $u->email }}<span class="d-inline-block d-xl-none pe-3">,</span></td>
+                                        <td class="w-auto text-wrap">{{ucwords(strtolower($u->companies))}}<span class="d-inline-block d-xl-none pe-3">,</span></td>
+                                        <td class="w-auto text-center">{{$u->states}}</td>
                                         <td class="table-action px-lg-2">
                                             @if ( $u->cert === null )
                                                 <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
@@ -107,12 +113,12 @@
                                             @endif
                                         </td>
                                         @foreach($modules as $m)
-                                            <td>
+                                            <td class="text-center vertical-align-middle">
                                                 @php
                                                     $mod_id = 'module_' . sprintf("%02d", $m->id);
                                                 @endphp
-                                                <span class="step-name">Step {{$m->id}}</span>
-                                                <div class="text-center small py-1
+                                                <div class="step-name">Step {{$m->id}}</div>
+                                                <div style="height:18px; width:18px;" class="d-inline-block mx-auto rounded-circle vertical-align-middle
                                                     @if ( is_null( $u->$mod_id ) )
                                                         opacity-0 d-inline-block
                                                     @elseif ( $u->$mod_id < 75 )
@@ -120,9 +126,7 @@
                                                     @else
                                                         bg-green
                                                     @endif
-                                                ">
-                                                    {{ $u->$mod_id }}%
-                                                </div>
+                                                "></div>
                                             </td>
                                         @endforeach
                                     </tr>
