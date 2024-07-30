@@ -74,7 +74,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data) : array
+    protected function create(array $data)
     {
         $this->validator($data)->validate();
         // Format the phone number as (XXX) XXX-XXXX
@@ -98,25 +98,25 @@ class RegisterController extends Controller
         $company    = filter_var($data['companies']);
         $states     = filter_var($data['states']);
         $referer    = filter_var($data['ref']);
+        $admin      = null;
+        $verified   = null;
         if ( !empty( $data['admin'] ) ) {
             $admin = filter_var($data['admin'], FILTER_SANITIZE_NUMBER_INT);
+            $verified = date("Y-m-d H:i:s");
+
         }
 
         $user_id = User::insertGetId([
             'first_name' => $first_name,
             'last_name'  => $last_name,
             'email'      => $email,
+            'email_verified_at' => $verified,
             'phone'      => $phone,
             'companies'  => $company,
             'states'     => $states,
             'password'   => Hash::make($data['password']),
             'referer'    => $referer,
             'admin_id'   => $admin,
-        ]);
-
-        // Create a row in the user_activity table for the user
-        UserActivity::create([
-            'user_id' => $user_id,
         ]);
 
         $new_user = User::find($user_id);
@@ -126,6 +126,12 @@ class RegisterController extends Controller
             $invited = UserInvite::where('email', $email)->first();
             $invited->delete();
         }
+
+        // Create a row in the user_activity table for the user
+        UserActivity::create([
+            'id' => $user_id,
+            'user_id' => $user_id,
+        ]);
 
         return $new_user;
     }

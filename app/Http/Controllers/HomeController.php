@@ -245,8 +245,10 @@ class HomeController extends Controller
 
     public function inviteAccept() {
         // check for token and email params
+        $err = 0;
         if (!$_GET || empty($_GET['token']) || empty($_GET['email']) ) {
-            return redirect()->route('index');
+            Session::flash('error','1');
+            return view('invite-accept');
         }
 
         // filter params
@@ -256,8 +258,9 @@ class HomeController extends Controller
         // check if user is found in the user_invites table and the token matches the db
         $invite = UserInvite::where('email', $email)->first();
 
-        if ( is_null( $invite ) || $invite->token !== $token) {
+        if ( is_null( $invite ) || $invite->token !== $token ) {
             Session::flash('error','1');
+            return view('invite-accept');
         }
 
         return view('invite-accept', ['admin' => $invite->admin_id, 'user' => $invite]);
