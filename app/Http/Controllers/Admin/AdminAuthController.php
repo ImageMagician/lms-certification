@@ -44,6 +44,10 @@ class AdminAuthController extends Controller
         return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
     }
 
+    function getAuth() {
+        return auth()->guard('admin')->user();
+    }
+
     public function getLogin() {
         return view('admin.login');
     }
@@ -81,65 +85,47 @@ class AdminAuthController extends Controller
     }
 
     public function adminIndex(Request $request) {
-        $admin = auth()->guard('admin')->user();
+        $admin = $this->getAuth();
         $modules = Module::all();
 
-        // Combine the user account information with their activities in the separate table
-        $users_all  = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
-
-        if ( !empty( $request->filter ) ) {
-            $request->session()->put('filter', $request->filter);
-            $filter = $request->filter;
-        }
-        else {
-            $request->session()->forget('filter');
-            $filter = null;
-        }
-
-        if ( !empty( $request->search ) ) {
-            $request->session()->put('search', $request->search);
-            $search = $request->search;
-        }
-        else {
-            $request->session()->forget('search');
+        $filter = !empty( $request->filter ) ? filter_var($request->filter) : null;
+        $search = !empty( $request->search ) ? filter_var($request->search) : null;
+        if (!empty($request->reset)) {
+            Session::remove('search');
             $search = null;
         }
 
-        // Check if search field is used
-        if ( !empty( $filter ) ) {
-            if ( $filter === 'certified') {
-                $users_temp = $users_all->whereNotNull('cert');
-            }
-            elseif( $filter === 'finished') {
-                $users_temp = $users_all->whereNull('cert')->whereNotNull('training_done');
-            }
-            elseif( $filter === 'unfinished') {
-                $users_temp = $users_all->whereNull('cert')->whereNull('training_done');
-            }
-            else {
-                $users_temp = $users_all;
-            }
+        // Combine the user account information with their activities in the separate table
+        $users_all  = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
+        $users_temp = $users_all;
 
-            // counts for certs and training
-            $users_count = $this->userJoin(true, false, false)->count();
-            $certs       = $this->userJoin(false, true, true)->count();
-            $finished    = $this->userJoin(false, false, true)->count();
-            $unfinished  = $this->userJoin(false, false, false)->count();
+        if ( !empty( $filter ) ) {
+            if ($filter === 'certified') {
+                $users_temp = $users_all->whereNotNull('cert');
+            } elseif ($filter === 'finished') {
+                $users_temp = $users_all->whereNull('cert')->whereNotNull('training_done');
+            } elseif ($filter === 'unfinished') {
+                $users_temp = $users_all->whereNull('cert')->whereNull('training_done');
+            } elseif ($filter === 'rsm') {
+                $users_temp = $users_all->where('admin_id', $admin->id);
+            }
         }
-        elseif ( !empty( $search ) ) {
-            $users_temp  = $this->userSearch($search, true, false, false);
-            $users_count = ( is_null( $users_temp->count() ) ) ? 0 : $users_temp->count();
-            $certs       = $this->userSearch($search, false,true, true)->count();
-            $finished    = $this->userSearch($search, false,false, true)->count();
-            $unfinished  = $this->userSearch($search, false,false, false)->count();
-        }
-        else {
-            $users_temp = $users_all;
-            // counts for certs and training
-            $users_count = $this->userJoin(true,null, null)->count();
-            $certs       = $this->userJoin(false,true, true)->count();
-            $finished    = $this->userJoin(false, false, true)->count();
-            $unfinished  = $this->userJoin(false, false, false)->count();
+
+        // counts for certs and training
+        $users_count = $this->userJoin(null)->count();
+        $certs       = $this->userJoin('certified')->count();
+        $finished    = $this->userJoin('finished')->count();
+        $unfinished  = $this->userJoin('unfinished')->count();
+        $rsm         = $this->userJoin('rsm')->count();
+
+        // Check if search field is used
+        if ( !empty( $search ) ) {
+            $users_temp  = $this->userSearch($users_temp, $search, $filter);
+            $users_count = $this->userSearch($users_temp,$search)->count();
+            $certs       = $this->userSearch($users_temp, $search, 'certified')->count();
+            $finished    = $this->userSearch($users_temp, $search, 'finished')->count();
+            $unfinished  = $this->userSearch($users_temp, $search, 'unfinished')->count();
+            $rsm         = $this->userSearch($users_temp, $search, 'rsm')->count();
         }
 
         // Do the final pull of users
@@ -154,26 +140,15 @@ class AdminAuthController extends Controller
             'certs' => $certs,
             'finished' => $finished,
             'unfinished' => $unfinished,
+            'rsm' => $rsm,
             'total' => $users_count,
         ];
 
         return view('admin.index', ['admin'=> $admin, 'users'=> $users, 'modules'=>$modules, 'stats'=>$user_stats]);
     }
 
-    protected function userFilter($query, $filter) {
-        if ( $filter === 'certified') {
-            return $query->whereNotNull('cert');
-        }
-        elseif( $filter === 'finished') {
-            return $query->whereNull('cert')->whereNotNull('training_done');
-        }
-        elseif( $filter === 'unfinished') {
-            return $query->whereNull('cert')->whereNull('training_done');
-        }
-        return $query;
-    }
-
-    protected function userSearch($search, $all, $cert, $done) {
+    protected function userSearch($query, $search, $filter = null) {
+        $admin = $this->getAuth();
         $query = User::join('user_activities', 'users.id', '=', 'user_activities.user_id')
             ->where(function ($query) use ($search) {
                 $query->where('first_name', 'LIKE', '%' . $search . '%')
@@ -183,32 +158,38 @@ class AdminAuthController extends Controller
                 ->orWhere('companies', 'LIKE', '%' . $search . '%');
             });
 
-        if ( $all ) {
-            $result = $query;
-        }
-        elseif ( $cert && $done) {
+        $result = $query;
+
+        if ($filter === 'certified') {
             $result = $query->whereNotNull('cert')->whereNotNull('training_done');
         }
-        elseif ( !$cert && $done) {
+        elseif ($filter === 'finished') {
             $result = $query->whereNull('cert')->whereNotNull('training_done');
         }
-        else {
+        elseif ($filter === 'unfinished') {
             $result = $query->whereNull('cert')->whereNull('training_done');
+        }
+        elseif ($filter === 'rsm') {
+            $result = $query->where('admin_id', $admin->id);
         }
 
         return $result;
     }
 
-    protected function userJoin($all, $cert, $done)
+    protected function userJoin($filter)
     {
+        $admin = $this->getAuth();
         $query = User::join('user_activities', 'users.id', '=', 'user_activities.user_id');
-        if ($cert && $done) {
+        if ($filter === 'certified') {
             $query = $query->whereNotNull('cert')->whereNotNull('training_done');
         }
-        elseif (!$cert && $done) {
+        elseif ($filter === 'finished') {
             $query = $query->whereNull('cert')->whereNotNull('training_done');
         }
-        elseif (!$all) {
+        elseif ($filter === 'rsm') {
+            $query = $query->where('admin_id', $admin->id);
+        }
+        elseif ($filter === 'unfinished') {
             $query = $query->whereNull('cert')->whereNull('training_done');
         }
         return $query;

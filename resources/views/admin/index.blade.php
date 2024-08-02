@@ -11,72 +11,144 @@
                     <div class="col-lg-3 col-xl-2 py-3 pe-2 ps-3">
                         <div class="p-3 bg-white border mb-3 mb-lg-0 border-r-6">
                             <h2 class="h4">User Stats</h2>
-                            <div class="row m-0 @if( empty($_GET['filter']) || ( !empty( $_GET['filter'] ) && $_GET['filter'] === 'all' ) ) border border-primary @else border-bottom @endif">
-                                <div class="p-2 col-6 border-bottom">
-                                    Total users:
-                                </div>
-                                <div class="p-2 col-6 border-bottom">
-                                    {{ $stats['total'] }}
-                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
-                                        <input type="hidden" name="filter" value="">
-                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
-                                    </form>
-                                </div>
+                            {{-- SEARCH FORM --}}
+                            <div id="search_field" class="d-flex form-control mb-3 p-0 ps-1 focus-0 justify-content-end">
+                                <form method="get" action="{{ route('adminDashboard') }}">
+                                    <input id="user_search" name="search" type="text" class="flex-grow-1 border-0" placeholder="Search users&hellip;" value="@if (!empty($_GET['search'])){{ $_GET['search'] }}@endif">
+                                    <button type="submit" class="btn px-2 m-0"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                </form>
+                                <form method="get" action="{{ route('adminDashboard') }}">
+                                    <input type="hidden" name="search" value="">
+                                    <button type="submit" class="btn px-2 m-0"><i class="fa-solid fa-times"></i></button>
+                                </form>
                             </div>
-                            <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'certified' ) border border-primary @else border-bottom @endif">
-                                <div class="p-2 col-6">
-                                    Certified:
-                                </div>
-                                <div class="p-2 col-6">
-                                    {{ $stats['certs'] }}
-                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
-                                        <input type="hidden" name="filter" value="certified">
-                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'finished' ) border border-primary @else border-bottom @endif">
-                                <div class="p-2 col-6">
-                                    Cert ready:
-                                </div>
-                                <div class="p-2 col-6">
-                                    {{ $stats['finished'] }}
-                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
-                                        <input type="hidden" name="filter" value="finished">
-                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'unfinished' ) border border-primary @else border-bottom @endif">
-                                <div class="p-2 col-6">
-                                    In progress:
-                                </div>
-                                <div class="p-2 col-6">
-                                    {{ $stats['unfinished'] }}
-                                    <form class="float-right align-middle" action="{{ route('adminDashboard') }}" method="get">
-                                        <input type="hidden" name="filter" value="unfinished">
-                                        <button type="submit" class="rounded border-0"><i class="fa-solid fa-magnifying-glass"></i></button>
-                                    </form>
-                                </div>
-                            </div>
+                            {{-- ALL INSTALLERS --}}
+                            <form class="block" action="{{ route('adminDashboard') }}" method="get">
+                                @if ( !empty($_GET['search']))
+                                <input type="hidden" name="search" value="{{$_GET['search']}}">
+                                @endif
+                                <input type="hidden" name="filter" value="all">
+                                <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
+                                    <div class="row m-0 @if( empty($_GET['filter']) || $_GET['filter'] === 'all' ) border border-primary @else border-bottom @endif">
+                                        <div class="p-2 col-6 border-bottom">
+                                            Total users:
+                                        </div>
+                                        <div class="p-2 col-6 border-bottom">
+                                            {{ $stats['total'] }}
+                                            <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                            {{-- CERTIFIED INSTALLERS --}}
+                            <form class="block" action="{{ route('adminDashboard') }}" method="get">
+                                @if ( !empty($_GET['search']))
+                                    <input type="hidden" name="search" value="{{$_GET['search']}}">
+                                @endif
+                                <input type="hidden" name="filter" value="certified">
+                                <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
+                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'certified' ) border border-primary @else border-bottom @endif">
+                                        <div class="p-2 col-6">
+                                            Certified:
+                                        </div>
+                                        <div class="p-2 col-6">
+                                            {{ $stats['certs'] }}
+                                            <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                            {{-- READY TO BE CERTIFIED --}}
+                            <form class="block" action="{{ route('adminDashboard') }}" method="get">
+                                @if ( !empty($_GET['search']))
+                                    <input type="hidden" name="search" value="{{$_GET['search']}}">
+                                @endif
+                                <input type="hidden" name="filter" value="finished">
+                                <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
+                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'finished' ) border border-primary @else border-bottom @endif">
+                                        <div class="p-2 col-6">
+                                            Cert ready:
+                                        </div>
+                                        <div class="p-2 col-6">
+                                            {{ $stats['finished'] }}
+                                            <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                            {{-- IN PROGRESS --}}
+                            <form class="block" action="{{ route('adminDashboard') }}" method="get">
+                                @if ( !empty($_GET['search']))
+                                    <input type="hidden" name="search" value="{{$_GET['search']}}">
+                                @endif
+                                <input type="hidden" name="filter" value="unfinished">
+                                <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
+                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'unfinished' ) border border-primary @else border-bottom @endif">
+                                        <div class="p-2 col-6">
+                                            In progress:
+                                        </div>
+                                        <div class="p-2 col-6">
+                                            {{ $stats['unfinished'] }}
+                                            <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                            {{-- LINKED TO ADMIN ACCOUNT --}}
+                            @if ($stats['rsm'] > 0)
+                            <form action="{{ route('adminDashboard') }}" method="get" class="block">
+                                @if ( !empty($_GET['search']))
+                                    <input type="hidden" name="search" value="{{$_GET['search']}}">
+                                @endif
+                                <input type="hidden" name="filter" value="rsm">
+                                <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
+                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'rsm' ) border border-primary @else border-bottom @endif">
+                                        <div class="p-2 col-6">
+                                            RSM Assigned:
+                                        </div>
+                                        <div class="p-2 col-6">
+                                            {{ $stats['rsm'] }}
+                                            <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                            @endif
                         </div>
                     </div>
                     <div class="col-lg-9 col-xl-10 py-3 pe-3 ps-2">
                         <div class="p-3 bg-white border mb-3 mb-lg-0 border-r-6">
-                            <div class="position-relative clearfix mb-2">
-                                <h1 class="h4 d-inline-block">
+                            <div class="flex mb-2">
+                                <h1 class="h4">
                                     Installer List
+                                    @if (!empty($_GET['filter']) )
+                                        @if ( $_GET['filter'] === 'certified' )
+                                            : Certified
+                                        @elseif ( $_GET['filter'] === 'finished' )
+                                            : Cert Ready
+                                        @elseif ($_GET['filter'] === 'unfinished')
+                                            : In Progress
+                                        @elseif ($_GET['filter'] === 'rsm')
+                                            : RSM Assigned
+                                        @endif
+                                    @endif
                                 </h1>
-                                <form method="get" action="{{ route('adminDashboard') }}" class="float-right form-control w-sm-auto p-0 ps-1 focus-0">
-                                    <input id="user_search" name="search" type="text" class="d-inline-block border-0" placeholder="Search users&hellip;" value="{{ session('search') }}">
-                                    <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-                                </form>
+                                {{-- Pagination --}}
+                                {{ $users->links() }}
                             </div>
                             @if ( count($users) == 0 )
-                                <h2 class="text-center py-5" style="opacity:.5">No users found for &ldquo;{{ session('search') }}&rdquo;.</h2>
+                                <h2 class="text-center py-5" style="opacity:.5">No users found for &ldquo;@if (!empty( $_GET['search'])){{ $_GET['search'] }}@endif&rdquo;.</h2>
                             @else
-                            {{-- Pagination --}}
-                            {{ $users->links() }}
 
                             <table class="table admin-table">
                                 <tr class="th-header">
