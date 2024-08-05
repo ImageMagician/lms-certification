@@ -202,8 +202,12 @@ class AdminAuthController extends Controller
         $user = User::where('id', $id)->first();
         $activity = UserActivity::where('user_id', $id)->first();
         $modules = Module::all();
-        //$docs = InstallImage::where('user_id', $id)->get();
         $messages = Message::where('user_id', $id)->get();
+        $rsm = null;
+
+        if ( !is_null( $user->admin_id ) ) {
+            $rsm = Admin::where('id', $user->admin_id)->first();
+        }
 
         // get all answers from user with Trait QuizREsults
         $qNa = $this->getQuizResults();
@@ -212,12 +216,10 @@ class AdminAuthController extends Controller
         $m_count = count($modules);
         $mod_last = 'module_' . sprintf('%02d', $m_count);
 
-//        $notes4 = Note::where('user_id', $id)->where('module_id', 4)->where('admin_id', $admin->id)->get();
-//        $notes5 = Note::where('user_id', $id)->where('module_id', 5)->where('admin_id', $admin->id)->get();
-
         return view('admin.user')->with(
             [
                 'admin'     => $admin,
+                'rsm'       => $rsm,
                 'user'      => $user,
                 'activity'  => $activity,
                 'modules'   => $modules,
@@ -227,7 +229,6 @@ class AdminAuthController extends Controller
                 'q_tot'     => $qNa['t'],
                 'mod_last'  => $mod_last,
                 'm_count'   => $m_count,
-                /*, 'notes4' => $notes4, 'notes5' => $notes5*/
             ]
         );
     }

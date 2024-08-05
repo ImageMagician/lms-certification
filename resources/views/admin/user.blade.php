@@ -9,23 +9,31 @@
         <div class="row justify-content-center">
             <div class="col-xl-10">
                 <h1 class="h2 clearfix">
-                    User Detail : {{ $user->first_name }} {{ $user->last_name }}
-                    <a href="{{ route('adminDashboard') }}" class="btn btn-tertiary float-right">Admin Dashboard</a>
+                    User : @php echo ucwords( $user->first_name . ' ' . $user->last_name) @endphp
+                    <a href="{{ route('adminDashboard') }}" class="btn btn-tertiary float-right">Admin <span class="d-none d-sm-inline">Dashboard</span></a>
                 </h1>
-                <div class="d-flex mb-4 p-2" style="background-color:rgba(0,0,0,.05)">
-                    <div class="flex-fill mx-2 py-1"><span class="opacity-5">Phone:</span> {{ $user->phone }}</div>
-                    <div class="flex-fill mx-2 py-1">Email: <a href="mailto:{{ $user->email }}">{{ $user->email }}</a></div>
-                    <div class="flex-fill mx-2 py-1">States certified: {{ $user->states }}</div>
-                    <div class="flex-fill mx-2 py-1">Company: {{ $user->companies }}</div>
-                    <div class="flex-fill mx-2 py-1">RSM: {{ $user->admin_id }}</div>
-                    <div class="flex-auto vertical-align-middle">
-                        <a href="{{ route('adminDashboard') }}" class="btn btn-small px-2 py-1 btn-tertiary"><span class="fa fa-pencil"></span></a>
-                    </div>
+                <div class="position-relative d-block d-md-flex mb-4 p-2" style="background-color:rgba(0,0,0,.05)">
+                    <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">Phone:</span><span class="ps-1 w-67 w-md-auto">{{ $user->phone }}</span></div>
+                    <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">Email:</span><span class="ps-1 w-67 w-md-auto"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></span></div>
+                    <div class="d-flex d-md-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">State:</span><span class="ps-1 w-67 w-md-auto">{{ $user->states }}</span></div>
+                    <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">Company:</span><span class="ps-1 w-67 w-md-auto">{{ $user->companies }}</span></div>
+                    <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">RSM:</span><span class="ps-1 w-67 w-md-auto">@if (!is_null($rsm)){{ $rsm->first_name }} {{ $rsm->last_name }}@else N/A @endif</span></div>
+
+                        <a href="{{ route('adminDashboard') }}" class="position-absolute btn btn-small btn-tertiary"
+                           style="font-size: 0.675em;
+                                top: 10px;
+                                right: 10px;
+                                width: 26px;
+                                height: 26px;
+                                line-height: 20px;
+                                text-align: center;
+                                padding: .25em .25em;"
+                        ><span class="fa fa-pencil"></span></a>
                 </div>
                 @if($user->cert)
                     <div class="row justify-content-center mb-3">
-                        <div class="col-md-5">
-                            <div class="border border-info p-3 text-center" style="border-radius:6px;">
+                        <div class="col-sm-auto">
+                            <div class="border border-info py-3 px-4 text-center" style="border-radius:6px;">
                                 <span style="font-size:24px">Certification ID: <strong>{{ $user->cert }}</strong></span>
                             </div>
                         </div>
