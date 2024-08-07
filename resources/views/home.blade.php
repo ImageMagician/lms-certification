@@ -20,18 +20,26 @@
                     </h1>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-3">
+            <div class="d-flex">
+                <div class="flex-fill">
                     Phone number: {{ $user->phone }}
                 </div>
-                <div class="col-sm-3">
+                <div class="flex-fill">
                     Email: {{ $user->email }}
                 </div>
-                <div class="col-sm-3">
+                <div class="flex-fill">
                     Company: {{ $user->companies }}
                 </div>
-                <div class="col-sm-3">
+                <div class="flex-fill">
                     State: {{ $user->states }}
+                </div>
+                <div class="flex-fill">
+                    Rep:
+                    @if (!empty($admin))
+                        {{ $admin->first_name }} {{ $admin->last_name }}
+                    @else
+                        N/A
+                    @endif
                 </div>
             </div>
         </div>

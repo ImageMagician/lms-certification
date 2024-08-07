@@ -107,7 +107,8 @@
                                     @csrf
                                     <input type="hidden" name="_method" value="PUT">
                                     <input type="hidden" name="id" value="{{ $user->id }}">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary me-2">Submit</button>
+                                    <a href="{{ route('home') }}" class="btn btn-tertiary">Cancel</a>
                                 </div>
                             </div>
                         </form>

@@ -56,6 +56,12 @@ class HomeController extends Controller
         $user_info = $this->userPull();
         session(['user' => $user_info['user']['id']]);
 
+        // if RSM assigned, get admin
+        $admin = null;
+        if (!empty($user_info['user']['admin_id'])) {
+            $admin = Admin::where('id', $user_info['user']['admin_id'])->first();
+        }
+
         $modules   = Module::all();
 
         // Use Trait QuizResults to get all user answers to all module questions for display
@@ -64,6 +70,7 @@ class HomeController extends Controller
         return view('home')->with (
             [
                 "user"      => $user_info['user'],
+                "admin"     => $admin,
                 "companies" => $user_info['companies'],
                 "states"    => $user_info['states'],
                 "activity"  => $user_info['activity'],
