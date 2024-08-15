@@ -313,7 +313,7 @@ class AdminAuthController extends Controller
                 foreach ( $supers as $super ) {
                     $super->notify(new RSM([
                         'subject' => 'Lion Energy Certification',
-                        'intro'   => '<p>The following person is now a certified installer: </p><ul><li>' . $user->first_name . ' ' . $user->last_name . '</li><li>Company: ' . $user->companies . '</li><li>Email: ' . $user->email  .'</li><li>Phone: ' . $user->phone . '</li><li>State:  ' . ucwords($state->name) . '</li></ul>',
+                        'intro'   => '<p>The following person is now a certified installer: </p><ul><li>' . $user->first_name . ' ' . $user->last_name . '</li><li>Company: ' . $user->companies . '</li><li>Email: ' . $user->email  .'</li><li>Phone: ' . $user->phone . '</li><li>State:  ' . ucwords($user->states) . '</li></ul>',
                         'message' => '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
                     ]));        }
                 }
