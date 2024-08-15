@@ -304,14 +304,14 @@ class AdminAuthController extends Controller
                 'url_display' => 'View Dashboard',
             ]));
 
-            // send notification to RSM that they have been certified
-            $state = DB::table('usa_states')->where('abbrev', strtoupper($user->states))->orWhere('name', ucwords($user->states))->first();
+            //$state = DB::table('usa_states')->where('abbrev', strtoupper($user->states))->orWhere('name', ucwords($user->states))->first();
 
-            if ($state) {
-                $rsm = RegionalRep::where('id', $state->rep)->first();
+            $supers = Admin::where('super_admin', '1')->get();
 
-                if ( $rsm ) {
-                    $rsm->notify(new RSM([
+            // send notification to Super Admins that the person is certified
+            if (!empty($supers)) {
+                foreach ( $supers as $super ) {
+                    $super->notify(new RSM([
                         'subject' => 'Lion Energy Certification',
                         'intro'   => '<p>The following person is now a certified installer: </p><ul><li>' . $user->first_name . ' ' . $user->last_name . '</li><li>Company: ' . $user->companies . '</li><li>Email: ' . $user->email  .'</li><li>Phone: ' . $user->phone . '</li><li>State:  ' . ucwords($state->name) . '</li></ul>',
                         'message' => '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
