@@ -43,13 +43,14 @@ class Step3 extends Notification
      */
     public function toMail($notifiable)
     {
+        $url_display = $this->notify_data['url_display'] ?? 'CLICK HERE';
         return (new MailMessage)
             ->subject($this->notify_data['subject'])
             ->greeting($this->notify_data['greeting'])
             ->line(new HtmlString($this->notify_data['intro']))
             ->line(new HtmlString($this->notify_data['message']))
             ->line(new HtmlString($this->notify_data['outtro']))
-            ->action($this->notify_data['url_display'], $this->notify_data['url']);
+            ->action($url_display, $this->notify_data['url']);
     }
 
     /**
