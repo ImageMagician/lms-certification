@@ -67,6 +67,6 @@
                 document.getElementById('quiz_btn_overlay').classList.remove('show');
                 vid_player.play();
             })
-        },100);
+        },250);
     </script>
 @endsection
