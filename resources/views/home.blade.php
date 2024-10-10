@@ -46,7 +46,7 @@
 </div>
 <div class="bg-med-gray p-2 text-center">
     Full installation instructions can be found in the installation guide:
-    <a href="/docs/Sanctuary Installation Guide-7-13-23 - WEB.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">Click Here</a>
+    <a href="/docs/Sanctuary_Installation_Guide-100424.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">Click Here</a>
 </div>
 <div class="container-fluid">
     <div class="row py-2">
