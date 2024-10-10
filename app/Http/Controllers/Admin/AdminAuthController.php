@@ -504,6 +504,7 @@ class AdminAuthController extends Controller
             $notify_data = [
                 'subject' => 'New User Account',
                 'intro'   => 'Account Creation',
+                'greeting' => 'Hello ' . $request->first_name,
                 'message' => 'Lion Energy has created an administrator account for you. Click the link to create your password and sign in.',
                 'outtro'  => '',
                 'url'     => secure_url( $link ),
