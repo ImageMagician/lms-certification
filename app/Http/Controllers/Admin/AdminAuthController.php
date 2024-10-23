@@ -248,6 +248,8 @@ class AdminAuthController extends Controller
     }
 
     public function userDetailPost(Request $request) {
+        $admin = $this->getAuth();
+
         $user = User::where('id', $request->session()->get('user', 'default'))->first();
         $m_count = Module::count();
 
@@ -304,9 +306,8 @@ class AdminAuthController extends Controller
                 'url_display' => 'View Dashboard',
             ]));
 
-            //$state = DB::table('usa_states')->where('abbrev', strtoupper($user->states))->orWhere('name', ucwords($user->states))->first();
-
-            $supers = Admin::where('super_admin', '1')->get();
+            // Get all supers that are not the current admin user
+            $supers = Admin::where('super_admin', '1')->whereNot('id', $admin->id)->get();
 
             // send notification to Super Admins that the person is certified
             if (!empty($supers)) {
