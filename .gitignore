@@ -1,1 +1,4 @@
 /public/videos/
+/vendor/
+/node_modules
+.env
