@@ -58,7 +58,10 @@ class RegisterController extends Controller
             'email'      => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone'      => ['required', 'min:10', new PhoneValidation],
             'companies'  => ['required', 'string'],
-            'states'     => ['required', 'string'],
+            'address'    => ['required', 'string'],
+            'city'       => ['required', 'string'],
+            'state'      => ['required', 'string'],
+            'zip'        => ['required', 'string', 'max:5'],
             'password'   => ['required', 'string', 'min:12', 'same:password_confirmation'],
             'password_confirmation' => ['required', 'string', 'min:12', 'same:password'],
         ],
@@ -96,14 +99,16 @@ class RegisterController extends Controller
         $last_name  = filter_var($data['last_name']);
         $email      = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
         $company    = filter_var($data['companies']);
-        $states     = filter_var($data['states']);
+        $address    = filter_var($data['address']);
+        $city       = filter_var($data['city']);
+        $state      = filter_var($data['state']);
+        $zip        = filter_var($data['zip']);
         $referer    = filter_var($data['ref']);
         $admin      = null;
         $verified   = null;
         if ( !empty( $data['admin'] ) ) {
             $admin = filter_var($data['admin'], FILTER_SANITIZE_NUMBER_INT);
             $verified = date("Y-m-d H:i:s");
-
         }
 
         $user_id = User::insertGetId([
@@ -113,7 +118,10 @@ class RegisterController extends Controller
             'email_verified_at' => $verified,
             'phone'      => $phone,
             'companies'  => $company,
-            'states'     => $states,
+            'address'    => $address,
+            'city'       => $city,
+            'state'      => $state,
+            'zip'        => $zip,
             'password'   => Hash::make($data['password']),
             'referer'    => $referer,
             'admin_id'   => $admin,

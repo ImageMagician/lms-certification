@@ -157,7 +157,7 @@ class ModulesController extends Controller
                         'outtro'  => '<ul>
                                             <li>' . $user->first_name . ' ' . $user->last_name . '</li>
                                             <li>Company: ' . $user->companies . '</li>
-                                            <li>State: ' . $user->states . '</li>
+                                            <li>State: ' . $user->state . '</li>
                                             <li>Email: ' . $user->email . '</li>
                                             <li>Phone: ' . $user->phone . '</li>
                                           </ul>',
@@ -175,7 +175,7 @@ class ModulesController extends Controller
                         'outtro'  => '<ul>
                                         <li>' . $user->first_name . ' ' . $user->last_name . '</li>
                                         <li>Company: ' . $user->companies . '</li>
-                                        <li>State: ' . $user->states . '</li>
+                                        <li>State: ' . $user->state . '</li>
                                         <li>Email: ' . $user->email . '</li>
                                         <li>Phone: ' . $user->phone . '</li>
                                       </ul>',

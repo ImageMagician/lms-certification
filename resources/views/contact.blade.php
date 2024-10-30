@@ -67,6 +67,72 @@
                             </div>
 
                             <div class="row mb-3">
+                                <label for="address" class="col-md-4 col-form-label text-md-end">{{ __('Address') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="address" type="text" class="form-control @error('address') is-invalid @enderror" name="address" value="{{ $user->address }}" required>
+
+                                    @error('address')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="city" class="col-md-4 col-form-label text-md-end">{{ __('City') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="city" type="text" class="form-control @error('city') is-invalid @enderror" name="city" value="{{ $user->city }}" required>
+
+                                    @error('city')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="state" class="col-md-4 col-form-label text-md-end">{{ __('State') }}</label>
+
+                                <div class="col-md-6">
+                                    <select id="state" type="companies" class="form-control" name="state">
+                                        @foreach( $states as $state )
+                                            <option value="{{ $state->abbrev }}"
+                                                @if ( $user->state == $state->abbrev)
+                                                    selected
+                                                @endif
+                                            >
+                                                {{ $state->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('state')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="zip" class="col-md-4 col-form-label text-md-end">{{ __('Zip') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="zip" type="text" class="form-control @error('zip') is-invalid @enderror" name="zip" value="{{ $user->zip }}" required>
+
+                                    @error('zip')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <label for="companies" class="col-md-4 col-form-label text-md-end">{{ __('Companies') }}</label>
 
                                 <div class="col-md-6">
@@ -79,29 +145,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <label for="states" class="col-md-4 col-form-label text-md-end">{{ __('States where certified') }}</label>
 
-                                <div class="col-md-6">
-                                    <select id="states" type="companies" class="form-control" name="states">
-                                        @foreach( $states as $state )
-                                            <option value="{{ $state->abbrev }}"
-                                                @if ( $user->states == $state->abbrev)
-                                                    selected
-                                                @endif
-                                            >
-                                                {{ $state->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-
-                                    @error('companies')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-md-6 offset-md-4">
                                     @csrf

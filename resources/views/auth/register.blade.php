@@ -85,68 +85,110 @@
                     </div>
 
                     <div class="row mb-3">
+                        <label for="address" class="col-md-4 col-form-label text-md-end">
+                            {{ __('Address') }}
+                        </label>
+                        <div class="col-md-6">
+                            <input id="address" type="text" class="form-control @error('address') is-invalid @enderror" name="address" value="{{ old('address') }}" required>
+                            @error('address')
+                            <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="address" class="col-md-4 col-form-label text-md-end">
+                            {{ __('City') }}
+                        </label>
+                        <div class="col-md-6">
+                            <input id="city" type="text" class="form-control @error('city') is-invalid @enderror" name="city" value="{{ old('city') }}" required>
+                            @error('city')
+                            <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <label for="states" class="col-md-4 col-form-label text-md-end">
                             {{ __('State') }}
                         </label>
 
                         <div class="col-md-6">
-                            <select id="states" name="states" class="form-control">
+                            <select id="state" name="state" class="form-control">
                                 <option value="">&hellip;</option>
-                                <option value="AL" @if( old('states') == "AL") selected @endif>Alabama</option>
-                                <option value="AK" @if( old('states') == "AK") selected @endif>Alaska</option>
-                                <option value="AZ" @if( old('states') == "AZ") selected @endif>Arizona</option>
-                                <option value="AR" @if( old('states') == "AR") selected @endif>Arkansas</option>
-                                <option value="CA" @if( old('states') == "CA") selected @endif>California</option>
-                                <option value="CO" @if( old('states') == "CO") selected @endif>Colorado</option>
-                                <option value="CT" @if( old('states') == "CT") selected @endif>Connecticut</option>
-                                <option value="DE" @if( old('states') == "DE") selected @endif>Delaware</option>
-                                <option value="DC" @if( old('states') == "DC") selected @endif>District of Columbia</option>
-                                <option value="FL" @if( old('states') == "FL") selected @endif>Florida</option>
-                                <option value="GA" @if( old('states') == "GA") selected @endif>Georgia</option>
-                                <option value="HI" @if( old('states') == "HI") selected @endif>Hawaii</option>
-                                <option value="ID" @if( old('states') == "ID") selected @endif>Idaho</option>
-                                <option value="IL" @if( old('states') == "IL") selected @endif>Illinois</option>
-                                <option value="IN" @if( old('states') == "IN") selected @endif>Indiana</option>
-                                <option value="IA" @if( old('states') == "IA") selected @endif>Iowa</option>
-                                <option value="KS" @if( old('states') == "KS") selected @endif>Kansas</option>
-                                <option value="KY" @if( old('states') == "KY") selected @endif>Kentucky</option>
-                                <option value="LA" @if( old('states') == "LA") selected @endif>Louisiana</option>
-                                <option value="ME" @if( old('states') == "ME") selected @endif>Maine</option>
-                                <option value="MD" @if( old('states') == "MD") selected @endif>Maryland</option>
-                                <option value="MA" @if( old('states') == "MA") selected @endif>Massachusetts</option>
-                                <option value="MI" @if( old('states') == "MI") selected @endif>Michigan</option>
-                                <option value="MN" @if( old('states') == "MN") selected @endif>Minnesota</option>
-                                <option value="MS" @if( old('states') == "MS") selected @endif>Mississippi</option>
-                                <option value="MO" @if( old('states') == "MO") selected @endif>Missouri</option>
-                                <option value="MT" @if( old('states') == "MT") selected @endif>Montana</option>
-                                <option value="NE" @if( old('states') == "NE") selected @endif>Nebraska</option>
-                                <option value="NV" @if( old('states') == "NV") selected @endif>Nevada</option>
-                                <option value="NH" @if( old('states') == "NH") selected @endif>New Hampshire</option>
-                                <option value="NJ" @if( old('states') == "NJ") selected @endif>New Jersey</option>
-                                <option value="NM" @if( old('states') == "NM") selected @endif>New Mexico</option>
-                                <option value="NY" @if( old('states') == "NY") selected @endif>New York</option>
-                                <option value="NC" @if( old('states') == "NC") selected @endif>North Carolina</option>
-                                <option value="ND" @if( old('states') == "ND") selected @endif>North Dakota</option>
-                                <option value="OH" @if( old('states') == "OH") selected @endif>Ohio</option>
-                                <option value="OK" @if( old('states') == "OK") selected @endif>Oklahoma</option>
-                                <option value="OR" @if( old('states') == "OR") selected @endif>Oregon</option>
-                                <option value="PA" @if( old('states') == "PA") selected @endif>Pennsylvania</option>
-                                <option value="PR" @if( old('states') == "PR") selected @endif>Puerto Rico</option>
-                                <option value="RI" @if( old('states') == "RI") selected @endif>Rhode Island</option>
-                                <option value="SC" @if( old('states') == "SC") selected @endif>South Carolina</option>
-                                <option value="SD" @if( old('states') == "SD") selected @endif>South Dakota</option>
-                                <option value="TN" @if( old('states') == "TN") selected @endif>Tennessee</option>
-                                <option value="TX" @if( old('states') == "TX") selected @endif>Texas</option>
-                                <option value="UT" @if( old('states') == "UT") selected @endif>Utah</option>
-                                <option value="VT" @if( old('states') == "VT") selected @endif>Vermont</option>
-                                <option value="VA" @if( old('states') == "VA") selected @endif>Virginia</option>
-                                <option value="WA" @if( old('states') == "WA") selected @endif>Washington</option>
-                                <option value="WV" @if( old('states') == "WV") selected @endif>West Virginia</option>
-                                <option value="WY" @if( old('states') == "WY") selected @endif>Wyoming</option>
+                                <option value="AL" @if( old('state') == "AL") selected @endif>Alabama</option>
+                                <option value="AK" @if( old('state') == "AK") selected @endif>Alaska</option>
+                                <option value="AZ" @if( old('state') == "AZ") selected @endif>Arizona</option>
+                                <option value="AR" @if( old('state') == "AR") selected @endif>Arkansas</option>
+                                <option value="CA" @if( old('state') == "CA") selected @endif>California</option>
+                                <option value="CO" @if( old('state') == "CO") selected @endif>Colorado</option>
+                                <option value="CT" @if( old('state') == "CT") selected @endif>Connecticut</option>
+                                <option value="DE" @if( old('state') == "DE") selected @endif>Delaware</option>
+                                <option value="DC" @if( old('state') == "DC") selected @endif>District of Columbia</option>
+                                <option value="FL" @if( old('state') == "FL") selected @endif>Florida</option>
+                                <option value="GA" @if( old('state') == "GA") selected @endif>Georgia</option>
+                                <option value="HI" @if( old('state') == "HI") selected @endif>Hawaii</option>
+                                <option value="ID" @if( old('state') == "ID") selected @endif>Idaho</option>
+                                <option value="IL" @if( old('state') == "IL") selected @endif>Illinois</option>
+                                <option value="IN" @if( old('state') == "IN") selected @endif>Indiana</option>
+                                <option value="IA" @if( old('state') == "IA") selected @endif>Iowa</option>
+                                <option value="KS" @if( old('state') == "KS") selected @endif>Kansas</option>
+                                <option value="KY" @if( old('state') == "KY") selected @endif>Kentucky</option>
+                                <option value="LA" @if( old('state') == "LA") selected @endif>Louisiana</option>
+                                <option value="ME" @if( old('state') == "ME") selected @endif>Maine</option>
+                                <option value="MD" @if( old('state') == "MD") selected @endif>Maryland</option>
+                                <option value="MA" @if( old('state') == "MA") selected @endif>Massachusetts</option>
+                                <option value="MI" @if( old('state') == "MI") selected @endif>Michigan</option>
+                                <option value="MN" @if( old('state') == "MN") selected @endif>Minnesota</option>
+                                <option value="MS" @if( old('state') == "MS") selected @endif>Mississippi</option>
+                                <option value="MO" @if( old('state') == "MO") selected @endif>Missouri</option>
+                                <option value="MT" @if( old('state') == "MT") selected @endif>Montana</option>
+                                <option value="NE" @if( old('state') == "NE") selected @endif>Nebraska</option>
+                                <option value="NV" @if( old('state') == "NV") selected @endif>Nevada</option>
+                                <option value="NH" @if( old('state') == "NH") selected @endif>New Hampshire</option>
+                                <option value="NJ" @if( old('state') == "NJ") selected @endif>New Jersey</option>
+                                <option value="NM" @if( old('state') == "NM") selected @endif>New Mexico</option>
+                                <option value="NY" @if( old('state') == "NY") selected @endif>New York</option>
+                                <option value="NC" @if( old('state') == "NC") selected @endif>North Carolina</option>
+                                <option value="ND" @if( old('state') == "ND") selected @endif>North Dakota</option>
+                                <option value="OH" @if( old('state') == "OH") selected @endif>Ohio</option>
+                                <option value="OK" @if( old('state') == "OK") selected @endif>Oklahoma</option>
+                                <option value="OR" @if( old('state') == "OR") selected @endif>Oregon</option>
+                                <option value="PA" @if( old('state') == "PA") selected @endif>Pennsylvania</option>
+                                <option value="PR" @if( old('state') == "PR") selected @endif>Puerto Rico</option>
+                                <option value="RI" @if( old('state') == "RI") selected @endif>Rhode Island</option>
+                                <option value="SC" @if( old('state') == "SC") selected @endif>South Carolina</option>
+                                <option value="SD" @if( old('state') == "SD") selected @endif>South Dakota</option>
+                                <option value="TN" @if( old('state') == "TN") selected @endif>Tennessee</option>
+                                <option value="TX" @if( old('state') == "TX") selected @endif>Texas</option>
+                                <option value="UT" @if( old('state') == "UT") selected @endif>Utah</option>
+                                <option value="VT" @if( old('state') == "VT") selected @endif>Vermont</option>
+                                <option value="VA" @if( old('state') == "VA") selected @endif>Virginia</option>
+                                <option value="WA" @if( old('state') == "WA") selected @endif>Washington</option>
+                                <option value="WV" @if( old('state') == "WV") selected @endif>West Virginia</option>
+                                <option value="WY" @if( old('state') == "WY") selected @endif>Wyoming</option>
                             </select>
 
                             @error('states')
                                 <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="zip" class="col-md-4 col-form-label text-md-end">
+                            {{ __('Zip code') }}
+                        </label>
+                        <div class="col-md-6">
+                            <input id="zip" type="text" class="form-control @error('zip') is-invalid @enderror" name="zip" value="{{ old('zip') }}" required>
+                            @error('zip')
+                            <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror

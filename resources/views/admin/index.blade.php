@@ -8,18 +8,18 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="row">
-                    <div class="col-lg-3 col-xl-2 py-3 pe-2 ps-3">
-                        <div class="p-3 bg-white border mb-3 mb-lg-0 border-r-6">
+                    <div class="col-lg-3 col-xl-2 py-3 p-3 pe-lg-2">
+                        <div class="p-3 bg-white border border-r-6">
                             <h2 class="h4">User Stats</h2>
                             {{-- SEARCH FORM --}}
                             <div id="search_field" class="d-flex form-control mb-3 p-0 ps-1 focus-0 justify-content-end">
-                                <form method="get" action="{{ route('adminDashboard') }}">
-                                    <input id="user_search" name="search" type="text" class="flex-grow-1 border-0" placeholder="Search users&hellip;" value="@if (!empty($_GET['search'])){{ $_GET['search'] }}@endif">
-                                    <button type="submit" class="btn px-2 m-0"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                <form method="get" action="{{ route('adminDashboard') }}" class="w-100 d-flex">
+                                    <input id="user_search" name="search" type="text" class="w-100 flex-grow-1 border-0" placeholder="Search users&hellip;" value="@if (!empty($_GET['search'])){{ $_GET['search'] }}@endif">
+                                    <button type="submit" class="btn px-1 m-0"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 </form>
                                 <form method="get" action="{{ route('adminDashboard') }}">
                                     <input type="hidden" name="search" value="">
-                                    <button type="submit" class="btn px-2 m-0"><i class="fa-solid fa-times"></i></button>
+                                    <button type="submit" class="btn pe-2 ps-1 m-0"><i class="fa-solid fa-times"></i></button>
                                 </form>
                             </div>
                             {{-- ALL INSTALLERS --}}
@@ -126,7 +126,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-lg-9 col-xl-10 py-3 pe-3 ps-2">
+                    <div class="col-lg-9 col-xl-10 pt-0 px-3 pb-3 p-lg-3 ps-lg-2">
                         <div class="p-3 bg-white border mb-3 mb-lg-0 border-r-6">
                             <div class="flex mb-2">
                                 <h1 class="h4">
@@ -150,64 +150,74 @@
                                 <h2 class="text-center py-5" style="opacity:.5">No users found for &ldquo;@if (!empty( $_GET['search'])){{ $_GET['search'] }}@endif&rdquo;.</h2>
                             @else
 
-                            <table class="table admin-table">
-                                <tr class="th-header">
-                                    <th colspan="6" class="border-0 py-0"></th>
-                                    <th colspan="12" class="text-center border-0 py-0">Modules</th>
-                                </tr>
-                                <tr class="th-header">
-                                    <th>First name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>Company</th>
-                                    <th class="text-center">State</th>
-                                    <th class="text-center">Action</th>
-                                    @foreach($modules as $m)
-                                        <th class="text-center">{{ $m->id }}</th>
-                                    @endforeach
-                                </tr>
+                            <div class="admin-table mb-3">
+                                <div class="row th-header justify-content-end">
+                                    <div class="d-none d-xl-block col-xl-3">Modules</div>
+                                </div>
+                                <div class="row th-header border-bottom align-items-center">
+                                    <div class="d-none d-xl-block col-xl-9">
+                                        <div class="row">
+                                            <div class="col-2">First name</div>
+                                            <div class="col-2">Last Name</div>
+                                            <div class="col-3">Email</div>
+                                            <div class="col-2">Company</div>
+                                            <div class="col-1 text-center">State</div>
+                                            <div class="col-2 text-center">Cert</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-none d-xl-block col-xl-3">
+                                        <div class="row">
+                                            @foreach($modules as $m)
+                                                <div class="col p-0 text-center">{{ $m->id }}</div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
                                 @foreach($users as $u)
-                                    <tr class="user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
-                                        <td class="name w-auto vertical-align-middle">{{ucwords(strtolower($u->first_name))}}<span class="d-inline-block d-xl-none pe-1"></span></td>
-                                        <td class="name w-auto vertical-align-middle">{{ucwords(strtolower($u->last_name))}}<span class="d-inline-block d-xl-none pe-3"></span></td>
-                                        <td class="w-auto vertical-align-middle">{{ $u->email }}<span class="d-inline-block d-xl-none pe-3">,</span></td>
-                                        <td class="w-auto text-wrap vertical-align-middle">{{ucwords(strtolower($u->companies))}}<span class="d-inline-block d-xl-none pe-3">,</span></td>
-                                        <td class="w-auto text-center vertical-align-middle">{{$u->states}}</td>
-                                        <td class="table-action px-lg-2 vertical-align-middle">
-                                            @if ( !is_null($u->cert) )
-                                                <a class="btn btn-small btn-warning w-100" href="{{ route('userDetail', $u->id) }}">
-                                                    <strong>{{$u->cert}}</strong>
-                                                </a>
-                                            @elseif ( !is_null($u->training_done) )
-                                                <a class="btn btn-small btn-success w-100" href="{{ route('userDetail', $u->id) }}">
-                                                    <strong>CERTIFY</strong>
-                                                </a>
-                                            @else
-                                                <a class="btn btn-small btn-tertiary w-100" href="{{ route('userDetail', $u->id) }}">
-                                                    VIEW
-                                                </a>
-                                            @endif
-                                        </td>
-                                        @foreach($modules as $m)
-                                            <td class="text-center vertical-align-middle">
-                                                @php
-                                                    $mod_id = 'module_' . sprintf("%02d", $m->id);
-                                                @endphp
-                                                <div class="step-name">{{$m->id}}</div>
-                                                <div style="height:18px; width:18px;" class="d-inline-block mx-auto rounded-circle vertical-align-middle
-                                                    @if ( is_null( $u->$mod_id ) )
-                                                        opacity-0 d-inline-block
-                                                    @elseif ( $u->$mod_id < 75 )
-                                                        bg-red
-                                                    @else
-                                                        bg-green
+                                    <a href="{{ route('userDetail', $u->id) }}" class="row user-line" id="{{$u->first_name}}_{{$u->last_name}}_{{$u->companies}}_{{$u->id}}">
+                                        <div class="col-xl-9">
+                                            <div class="d-xl-flex">
+                                                <div class="d-inline-block col-xl-2 name vertical-align-middle">{{ucwords(strtolower($u->first_name))}}<span class="d-inline-block d-xl-none pe-1"></span></div>
+                                                <div class="d-inline-block col-xl-2 name vertical-align-middle">{{ucwords(strtolower($u->last_name))}}<span class="d-inline-block d-xl-none pe-2"></span></div>
+                                                <div class="d-inline-block col-xl-3 overflow-hidden text-nowrap vertical-align-middle">{{ $u->email }}<span class="d-inline-block d-xl-none pe-2">,</span></div>
+                                                <div class="d-inline-block col-xl-2 overflow-hidden text-nowrap vertical-align-middle">{{ucwords(strtolower($u->companies))}}<span class="d-inline-block d-xl-none pe-2">,</span></div>
+                                                <div class="d-inline-block col-xl-1 text-center vertical-align-middle">{{$u->state}}</div>
+                                                <div class="d-block d-xl-inline-flex col-xl-2 py-2 py-xl-0">
+                                                    @if ( !is_null($u->cert) )
+                                                        <button class="btn btn-small btn-warning w-100">
+                                                            <strong>{{$u->cert}}</strong>
+                                                        </button>
+                                                    @elseif ( !is_null($u->training_done) )
+                                                        <button class="btn btn-small btn-success w-100">
+                                                            <strong>CERTIFY</strong>
+                                                        </button>
                                                     @endif
-                                                "></div>
-                                            </td>
-                                        @endforeach
-                                    </tr>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3">
+                                            <div class="row">
+                                                @foreach($modules as $m)
+                                                    <div class="module-container col p-0 text-center vertical-align-middle py-2 py-xl-0">
+                                                        @php
+                                                            $mod_id = 'module_' . sprintf("%02d", $m->id);
+                                                        @endphp
+                                                        <div class="module-dot d-inline-block mx-auto rounded-circle vertical-align-middle
+                                                            @if ( is_null( $u->$mod_id ) )
+                                                                opacity-0 d-inline-block
+                                                            @elseif ( $u->$mod_id < 75 )
+                                                                bg-red
+                                                            @else
+                                                                bg-green
+                                                            @endif
+                                                        "><div class="step-name">{{$m->id}}</div></div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </a>
                                 @endforeach
-                            </table>
+                            </div>
 
                             {{ $users->links() }}
                             @endif

@@ -38,12 +38,12 @@ class HomeController extends Controller
     protected function userPull() {
         $user = Auth::user();
         $companies = explode(',', $user->companies);
-        $states = explode(',', $user->states);
+        $state =$user->state;
         $activity = UserActivity::where('user_id', $user->id)->first();
         $images = InstallImage::where('user_id', $user->id)->get();
         $messages = Message::where('user_id', $user->id)->get();
 
-        return ( ['user'=>$user, 'companies'=>$companies, 'states'=>$states, 'activity'=>$activity, 'images'=>$images, 'messages'=>$messages] );
+        return ( ['user'=>$user, 'companies'=>$companies, 'state'=>$state, 'activity'=>$activity, 'images'=>$images, 'messages'=>$messages] );
     }
 
     /**
@@ -72,7 +72,7 @@ class HomeController extends Controller
                 "user"      => $user_info['user'],
                 "admin"     => $admin,
                 "companies" => $user_info['companies'],
-                "states"    => $user_info['states'],
+                "state"    => $user_info['state'],
                 "activity"  => $user_info['activity'],
                 "modules"   => $modules,
                 "images"    => $user_info['images'],
@@ -241,10 +241,13 @@ class HomeController extends Controller
         if ($request->isMethod('put')) {
             User::where('id', $request->id)->update ([
                 'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'phone' => $request->phone,
-                'companies' => $request->companies,
-                'states' => $request->states,
+                'last_name'  => $request->last_name,
+                'phone'      => $request->phone,
+                'address'    => $request->address,
+                'city'       => $request->city,
+                'state'      => $request->state,
+                'zip'        => $request->zip,
+                'companies'  => $request->companies,
             ]);
         }
         return redirect()->route('home' );

@@ -153,7 +153,7 @@ class AdminAuthController extends Controller
             ->where(function ($query) use ($search) {
                 $query->where('first_name', 'LIKE', '%' . $search . '%')
                 ->orWhere('last_name', 'LIKE', '%' . $search . '%')
-                ->orWhere('states', 'LIKE', '%' . $search . '%')
+                ->orWhere('state', 'LIKE', '%' . $search . '%')
                 ->orWhere('email', 'LIKE', '%' . $search . '%')
                 ->orWhere('companies', 'LIKE', '%' . $search . '%');
             });
@@ -311,10 +311,23 @@ class AdminAuthController extends Controller
 
             // send notification to Super Admins that the person is certified
             if (!empty($supers)) {
+
+                $intro = '<p>The following person is now a certified installer: </p>' .
+                    '<ul><li>'      . $user->first_name . ' ' . $user->last_name . '</li>' .
+                    '<li>Company: ' . $user->companies . '</li>' .
+                    '<li>Email: '   . $user->email  . '</li>' .
+                    '<li>Phone: '   . $user->phone . '</li>';
+
+                if (!empty($user->address) && !empty($user->city) && !empty($user->state) && !empty($user->zip)) {
+                    $intro .= '<li>Address: ' . $user->address . ', ' . $user->city . ', ' . $user->state . ' ' . $user->zip . '</li>';
+                }
+
+                $intro .= '<li>State: '   . $user->state . '</li></ul>';
+
                 foreach ( $supers as $super ) {
                     $super->notify(new RSM([
                         'subject' => 'Lion Energy Certification',
-                        'intro'   => '<p>The following person is now a certified installer: </p><ul><li>' . $user->first_name . ' ' . $user->last_name . '</li><li>Company: ' . $user->companies . '</li><li>Email: ' . $user->email  .'</li><li>Phone: ' . $user->phone . '</li><li>State:  ' . $user->states . '</li></ul>',
+                        'intro'   => $intro,
                         'message' => '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
                     ]));        }
                 }

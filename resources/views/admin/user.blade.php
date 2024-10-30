@@ -15,7 +15,7 @@
                 <div class="position-relative d-block d-md-flex mb-4 p-2" style="background-color:rgba(0,0,0,.05)">
                     <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">Phone:</span><span class="ps-1 w-67 w-md-auto">{{ $user->phone }}</span></div>
                     <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">Email:</span><span class="ps-1 w-67 w-md-auto"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></span></div>
-                    <div class="d-flex d-md-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">State:</span><span class="ps-1 w-67 w-md-auto">{{ $user->states }}</span></div>
+                    <div class="d-flex d-md-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">State:</span><span class="ps-1 w-67 w-md-auto">{{ $user->state }}</span></div>
                     <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">Company:</span><span class="ps-1 w-67 w-md-auto">{{ $user->companies }}</span></div>
                     <div class="d-flex d-md-block flex-md-fill mx-2 py-1"><span class="w-33 w-md-auto opacity-50">RSM:</span><span class="ps-1 w-67 w-md-auto">@if (!is_null($rsm)){{ $rsm->first_name }} {{ $rsm->last_name }}@else N/A @endif</span></div>
                     <a href="{{ route('adminDashboard') }}" class="position-absolute btn btn-small btn-tertiary"

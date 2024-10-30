@@ -835,30 +835,39 @@ p {
     width:100%;
 }
 
-span.step-name {
+.module-container {
+    border:1px solid transparent;
+}
+
+.module-dot {
+    height:18px;
+    width:18px;
+    line-height:18px;
+}
+
+.step-name {
+    font-size:.75em;
     display: none;
 }
 
+.th-header {
+    padding:0 0.5rem;
+    font-weight: bold;
+}
 
-.table {
-    &.admin-table {
-        tr {
-            th {
-                padding:0;
-            }
-            td {
-                background: transparent;
-                padding: .875rem .0625rem;
+.user-line {
+    text-decoration:none;
+    color:black;
+    border:1px solid transparent;
+    border-bottom-color:rgba(0,0,0,.1);
+    padding: 0.625rem;
+    transition:all .125s linear;
 
-                .btn-small {
-                    padding-top: 0.45em;
-                    padding-bottom: 0.45em;
-                }
-                .step-name {
-                    display:none;
-                }
-            }
-        }
+    &:hover {
+        border-color:rgba(0,0,0,.2);
+        background:rgba(0,0,0,0.05);
+        transform:scale(1.005);
+        box-shadow:0 3px 2px rgba(0,0,0,.1);
     }
 }
 
@@ -870,54 +879,22 @@ span.step-name {
     MEDIA QUERIES
  */
 @media (max-width:1200px) {
+    .name {
+        font-weight: 700;
+    }
 
-    .table.admin-table,
-    .table.admin-table > tbody {
+    .step-name {
         display: block;
     }
 
-    .table {
-        &.admin-table {
-            tr {
-                display: flex;
-                flex-wrap: wrap;
-                padding-top: 1em;
-                padding-bottom: 1.5em;
-                border-top: 1px solid rgba(0, 0, 0, .1);
+    .module-container {
+        border-color:rgba(0,0,0,.1);
+    }
 
-                &.th-header {
-                    display: none;
-                }
-
-                td {
-                    padding: 0.5rem;
-                    display: block;
-                    width: 8.333%;
-                    border-width: 1px;
-                    margin-left: -1px;
-                    margin-top: -1px;
-
-                    &.table-action {
-                        width: 100%;
-                        border: none;
-                    }
-
-                    &.w-auto {
-                        font-size: larger;
-                        padding: 0;
-                        border: none;
-                    }
-
-                    &.name {
-                        font-weight: 700;
-                    }
-
-                    .step-name {
-                        display: block;
-                    }
-                }
-            }
-        }
+    .module-dot {
+        height:24px;
+        width:24px;
+        line-height:24px;
     }
 }
 
@@ -945,27 +922,9 @@ span.step-name {
 }
 
 @media (max-width:600px) {
-    .table {
-        &.admin-table {
-            tr {
-                td {
-                    width: 25%;
-                }
-            }
-        }
-    }
 }
 
 @media (max-width:480px) {
-    .table {
-        &.admin-table {
-            tr {
-                td {
-                    width: 50%;
-                }
-            }
-        }
-    }
 }
 
 @media (min-width:576px) {

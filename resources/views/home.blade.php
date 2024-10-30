@@ -20,6 +20,11 @@
                     </h1>
                 </div>
             </div>
+            @if ( !empty($user->address) && !empty($user->city) && !empty($user->state) && !empty($user->zip))
+            <div>
+                Address: {{ $user->address }}, {{ $user->city }}, {{ $user->state }} {{ $user->zip }}
+            </div>
+            @endif
             <div class="d-flex">
                 <div class="flex-fill">
                     Phone number: {{ $user->phone }}
@@ -31,7 +36,7 @@
                     Company: {{ $user->companies }}
                 </div>
                 <div class="flex-fill">
-                    State: {{ $user->states }}
+                    State: {{ $user->state }}
                 </div>
                 <div class="flex-fill">
                     Rep:
