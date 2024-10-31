@@ -205,6 +205,9 @@ class AdminAuthController extends Controller
         $messages = Message::where('user_id', $id)->get();
         $rsm = null;
 
+        if (empty($user)) {
+            return redirect(route('adminDashboard'));
+        }
         if ( !is_null( $user->admin_id ) ) {
             $rsm = Admin::where('id', $user->admin_id)->first();
         }
