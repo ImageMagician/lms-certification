@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
                     'url' => secure_url('https://certification.lionenergy.com/login'),
                 ]));
             }
-        })->everyMinute();
+        })->mondays()->at('10:00');
     }
 
     /**
