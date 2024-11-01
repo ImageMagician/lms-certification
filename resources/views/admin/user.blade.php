@@ -49,7 +49,10 @@
                                     <p>
                                         This user has completed all the training courses. Please review their results and contact them if necessary. Otherwise, click "certify user" if they are approved.
                                     </p>
-                                    <a href="{{ route('userDetailStep', ['id' => $user->id, 'step' => $m_count]) }}" class="btn btn-primary">Certify User</a>
+                                    <form action="{{ route("userCertify") }}" class="d-inline-block me-3" method="post" onsubmit="processingOverlay()">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary">Certify Installer</button>
+                                    </form>
                                 @endif
                             </div>
                         </div>

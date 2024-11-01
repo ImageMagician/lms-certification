@@ -69,6 +69,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
       Route::get('/user/{id}', [AdminAuthController::class, 'userDetail'])->name('userDetail');
       Route::get('/user/{id}/{step}', [AdminAuthController::class, 'userDetailStep'])->name('userDetailStep');
       Route::post('/user/update', [AdminAuthController::class, 'userDetailPost'])->name('userDetailPost');
+      Route::post('/user/certify', [AdminAuthController::class, 'userCertify'])->name('userCertify');
 //      Route::post('/user/appt', [AdminAuthController::class, 'step3date'])->name('apptSet');
 //      Route::post('/user/final-suggest', [AdminAuthController::class, 'step6Date'])->name('final-suggest');
 //      Route::post('/user/final', [AdminAuthController::class,'finalInspectDate'])->name('final-inspect');

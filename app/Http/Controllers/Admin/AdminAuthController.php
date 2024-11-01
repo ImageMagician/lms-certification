@@ -250,6 +250,79 @@ class AdminAuthController extends Controller
         return view('admin.step', ['admin'=>$admin, 'user'=>$user, 'module'=> $module, 'm_count' => $m_count, 'activity' => $activity, 'docs'=>$docs, 'notes'=>$notes, 'msgs'=>$msgs]);
     }
 
+    public function userCertify(Request $request) {
+        $admin = $this->getAuth();
+        $user = User::where('id', $request->session()->get('user', 'default'))->first();
+
+        // create cert# with first and last initials + their user db id
+        $u_id = $user->id;
+        $fi = substr($user->first_name, 0, 1);
+        $li = substr($user->last_name, 0, 1);
+
+        // just in case fi and li don't get populated
+        $rstring = 'abcdefghijklmnopqrstuvwxyz';
+
+        if ($fi == '') {
+            $fi = $rstring[rand(0, strlen($rstring)-1)];
+        }
+
+        if ( $li == '' ) {
+            $li = $rstring[rand(0, strlen($rstring)-1)];
+        }
+
+        $cert = bin2hex( $fi . $li . $u_id);
+
+        $cert_date = date('Y-m-d H:i:s');
+
+        User::where('id', $user->id)
+            ->update([
+                'cert' => $cert,
+                'cert_date' => $cert_date
+            ]);
+
+        $cert_pull = User::where('id', $user->id)->value('cert');
+
+        // send notification to user that they have been certified
+        $user->notify(new Step3([
+            'subject'  => 'Lion Energy Certification',
+            'greeting' => 'Congratulations, ' . $user->first_name,
+            'intro'    => '',
+            'message'  => 'Lion Energy has confirmed the completion of your training and issued you a certification number. This allows you to install the Lion Sanctuary system.',
+            'outtro'   => '<strong>Certification number: ' . $cert_pull . '</strong>',
+            'url'      => route('home'),
+            'url_display' => 'View Dashboard',
+        ]));
+
+        // Get all supers that are not the current admin user
+        $supers = Admin::where('super_admin', '1')->whereNot('id', $admin->id)->get();
+
+        // send notification to Super Admins that the person is certified
+        if (!empty($supers)) {
+
+            $intro = '<p>The following person is now a certified installer: </p>' .
+                '<ul><li>'      . $user->first_name . ' ' . $user->last_name . '</li>' .
+                '<li>Company: ' . $user->companies . '</li>' .
+                '<li>Email: '   . $user->email  . '</li>' .
+                '<li>Phone: '   . $user->phone . '</li>';
+
+            if (!empty($user->address) && !empty($user->city) && !empty($user->state) && !empty($user->zip)) {
+                $intro .= '<li>Address: ' . $user->address . ', ' . $user->city . ', ' . $user->state . ' ' . $user->zip . '</li>';
+            }
+
+            $intro .= '<li>State: '   . $user->state . '</li></ul>';
+
+            foreach ( $supers as $super ) {
+                $super->notify(new RSM([
+                    'subject' => 'Lion Energy Certification',
+                    'intro'   => $intro,
+                    'message' => '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
+                ]));
+            }
+        }
+
+        return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
+    }
+
     public function userDetailPost(Request $request) {
         $admin = $this->getAuth();
 
@@ -257,8 +330,6 @@ class AdminAuthController extends Controller
         $m_count = Module::count();
 
         $review_date = null;
-
-        $mod_name = 'module_' . sprintf("%02d", htmlentities($request->session()->get('step', 'default') ) );
 
         if ( !empty( $request->review_03_date ) ) {
             $new_datetime = $request->review_03_date . ' ' . $request->review_03_time;
@@ -268,73 +339,6 @@ class AdminAuthController extends Controller
             $new_datetime = $request->review_06_date . ' ' . $request->review_06_time;
             $review_date = date("Y-m-d H:i:s", strtotime($new_datetime) );
         }
-        elseif ( $request->session()->get('step') == $m_count) {
-
-            // create cert# with first and last initials + their user db id
-            $u_id = $user->id;
-            $fi = substr($user->first_name, 0, 1);
-            $li = substr($user->last_name, 0, 1);
-
-            // just in case fi and li don't get populated
-            $rstring = 'abcdefghijklmnopqrstuvwxyz';
-
-            if ($fi == '') {
-                $fi = $rstring[rand(0, strlen($rstring)-1)];
-            }
-
-            if ( $li == '' ) {
-                $li = $rstring[rand(0, strlen($rstring)-1)];
-            }
-
-            $cert = bin2hex( $fi . $li . $u_id);
-
-            $cert_date = date('Y-m-d H:i:s');
-
-            User::where('id', $user->id)
-                ->update([
-                    'cert' => $cert,
-                    'cert_date' => $cert_date
-                ]);
-
-            $cert_pull = User::where('id', $user->id)->value('cert');
-
-            // send notification to user that they have been certified
-            $user->notify(new Step3([
-                'subject'  => 'Lion Energy Certification',
-                'greeting' => 'Congratulations, ' . $user->first_name,
-                'intro'    => '',
-                'message'  => 'Lion Energy has confirmed the completion of your training and issued you a certification number. This allows you to install the Lion Sanctuary system.',
-                'outtro'   => '<strong>Certification number: ' . $cert_pull . '</strong>',
-                'url'      => route('home'),
-                'url_display' => 'View Dashboard',
-            ]));
-
-            // Get all supers that are not the current admin user
-            $supers = Admin::where('super_admin', '1')->whereNot('id', $admin->id)->get();
-
-            // send notification to Super Admins that the person is certified
-            if (!empty($supers)) {
-
-                $intro = '<p>The following person is now a certified installer: </p>' .
-                    '<ul><li>'      . $user->first_name . ' ' . $user->last_name . '</li>' .
-                    '<li>Company: ' . $user->companies . '</li>' .
-                    '<li>Email: '   . $user->email  . '</li>' .
-                    '<li>Phone: '   . $user->phone . '</li>';
-
-                if (!empty($user->address) && !empty($user->city) && !empty($user->state) && !empty($user->zip)) {
-                    $intro .= '<li>Address: ' . $user->address . ', ' . $user->city . ', ' . $user->state . ' ' . $user->zip . '</li>';
-                }
-
-                $intro .= '<li>State: '   . $user->state . '</li></ul>';
-
-                foreach ( $supers as $super ) {
-                    $super->notify(new RSM([
-                        'subject' => 'Lion Energy Certification',
-                        'intro'   => $intro,
-                        'message' => '<p><strong>Certification number: ' . $cert_pull . '</strong></p>',
-                    ]));        }
-                }
-            }
 
         return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
     }
