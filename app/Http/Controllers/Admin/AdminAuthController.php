@@ -524,17 +524,15 @@ class AdminAuthController extends Controller
 
             $notify_data = [
                 'subject' => 'New User Account',
-                'intro'   => 'Account Creation',
                 'greeting' => 'Hello ' . $request->first_name,
                 'message' => 'Lion Energy has created an administrator account for you. Click the link to create your password and sign in.',
-                'outtro'  => '',
                 'url'     => secure_url( $link ),
                 'url_display' => 'View Dashboard',
             ];
 
             $admin_user = Admin::latest()->first();
 
-            $admin_user->notify( new Step3($notify_data) );
+            $admin_user->notify( new Generic($notify_data) );
 
             Session::flash('success', 'New admin account created successfully.');
         }
