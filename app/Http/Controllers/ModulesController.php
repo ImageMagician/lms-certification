@@ -43,9 +43,16 @@ class ModulesController extends Controller
         $docs     = InstallImage::where('user_id', $user->id)->get();
         $note     = Note::where('user_id', $user->id)->where('module_id', $id)->where('admin_id', null)->first();
         $msgs     = Message::where('user_id', $user->id)->get();
+        $prev     = 1;
 
-        // used to check for activity of the previous module
-        $prev     = sprintf('%02d',$id - 1);
+        // Check for activity of the previous module
+
+        // ensure $id value is integer
+        $mod_int = intval($id);
+        if ($mod_int > 0) {
+            $prev = sprintf('%02d', $mod_int - 1);
+        }
+
         $prev_mod = 'module_' . $prev;
 
         // make sure the module id pulls an existing module
