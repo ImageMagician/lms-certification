@@ -50,8 +50,8 @@
         </div>
 </div>
 <div class="bg-med-gray p-2 text-center">
-    Full installation instructions can be found in the installation guide:
-    <a href="/docs/Sanctuary_Installation_Guide-100424.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">Click Here</a>
+    <a href="/docs/Sanctuary_Installation_Guide-100424.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">FULL INSTALLATION GUIDE</a>
+    <a href="/docs/LION - Sanctuary Warranty_10-1-24.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">WARRANTY DOCUMENTS</a>
 </div>
 <div class="container-fluid">
     <div class="row py-2">

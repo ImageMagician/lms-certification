@@ -1,0 +1,22 @@
+{
+  "resources/js/app.js": {
+    "file": "assets/app-164f8f21.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/functions.js": {
+    "file": "assets/functions-e2ef8f57.js",
+    "isEntry": true,
+    "src": "resources/js/functions.js"
+  },
+  "resources/js/quizzes.js": {
+    "file": "assets/quizzes-4a76ee9a.js",
+    "isEntry": true,
+    "src": "resources/js/quizzes.js"
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-82104576.css",
+    "isEntry": true,
+    "src": "resources/sass/app.scss"
+  }
+}
