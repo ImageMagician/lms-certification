@@ -50,8 +50,8 @@
         </div>
 </div>
 <div class="bg-med-gray p-2 text-center">
-    <a href="/docs/Sanctuary_Installation_Guide-100424.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">FULL INSTALLATION GUIDE</a>
-    <a href="/docs/LION - Sanctuary Warranty_10-1-24.pdf" class="btn btn-small btn-secondary mx-2" target="_blank">WARRANTY DOCUMENTS</a>
+    <a href="{{ asset('docs/Sanctuary_Installation_Guide-100424.pdf') }}" class="btn btn-small btn-secondary mx-2" target="_blank">FULL INSTALLATION GUIDE</a>
+    <a href="{{ asset('docs/LION - Sanctuary Warranty_10-1-24.pdf') }}" class="btn btn-small btn-secondary mx-2" target="_blank">WARRANTY DOCUMENTS</a>
 </div>
 <div class="container-fluid">
     <div class="row py-2">
@@ -329,7 +329,7 @@
 
         function changeDateModal(e) {
             let db1, db2, db3, date, time;
-            if ( e == 3 ) {
+            if ( e === 3 ) {
                 db1 = '{{ strtotime($activity->review_03) }}';
                 db2 = '{{ strtotime($activity->review_03_user_request) }}';
                 db3 = '{{ strtotime($activity->review_03_admin_request) }}';
@@ -346,7 +346,7 @@
                     time = '{{ date("H:i", strtotime($activity->review_03)) }}';
                 }
             }
-            else if ( e == 6 ) {
+            else if ( e === 6 ) {
                 db1 = '{{ strtotime($activity->review_06) }}';
                 db2 = '{{ strtotime($activity->review_06_user_request) }}';
                 db3 = '{{ strtotime($activity->review_06_admin_request) }}';
@@ -364,9 +364,9 @@
                 }
             }
 
-            const link = ( e == 3 ) ? '{{ route('userStep3Change') }}' : '{{ route('userStep6Change') }}';
+            const link = ( e === 3 ) ? '{{ route('userStep3Change') }}' : '{{ route('userStep6Change') }}';
 
-            if ( date != undefined && time != undefined ) {
+            if ( date !== undefined && time !== undefined ) {
                 document.getElementById('date').value = date;
                 document.getElementById('time').value = time;
             }
