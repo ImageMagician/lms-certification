@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id');
-            $table->integer('admin_id')->nullable();
-            $table->text('message');
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('messages')){
+            Schema::create('messages', function (Blueprint $table) {
+                $table->id();
+                $table->integer('user_id');
+                $table->integer('admin_id')->nullable();
+                $table->text('message');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

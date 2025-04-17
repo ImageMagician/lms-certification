@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('modules', function (Blueprint $table) {
-            $table->id();
-            $table->string('section');
-            $table->string('title');
-            $table->text('description');
-            $table->string('video')->nullable();
-            $table->string('video_poster')->nullable();
-            $table->float('passing_percentage')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('modules')) {
+            Schema::create('modules', function (Blueprint $table) {
+                $table->id();
+                $table->string('section');
+                $table->string('title');
+                $table->text('description');
+                $table->string('video')->nullable();
+                $table->string('video_poster')->nullable();
+                $table->float('passing_percentage')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

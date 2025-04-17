@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('module_answers', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id')->unsigned();
-            $table->integer('module_id')->unsigned();
-            $table->integer('q_id')->unsigned();
-            $table->string('answer');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('module_answers')) {
+            Schema::create('module_answers', function (Blueprint $table) {
+                $table->id();
+                $table->integer('user_id')->unsigned();
+                $table->integer('module_id')->unsigned();
+                $table->integer('q_id')->unsigned();
+                $table->string('answer');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

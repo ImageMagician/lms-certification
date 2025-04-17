@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('install_images', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id');
-            $table->tinyInteger('module_id');
-            $table->string('image_cat', 10);
-            $table->string('image_title');
-            $table->string('image_ext', 10);
-            $table->string('image_path');
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('install_images')){
+            Schema::create('install_images', function (Blueprint $table) {
+                $table->id();
+                $table->integer('user_id');
+                $table->tinyInteger('module_id');
+                $table->string('image_cat', 10);
+                $table->string('image_title');
+                $table->string('image_ext', 10);
+                $table->string('image_path');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

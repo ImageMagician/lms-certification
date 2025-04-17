@@ -208,7 +208,8 @@ class ModulesController extends Controller
         return view('result', ['module'=>$module, 'user'=>$user, 'answers'=>$answers, 'activity'=>$activity]);
     }
 
-    function store(Request $request) {
+    function store(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $validated = $request->validate(
             [
                 'answer' => 'required'

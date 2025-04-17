@@ -195,7 +195,8 @@ class AdminAuthController extends Controller
         return $query;
     }
 
-    public function userDetail($id) {
+    public function userDetail($id): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    {
         session(['user' => $id]);
         session()->forget('step');
         $admin = auth()->guard('admin')->user();
@@ -212,7 +213,7 @@ class AdminAuthController extends Controller
             $rsm = Admin::where('id', $user->admin_id)->first();
         }
 
-        // get all answers from user with Trait QuizREsults
+        // get all answers from user with Trait Quiz Results
         $qNa = $this->getQuizResults();
 
         // set modules total for check on if last module quiz is completed
@@ -236,7 +237,8 @@ class AdminAuthController extends Controller
         );
     }
 
-    public function userDetailStep($id, $step) {
+    public function userDetailStep($id, $step): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    {
         session(['step' => $step]);
         $admin    = auth()->guard('admin')->user();
         $user     = User::find(session()->get('user'));
@@ -250,7 +252,8 @@ class AdminAuthController extends Controller
         return view('admin.step', ['admin'=>$admin, 'user'=>$user, 'module'=> $module, 'm_count' => $m_count, 'activity' => $activity, 'docs'=>$docs, 'notes'=>$notes, 'msgs'=>$msgs]);
     }
 
-    public function userCertify(Request $request) {
+    public function userCertify(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $admin = $this->getAuth();
         $user = User::where('id', $request->session()->get('user', 'default'))->first();
 
@@ -319,6 +322,8 @@ class AdminAuthController extends Controller
                 ]));
             }
         }
+
+        // POST TO HUBSPOT
 
         return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
     }

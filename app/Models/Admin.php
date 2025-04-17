@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticable;
 use Illuminate\Notifications\Notifiable;
 
 
+/**
+ * @method static where(string $string, $admin_id)
+ */
 class Admin extends Authenticable
 {
     use HasFactory, Notifiable;

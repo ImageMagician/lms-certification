@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('usa_area_codes', function (Blueprint $table) {
-            $table->id();
-            $table->string('area_code', 3);
-            $table->string('region' ,2);
-            $table->string('utc',10);
-            $table->text('description');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('usa_area_codes')) {
+            Schema::create('usa_area_codes', function (Blueprint $table) {
+                $table->id();
+                $table->string('area_code', 3);
+                $table->string('region' ,2);
+                $table->string('utc',10);
+                $table->text('description');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

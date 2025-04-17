@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admin_resets', function (Blueprint $table) {
-            $table->id();
-            $table->string('email');
-            $table->string('token');
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('admin_resets')) {
+            Schema::create('admin_resets', function (Blueprint $table) {
+                $table->id();
+                $table->string('email');
+                $table->string('token');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

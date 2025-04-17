@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if(!Schema::hasTable('usa_phone_exchange_bad')) {
-            Schema::create('usa_phone_exchange_bad', function (Blueprint $table) {
-                $table->id();
-                $table->string('area_code', 3);
-                $table->timestamps();
-            });
-        }
+        Schema::create('api_keys', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('key');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('api_keys');
     }
 };

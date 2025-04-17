@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('regional_reps', function (Blueprint $table) {
-            $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('regional_reps')) {
+            Schema::create('regional_reps', function (Blueprint $table) {
+                $table->id();
+                $table->string('first_name');
+                $table->string('last_name');
+                $table->string('email');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

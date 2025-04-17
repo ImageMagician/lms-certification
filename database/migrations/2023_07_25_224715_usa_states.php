@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('usa_states', function (Blueprint $table) {
-            $table->id();
-            $table->string('abbrev');
-            $table->string('name');
-            $table->string('rep');
-            $table->text('map_path');
-            $table->text('map_text_x');
-            $table->text('map_text_y');
-            $table->timestamps();
-        });
-
+        if (!Schema::hasTable('usa_states')) {
+            Schema::create('usa_states', function (Blueprint $table) {
+                $table->id();
+                $table->string('abbrev');
+                $table->string('name');
+                $table->string('rep');
+                $table->text('map_path');
+                $table->text('map_text_x');
+                $table->text('map_text_y');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

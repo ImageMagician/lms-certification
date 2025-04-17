@@ -12,8 +12,10 @@ class ModuleAnswer extends Model
 {
     use HasFactory;
 
-    public mixed $module_id;
-    public mixed $answer;
-//    public mixed $q_id;
-    public mixed $user_id;
+    protected $fillable = [
+        'module_id',
+        'answer',
+        'q_id',
+        'user_id'
+    ];
 }

@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_invites', function (Blueprint $table) {
-            $table->id();
-            $table->integer('admin_id');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email');
-            $table->string('token');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('user_invites')) {
+            Schema::create('user_invites', function (Blueprint $table) {
+                $table->id();
+                $table->integer('admin_id');
+                $table->string('first_name');
+                $table->string('last_name');
+                $table->string('email');
+                $table->string('token');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
