@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static where(string $string, $id)
+ */
 class InstallImage extends Model
 {
     use HasFactory;
@@ -17,4 +20,8 @@ class InstallImage extends Model
         'image_ext',
         'image_path'
     ];
+
+    public static function create(array $array)
+    {
+    }
 }

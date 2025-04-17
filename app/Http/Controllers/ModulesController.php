@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use App\Traits\QuizResults;
 use Illuminate\Support\Facades\DB;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
 
 class ModulesController extends Controller
@@ -36,7 +36,8 @@ class ModulesController extends Controller
         $this->middleware(['auth', 'verified']);
     }
 
-    function index($id) {
+    function index($id): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    {
         $user     = Auth::user();
         $module   = Module::find($id);
         $activity = UserActivity::where('user_id', $user->id)->first();
@@ -67,19 +68,22 @@ class ModulesController extends Controller
 
     }
 
-    function home () {
+    function home (): \Illuminate\Http\RedirectResponse
+    {
         // Used when user removes module number from URI.
         return redirect()->route('home');
     }
 
-    function videoEnd(Request $request) {
+    function videoEnd(Request $request): void
+    {
         $user = Auth::user();
         $video = sprintf('%02d', $request->input('video'));
         $video = 'module_' . $video . '_video';
         DB::table('user_activities')->where('user_id', $user->id)->update([$video => 1]);
     }
 
-    function quiz($id) {
+    function quiz($id): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    {
         $user = Auth::user();
 
         //Check if the video has been watched by the user
@@ -140,7 +144,8 @@ class ModulesController extends Controller
         }
     }
 
-    function requestCert() {
+    function requestCert(): \Illuminate\Http\RedirectResponse
+    {
             $user = Auth::user();
 
             $activity = UserActivity::where('user_id', $user->id)->first();
@@ -197,7 +202,8 @@ class ModulesController extends Controller
             return redirect()->route('home');
     }
 
-    function quizResults() {
+    function quizResults(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    {
         $activity = UserActivity::where('user_id', $user->id)->first();
         return view('result', ['module'=>$module, 'user'=>$user, 'answers'=>$answers, 'activity'=>$activity]);
     }
@@ -221,7 +227,8 @@ class ModulesController extends Controller
         return redirect()->route('quiz', ['id' => $request->module_id ]);
     }
 
-    function restartQuiz(Request $request) {
+    function restartQuiz(Request $request): \Illuminate\Http\RedirectResponse
+    {
 
         // this will retain the answers in the database for cumulative analysis, but remove the users's ID from each line item.
         $user = Auth::user();
@@ -244,7 +251,8 @@ class ModulesController extends Controller
         return redirect()->route('quiz', ['id'=>$request->module_id]);
     }
 
-    function restartVideo(Request $request) {
+    function restartVideo(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $user = Auth::user();
         if ( $request->isMethod('put')) {
 
@@ -258,7 +266,8 @@ class ModulesController extends Controller
         return redirect()->route('modules', ['id'=>$request->module_id]);
     }
 
-    function uploadFiles(Request $request) {
+    function uploadFiles(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $user = Auth::user();
 
         foreach ($request->files as $key=>$value) {
@@ -343,7 +352,8 @@ class ModulesController extends Controller
         return redirect()->back();
     }
 
-    function AjaxUpload(Request $request) {
+    function AjaxUpload(Request $request): void
+    {
         $user = Auth::user();
         $file = $request->file;
         $type = $request->type;
@@ -368,7 +378,8 @@ class ModulesController extends Controller
         echo $return;
     }
 
-    function AjaxDelete(Request $request) {
+    function AjaxDelete(Request $request): void
+    {
         $user = Auth::user();
         var_dump($request->file_id);
         // Check for existing oneline doc. Only one document is allowed in this section
@@ -383,7 +394,8 @@ class ModulesController extends Controller
 
     }
 
-    function deleteFiles(Request $request) {
+    function deleteFiles(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $user = Auth::user();
         // Check for existing oneline doc. Only one document is allowed in this section
         // if found, delete it from the storage folder and the db row
@@ -398,7 +410,8 @@ class ModulesController extends Controller
         return redirect()->back();
     }
 
-    function add_message(Request $request) {
+    function add_message(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $validated = $request->validate([
             'user_id' => 'required',
             'message' => 'required'
@@ -435,7 +448,8 @@ class ModulesController extends Controller
         }
     }
 
-    function moduleNote(Request $request) {
+    function moduleNote(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $validate = $request->validate([
             'note'      => 'required',
             'user_id'   => 'required',
@@ -454,7 +468,8 @@ class ModulesController extends Controller
         return redirect()->back();
     }
 
-    function submitReview(Request $request) {
+    function submitReview(Request $request): \Illuminate\Http\RedirectResponse
+    {
         // Send email to admin to review images
         $user = Auth::user();
 
