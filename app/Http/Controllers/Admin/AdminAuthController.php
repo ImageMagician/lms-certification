@@ -356,7 +356,7 @@ class AdminAuthController extends Controller
     // HUBSPOT STUFF
     private function hubSpotApi() : string {
         // GET HUBSPOT ACCESS TOKEN
-        return ApiKey::where('name', 'hubspot')->value('key');
+        return ApiKey::where('name', 'hubspot')->value('value');
     }
 
     private function curlPost($url, $data) : array|bool {
