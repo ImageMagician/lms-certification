@@ -29,17 +29,17 @@
                                 @endif
                                 <input type="hidden" name="filter" value="all">
                                 <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
-                                    <div class="row m-0 @if( empty($_GET['filter']) || $_GET['filter'] === 'all' ) border border-primary @else border-bottom @endif">
-                                        <div class="p-2 col-6 border-bottom">
+                                    <span class="row m-0 @if( empty($_GET['filter']) || $_GET['filter'] === 'all' ) border border-primary @else border-bottom @endif">
+                                        <span class="p-2 col-6 border-bottom">
                                             Total users:
-                                        </div>
-                                        <div class="p-2 col-6 border-bottom">
+                                        </span>
+                                        <span class="p-2 col-6 border-bottom">
                                             {{ $stats['total'] }}
-                                            <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
+                                            <span class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
                                                 <i class="fa-solid fa-magnifying-glass"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                                            </span>
+                                        </span>
+                                    </span>
                                 </button>
                             </form>
                             {{-- CERTIFIED INSTALLERS --}}
