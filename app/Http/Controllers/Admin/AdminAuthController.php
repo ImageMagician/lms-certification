@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
+use App\Models\ApiKey;
 use App\Models\ModuleAnswer;
 use App\Models\ModuleQuiz;
 use App\Models\RegionalRep;
@@ -324,6 +325,10 @@ class AdminAuthController extends Controller
         }
 
         // POST TO HUBSPOT
+        $response = $this->hubSpotCertPost($user, $cert);
+        if ($response === true) {
+            $_SESSION['flash'] = 'Certification created and posted to HubSpot.';
+        }
 
         return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
     }
@@ -347,6 +352,67 @@ class AdminAuthController extends Controller
 
         return redirect()->route('userDetail', ['id'=>$request->session()->get('user')]);
     }
+
+    // HUBSPOT STUFF
+    private function hubSpotApi() : string {
+        // GET HUBSPOT ACCESS TOKEN
+        return ApiKey::where('name', 'hubspot')->value('key');
+    }
+
+    private function curlPost($url, $data) : array|bool {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json",
+            "authorization: Bearer " . $this->hubSpotApi()
+        ]);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            $_SESSION['error'] = 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+
+        return $response;
+    }
+
+    private function hubSpotCertPost($user, $cert) : bool {
+        // Post to HubSpot
+        $data = [
+            "properties" => [
+                [
+                    "property" => 'email',
+                    "value"    => $user->email
+                ],
+                [
+                    "property" => 'firstname',
+                    "value"    => $user->first_name
+                ],
+                [
+                    "property" => 'lastname',
+                    "value"    => $user->last_name
+                ],
+                [
+                    "property" => 'phone',
+                    "value"    => $user->phone,
+                ],
+                [
+                    "property" => 'certification_number',
+                    "value"    => $cert,
+                ],
+            ]
+        ];
+
+        $url = "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/" . $user->email;
+        return $this->curlPost($url, $data);
+    }
+
+    // END HUBSPOT STUFF
 
 //    public function step3date(Request $request) {
 //        $r_num = 'review_03';
