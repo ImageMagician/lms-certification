@@ -49,17 +49,17 @@
                                 @endif
                                 <input type="hidden" name="filter" value="certified">
                                 <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
-                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'certified' ) border border-primary @else border-bottom @endif">
-                                        <div class="p-2 col-6">
+                                    <span class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'certified' ) border border-primary @else border-bottom @endif">
+                                        <span class="p-2 col-6">
                                             Certified:
-                                        </div>
-                                        <div class="p-2 col-6">
+                                        </span>
+                                        <span class="p-2 col-6">
                                             {{ $stats['certs'] }}
                                             <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
                                                 <i class="fa-solid fa-magnifying-glass"></i>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </span>
+                                    </span>
                                 </button>
                             </form>
                             {{-- READY TO BE CERTIFIED --}}
@@ -69,17 +69,17 @@
                                 @endif
                                 <input type="hidden" name="filter" value="finished">
                                 <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
-                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'finished' ) border border-primary @else border-bottom @endif">
-                                        <div class="p-2 col-6">
+                                    <span class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'finished' ) border border-primary @else border-bottom @endif">
+                                        <span class="p-2 col-6">
                                             Cert ready:
-                                        </div>
-                                        <div class="p-2 col-6">
+                                        </span>
+                                        <span class="p-2 col-6">
                                             {{ $stats['finished'] }}
                                             <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
                                                 <i class="fa-solid fa-magnifying-glass"></i>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </span>
+                                    </span>
                                 </button>
                             </form>
                             {{-- IN PROGRESS --}}
@@ -89,17 +89,17 @@
                                 @endif
                                 <input type="hidden" name="filter" value="unfinished">
                                 <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
-                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'unfinished' ) border border-primary @else border-bottom @endif">
-                                        <div class="p-2 col-6">
+                                    <span class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'unfinished' ) border border-primary @else border-bottom @endif">
+                                        <span class="p-2 col-6">
                                             In progress:
-                                        </div>
-                                        <div class="p-2 col-6">
+                                        </span>
+                                        <span class="p-2 col-6">
                                             {{ $stats['unfinished'] }}
                                             <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
                                                 <i class="fa-solid fa-magnifying-glass"></i>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </span>
+                                    </span>
                                 </button>
                             </form>
                             {{-- LINKED TO ADMIN ACCOUNT --}}
@@ -110,17 +110,17 @@
                                 @endif
                                 <input type="hidden" name="filter" value="rsm">
                                 <button type="submit" class="d-block border-0 bg-transparent p-0 w-100 text-start">
-                                    <div class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'rsm' ) border border-primary @else border-bottom @endif">
-                                        <div class="p-2 col-6">
+                                    <span class="row m-0 @if( !empty( $_GET['filter'] ) && $_GET['filter'] === 'rsm' ) border border-primary @else border-bottom @endif">
+                                        <span class="p-2 col-6">
                                             RSM Assigned:
-                                        </div>
-                                        <div class="p-2 col-6">
+                                        </span>
+                                        <span class="p-2 col-6">
                                             {{ $stats['rsm'] }}
                                             <div class="float-right align-middle rounded border-0 bg-light-mid-gray px-1">
                                                 <i class="fa-solid fa-magnifying-glass"></i>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </span>
+                                    </span>
                                 </button>
                             </form>
                             @endif
@@ -182,10 +182,15 @@
                                                 <div class="d-inline-block col-xl-3 overflow-hidden text-nowrap vertical-align-middle">{{ $u->email }}<span class="d-inline-block d-xl-none pe-2">,</span></div>
                                                 <div class="d-inline-block col-xl-2 overflow-hidden text-nowrap vertical-align-middle">{{ucwords(strtolower($u->companies))}}<span class="d-inline-block d-xl-none pe-2">,</span></div>
                                                 <div class="d-inline-block col-xl-1 text-center vertical-align-middle">{{$u->state}}</div>
-                                                <div class="d-block d-xl-inline-flex col-xl-2 py-2 py-xl-0">
+                                                <div class="d-block col-xl-2 py-2 py-xl-0">
                                                     @if ( !is_null($u->cert) )
                                                         <button class="btn btn-small btn-warning w-100">
                                                             <strong>{{$u->cert}}</strong>
+                                                            @if (!empty($u->cert_date))
+                                                                <span class="mx-2">
+                                                                    ({{ date("m/d/y", strtotime($u->cert_date)) }})
+                                                                </span>
+                                                            @endif
                                                         </button>
                                                     @elseif ( !is_null($u->training_done) )
                                                         <button class="btn btn-small btn-success w-100">
