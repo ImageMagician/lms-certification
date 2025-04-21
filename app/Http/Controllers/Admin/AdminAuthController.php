@@ -402,6 +402,10 @@ class AdminAuthController extends Controller
                     "value"    => $user->phone,
                 ],
                 [
+                    "property" => "channel",
+                    "value"    => "Installer Certification"
+                ],
+                [
                     "property" => 'certification_number',
                     "value"    => $cert,
                 ],
