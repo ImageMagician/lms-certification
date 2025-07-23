@@ -86,149 +86,165 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <table class="table d-sm-table table-tile">
-                        <tr class="d-none d-sm-table-row">
-                            <th class="d-block d-sm-table-cell" scope="col">Step</th>
-                            <th class="d-block d-sm-table-cell" scope="col">Status</th>
-                            <th class="d-block d-sm-table-cell" scope="col">Section</th>
-                            <th class="d-block d-sm-table-cell" scope="col">Title</th>
-                            <th class="d-block d-sm-table-cell" scope="col">Results</th>
-                            <th class="d-block d-sm-table-cell" scope="col">Actions</th>
-                        </tr>
-                            @foreach ($modules as $m)
-                                @php
-                                    $perc = 0;
-                                    $prev_id = ( $m['id']-1 <= 1 ) ? 1 : $m['id']-1;
-                                    $mod_prev = ( $m['id']-2 <= 0 ) ? 0 : $m['id']-2;
+                    <ul class="nav nav-tabs" id="versionTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="version_2_4" data-bs-toggle="tab" data-bs-target="modules_2_4">Sanctuary 2.4</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="version_3" data-bs-toggle="tab" data-bs-target="modules-3">Sanctuary 3</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="homeTabContent">
+                        <div class="tab-pane fade show active" id="modules_2_4" role="tabpanel" aria-labelledby="version_2_4">
+                            <table class="table d-sm-table table-tile">
+                                <tr class="d-none d-sm-table-row">
+                                    <th class="d-block d-sm-table-cell" scope="col">Step</th>
+                                    <th class="d-block d-sm-table-cell" scope="col">Status</th>
+                                    <th class="d-block d-sm-table-cell" scope="col">Section</th>
+                                    <th class="d-block d-sm-table-cell" scope="col">Title</th>
+                                    <th class="d-block d-sm-table-cell" scope="col">Results</th>
+                                    <th class="d-block d-sm-table-cell" scope="col">Actions</th>
+                                </tr>
+                                    @foreach ($modules as $m)
+                                        @php
+                                            $perc = 0;
+                                            $prev_id = ( $m['id']-1 <= 1 ) ? 1 : $m['id']-1;
+                                            $mod_prev = ( $m['id']-2 <= 0 ) ? 0 : $m['id']-2;
 
-                                    // Variables to call items
-                                    $module_id = 'module_' . sprintf('%02d', $m['id']);
-                                    $module_prev = 'module_' . sprintf('%02d', $prev_id);
-                                    $module_date = $module_id . '_date';
-                                @endphp
-                                @if ( !is_null($activity) )
-                                    <tr class="d-block mb-3 mb-sm-0 d-sm-table-row p-2 p-sm-2
-                                        @if ( $m->id > 1 && ( $activity->$module_prev == null || $activity->$module_prev < 100 ) )
-                                            disabled
-                                        @endif
+                                            // Variables to call items
+                                            $module_id = 'module_' . sprintf('%02d', $m['id']);
+                                            $module_prev = 'module_' . sprintf('%02d', $prev_id);
+                                            $module_date = $module_id . '_date';
+                                        @endphp
+                                        @if ( !is_null($activity) )
+                                            <tr class="d-block mb-3 mb-sm-0 d-sm-table-row p-2 p-sm-2
+                                                @if ( $m->id > 1 && ( $activity->$module_prev == null || $activity->$module_prev < 100 ) )
+                                                    disabled
+                                                @endif
 
-                                        @if ( $m->id == 1 && ( is_null( $activity->$module_id )|| $activity->$module_id < 100 ) )
-                                            focus
-                                        @elseif (
-                                            $m->id > 1 &&
-                                            $activity->$module_id < 100 &&
-                                            $activity->$module_prev == 100
-                                        )
-                                            focus
-                                        @endif
-                                   ">
-                                        <td class="d-block d-sm-table-cell text-center p-1 p-sm-2 table-tile-header">
-                                            <span class="d-sm-none d-inline">Step </span>
-                                            {{ $m->id }}
-                                        </td>
-                                        <td class="d-flex d-sm-table-cell p-1 p-sm-2">
-                                            <div class="d-sm-none text-right w-33 pe-2"><strong>Status:</strong></div>
-                                            <div>
-                                                @if ( $activity->$module_id == 100 )
-                                                    <span class="badge badge-success d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Complete</span>
-                                                @elseif ( $activity->$module_id > 0 && $activity->$module_id < 100 )
-                                                    <span class="badge badge-danger d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Retake</span>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td class="d-flex d-sm-table-cell p-1 p-sm-2">
-                                            <div class="d-sm-none w-33 text-right pe-2"><strong>Section:</strong></div>
-                                            <div>
-                                                {{ ucwords($m->section) }}
-                                            </div>
-                                        </td>
-                                        <td class="d-flex d-sm-table-cell p-1 p-sm-2">
-                                            <div class="d-sm-none w-33 text-right pe-2"><strong>Title:</strong></div>
-                                            <div class="d-block">
-                                                {{ $m->title }}
-                                            </div>
-                                        </td>
-                                        <td class="d-flex d-sm-table-cell p-1 p-sm-2">
-                                            <div class="d-sm-none d-block w-33 text-right pe-2"><strong>Results:</strong></div>
-                                            <div class="d-block">
-                                                @if ( $activity->$module_id !== null )
-                                                    @if ( $questions[$m->id] > 0)
-                                                        @php $perc = round( $answers[$m->id] / $questions[$m->id] * 100, 2); @endphp
-                                                        @if ( $perc < 75 )
-                                                            <span class="text-danger"><strong>
-                                                        @endif
-                                                        {{ $answers[$m->id] }} /
-                                                         {{ $questions[$m->id] }} correct
-                                                        ({{ $perc }}%)
-                                                        @if ( $perc < 75 )
-                                                            </strong></span>
-                                                        @endif
-                                                    @else
-                                                        Quiz restarted. Please continue.
-                                                    @endif
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td class="d-flex d-sm-table-cell p-1 p-sm-2">
-                                            <div class="d-sm-none d-block w-33 text-right pe-2"><strong>Actions:</strong></div>
-                                            <div class="d-block w-67 w-sm-100">
-                                                @if ( $activity->$module_id !== null )
-                                                <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block d-sm-block my-sm-2 my-xxl-0 d-xxl-inline-block me-2 me-sm-0 me-xxl-2 text-nowrap
-                                                    @if ($perc < 100)
-                                                        btn-danger
-                                                    @endif
-                                                ">Replay Video</a>
-                                                <form action="/modules/@php echo sprintf('%02d', $m->id); @endphp/restart" method="post" class="me-2 me-sm-0 me-xxl-2 my-sm-2 my-xxl-0 d-inline-block d-sm-block d-xxl-inline-block">
-                                                    @csrf
-                                                    <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
-                                                    <input type="hidden" name="_method" value="PUT">
-                                                    <button type="submit" class="btn btn-tertiary btn-small w-100 text-nowrap
-                                                    @if ($perc < 100)
-                                                        btn-danger
-                                                    @endif
-                                                    ">Restart Quiz</button>
-                                                </form>
+                                                @if ( $m->id == 1 && ( is_null( $activity->$module_id )|| $activity->$module_id < 100 ) )
+                                                    focus
                                                 @elseif (
-                                                    ( $activity->$module_id == null && !is_null( $activity->$module_prev ) && $activity->$module_prev == 100 ) ||
-                                                    ( is_null( $activity->$module_id ) && $m->id == 1)
+                                                    $m->id > 1 &&
+                                                    $activity->$module_id < 100 &&
+                                                    $activity->$module_prev == 100
                                                 )
-                                                    <a class="btn btn-primary btn-small w-100" href="/modules/{{ $m['id'] }}">Watch Video &amp; Take Quiz</a>
+                                                    focus
                                                 @endif
-                                            </div>
-                                       {{-- Last Module --}}
-                                        @if ( $m->id == count($modules) )
-                                            @if ( $activity->$module_prev !== null )
-                                                @if ( $activity->review_end != null )
-                                                    <div class="alert alert-secondary mt-3 mb-0 p-2">
-                                                        @if ( $activity->review_06_admin_request == null)<button onclick="changeDateModal(6)" class="float-right btn btn-tertiary btn-small h-100">Change</button>@endif
-                                                        <strong>Site inspection appt:</strong><br />{{ date("M d, Y @ h:i A", strtotime($activity->review_06)) }}
-
-                                                        @if ($activity->review_06_user_request != null)
-                                                            <p class="mb-0"><small class="color-red-medium">Your requested change: {{ date('M d, Y @ h:i A', strtotime($activity->review_06_user_request)) }}</small></p>
-                                                        @elseif ( $activity->review_06_admin_request != null )
-                                                            <p>
-                                                                <small class="color-red-medium">Lion Energy&rsquo;s requested change:<br />
-                                                                    {{ date('M d, Y @ h:i A', strtotime($activity->review_06_admin_request)) }}
-                                                                </small>
-                                                            </p>
-                                                            <p class="mb-0">
-                                                                <form action="{{ route('userStep6Accept') }}" method="post">
-                                                                    @csrf
-                                                                    <input type="hidden" name="new_datetime" value="{{ $activity->review_06_admin_request }}">
-                                                                    <button type="submit" class="btn btn-small btn-primary">Accept</button>
-                                                                    <button type="button" onclick="changeDateModal(6)" class="btn btn-tertiary btn-small ms-2">Suggest New Date/Time</button>
-                                                                </form>
-                                                            </p>
+                                           ">
+                                                <td class="d-block d-sm-table-cell text-center p-1 p-sm-2 table-tile-header">
+                                                    <span class="d-sm-none d-inline">Step </span>
+                                                    {{ $m->id }}
+                                                </td>
+                                                <td class="d-flex d-sm-table-cell p-1 p-sm-2">
+                                                    <div class="d-sm-none text-right w-33 pe-2"><strong>Status:</strong></div>
+                                                    <div>
+                                                        @if ( $activity->$module_id == 100 )
+                                                            <span class="badge badge-success d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Complete</span>
+                                                        @elseif ( $activity->$module_id > 0 && $activity->$module_id < 100 )
+                                                            <span class="badge badge-danger d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Retake</span>
                                                         @endif
                                                     </div>
+                                                </td>
+                                                <td class="d-flex d-sm-table-cell p-1 p-sm-2">
+                                                    <div class="d-sm-none w-33 text-right pe-2"><strong>Section:</strong></div>
+                                                    <div>
+                                                        {{ ucwords($m->section) }}
+                                                    </div>
+                                                </td>
+                                                <td class="d-flex d-sm-table-cell p-1 p-sm-2">
+                                                    <div class="d-sm-none w-33 text-right pe-2"><strong>Title:</strong></div>
+                                                    <div class="d-block">
+                                                        {{ $m->title }}
+                                                    </div>
+                                                </td>
+                                                <td class="d-flex d-sm-table-cell p-1 p-sm-2">
+                                                    <div class="d-sm-none d-block w-33 text-right pe-2"><strong>Results:</strong></div>
+                                                    <div class="d-block">
+                                                        @if ( $activity->$module_id !== null )
+                                                            @if ( $questions[$m->id] > 0)
+                                                                @php $perc = round( $answers[$m->id] / $questions[$m->id] * 100, 2); @endphp
+                                                                @if ( $perc < 75 )
+                                                                    <span class="text-danger"><strong>
+                                                                @endif
+                                                                {{ $answers[$m->id] }} /
+                                                                 {{ $questions[$m->id] }} correct
+                                                                ({{ $perc }}%)
+                                                                @if ( $perc < 75 )
+                                                                    </strong></span>
+                                                                @endif
+                                                            @else
+                                                                Quiz restarted. Please continue.
+                                                            @endif
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                                <td class="d-flex d-sm-table-cell p-1 p-sm-2">
+                                                    <div class="d-sm-none d-block w-33 text-right pe-2"><strong>Actions:</strong></div>
+                                                    <div class="d-block w-67 w-sm-100">
+                                                        @if ( $activity->$module_id !== null )
+                                                        <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block d-sm-block my-sm-2 my-xxl-0 d-xxl-inline-block me-2 me-sm-0 me-xxl-2 text-nowrap
+                                                            @if ($perc < 100)
+                                                                btn-danger
+                                                            @endif
+                                                        ">Replay Video</a>
+                                                        <form action="/modules/@php echo sprintf('%02d', $m->id); @endphp/restart" method="post" class="me-2 me-sm-0 me-xxl-2 my-sm-2 my-xxl-0 d-inline-block d-sm-block d-xxl-inline-block">
+                                                            @csrf
+                                                            <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
+                                                            <input type="hidden" name="_method" value="PUT">
+                                                            <button type="submit" class="btn btn-tertiary btn-small w-100 text-nowrap
+                                                            @if ($perc < 100)
+                                                                btn-danger
+                                                            @endif
+                                                            ">Restart Quiz</button>
+                                                        </form>
+                                                        @elseif (
+                                                            ( $activity->$module_id == null && !is_null( $activity->$module_prev ) && $activity->$module_prev == 100 ) ||
+                                                            ( is_null( $activity->$module_id ) && $m->id == 1)
+                                                        )
+                                                            <a class="btn btn-primary btn-small w-100" href="/modules/{{ $m['id'] }}">Watch Video &amp; Take Quiz</a>
+                                                        @endif
+                                                    </div>
+                                               {{-- Last Module --}}
+                                                @if ( $m->id == count($modules) )
+                                                    @if ( $activity->$module_prev !== null )
+                                                        @if ( $activity->review_end != null )
+                                                            <div class="alert alert-secondary mt-3 mb-0 p-2">
+                                                                @if ( $activity->review_06_admin_request == null)<button onclick="changeDateModal(6)" class="float-right btn btn-tertiary btn-small h-100">Change</button>@endif
+                                                                <strong>Site inspection appt:</strong><br />{{ date("M d, Y @ h:i A", strtotime($activity->review_06)) }}
+
+                                                                @if ($activity->review_06_user_request != null)
+                                                                    <p class="mb-0"><small class="color-red-medium">Your requested change: {{ date('M d, Y @ h:i A', strtotime($activity->review_06_user_request)) }}</small></p>
+                                                                @elseif ( $activity->review_06_admin_request != null )
+                                                                    <p>
+                                                                        <small class="color-red-medium">Lion Energy&rsquo;s requested change:<br />
+                                                                            {{ date('M d, Y @ h:i A', strtotime($activity->review_06_admin_request)) }}
+                                                                        </small>
+                                                                    </p>
+                                                                    <p class="mb-0">
+                                                                        <form action="{{ route('userStep6Accept') }}" method="post">
+                                                                            @csrf
+                                                                            <input type="hidden" name="new_datetime" value="{{ $activity->review_06_admin_request }}">
+                                                                            <button type="submit" class="btn btn-small btn-primary">Accept</button>
+                                                                            <button type="button" onclick="changeDateModal(6)" class="btn btn-tertiary btn-small ms-2">Suggest New Date/Time</button>
+                                                                        </form>
+                                                                    </p>
+                                                                @endif
+                                                            </div>
+                                                        @endif
+                                                    @endif
                                                 @endif
-                                            @endif
+                                                </td>
+                                            </tr>
                                         @endif
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                    </table>
+                                    @endforeach
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="version_3" role="tabpanel" aria-labelledby="version_3">
+                            Version 3
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
