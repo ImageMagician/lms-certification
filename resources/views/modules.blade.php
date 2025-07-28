@@ -3,8 +3,8 @@
     @if ( $module->video !== null)
     <div class="bg-black">
         <div class="container">
-            <div class="row">
-                <div class="col-12 position-relative">
+            <div class="row justify-content-center">
+                <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 p-0 position-relative">
                     <video id="video_player"
                            class="w-100 align-bottom"
                            controls
