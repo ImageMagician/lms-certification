@@ -56,6 +56,8 @@ class ModulesController extends Controller
 
         $prev_mod = 'module_' . $prev;
 
+        $module->description = htmlspecialchars_decode($module->description);
+
         // make sure the module id pulls an existing module
         // else redirect to home
         if  ( !is_null( $module ) && ( $activity->$prev_mod == 100 || $prev == 0 ) )

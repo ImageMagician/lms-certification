@@ -30,7 +30,8 @@
                     <a href="{{route('home')}}" class="float-right btn btn-outline-secondary">Home</a>
                     {{$module->title}}
                 </h1>
-                <h2 class="h3">{{$module->description}}</h2>
+                <div id="description">{!! $module->description !!}</div>
+
             </div>
         </div>
     </div>

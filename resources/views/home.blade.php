@@ -88,10 +88,10 @@
                 <div class="col-12">
                     <ul class="nav nav-tabs" id="versionTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="version_2_4" data-bs-toggle="tab" data-bs-target="modules_2_4">Sanctuary 2.4</button>
+                            <button type="button" class="nav-link active" id="version_2_4" data-bs-toggle="tab" data-bs-target="#modules_2_4">Sanctuary 2</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" id="version_3" data-bs-toggle="tab" data-bs-target="modules-3">Sanctuary 3</button>
+                            <button type="button" class="nav-link" id="version_3" data-bs-toggle="tab" data-bs-target="#modules_3">Sanctuary 3</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="homeTabContent">
@@ -240,7 +240,7 @@
                                     @endforeach
                             </table>
                         </div>
-                        <div class="tab-pane fade" id="version_3" role="tabpanel" aria-labelledby="version_3">
+                        <div class="tab-pane fade" id="modules_3" role="tabpanel" aria-labelledby="version_3">
                             Version 3
                         </div>
                     </div>

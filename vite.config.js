@@ -9,7 +9,7 @@ export default defineConfig({
                 'resources/sass/app.scss',
                 'resources/js/app.js',
                 'resources/js/quizzes.js',
-                'resources/js/functions.js',
+                'resources/js/functions.js'
             ],
             refresh: true,
         }),
@@ -27,4 +27,11 @@ export default defineConfig({
             vue: 'vue/dist/vue.esm-bundler.js',
         },
     },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                quietDeps: true
+            }
+        }
+    }
 });
