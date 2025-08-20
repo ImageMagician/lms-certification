@@ -57,7 +57,7 @@
     <div class="row py-2">
         <div class="col-12">
             @php $steps = 0; @endphp
-            @foreach( $modules as $m )
+            @foreach( $modules2 as $m )
                 @php
                     $act_step = 'module_' . sprintf('%02d', $m->id);
                 @endphp
@@ -88,14 +88,16 @@
                 <div class="col-12">
                     <ul class="nav nav-tabs" id="versionTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button type="button" class="nav-link active" id="version_2_4" data-bs-toggle="tab" data-bs-target="#modules_2_4">Sanctuary 2</button>
+                            <button type="button" class="nav-link active" id="version_2" data-bs-toggle="tab" data-bs-target="#modules_2">Sanctuary 2</button>
                         </li>
                         <li class="nav-item">
                             <button type="button" class="nav-link" id="version_3" data-bs-toggle="tab" data-bs-target="#modules_3">Sanctuary 3</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="homeTabContent">
-                        <div class="tab-pane fade show active" id="modules_2_4" role="tabpanel" aria-labelledby="version_2_4">
+                        @php $models = [2,3]; @endphp
+                        @foreach ($models as $model)
+                        <div class="tab-pane fade show active" id="modules_@php echo $model @endphp" role="tabpanel" aria-labelledby="version_@php echo $model @endphp">
                             <table class="table d-sm-table table-tile">
                                 <tr class="d-none d-sm-table-row">
                                     <th class="d-block d-sm-table-cell" scope="col">Step</th>
@@ -105,27 +107,30 @@
                                     <th class="d-block d-sm-table-cell" scope="col">Results</th>
                                     <th class="d-block d-sm-table-cell" scope="col">Actions</th>
                                 </tr>
-                                    @foreach ($modules as $m)
+                                @php
+                                    $module = ($model === 2 ) ? $modules2 : $modules3;
+                                @endphp
+                                    @foreach ($modules2 as $m)
                                         @php
                                             $perc = 0;
-                                            $prev_id = ( $m['id']-1 <= 1 ) ? 1 : $m['id']-1;
-                                            $mod_prev = ( $m['id']-2 <= 0 ) ? 0 : $m['id']-2;
+                                            $prev_id = ( $m['step']-1 <= 1 ) ? 1 : $m['step']-1;
+                                            $mod_prev = ( $m['step']-2 <= 0 ) ? 0 : $m['step']-2;
 
                                             // Variables to call items
-                                            $module_id = 'module_' . sprintf('%02d', $m['id']);
+                                            $module_id = 'module_' . sprintf('%02d', $m['step']);
                                             $module_prev = 'module_' . sprintf('%02d', $prev_id);
                                             $module_date = $module_id . '_date';
                                         @endphp
                                         @if ( !is_null($activity) )
                                             <tr class="d-block mb-3 mb-sm-0 d-sm-table-row p-2 p-sm-2
-                                                @if ( $m->id > 1 && ( $activity->$module_prev == null || $activity->$module_prev < 100 ) )
+                                                @if ( $m->step > 1 && ( $activity->$module_prev == null || $activity->$module_prev < 100 ) )
                                                     disabled
                                                 @endif
 
-                                                @if ( $m->id == 1 && ( is_null( $activity->$module_id )|| $activity->$module_id < 100 ) )
+                                                @if ( $m->step == 1 && ( is_null( $activity->$module_id )|| $activity->$module_id < 100 ) )
                                                     focus
                                                 @elseif (
-                                                    $m->id > 1 &&
+                                                    $m->step > 1 &&
                                                     $activity->$module_id < 100 &&
                                                     $activity->$module_prev == 100
                                                 )
@@ -134,7 +139,7 @@
                                            ">
                                                 <td class="d-block d-sm-table-cell text-center p-1 p-sm-2 table-tile-header">
                                                     <span class="d-sm-none d-inline">Step </span>
-                                                    {{ $m->id }}
+                                                    {{ $m->step }}
                                                 </td>
                                                 <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                                     <div class="d-sm-none text-right w-33 pe-2"><strong>Status:</strong></div>
@@ -206,7 +211,7 @@
                                                         @endif
                                                     </div>
                                                {{-- Last Module --}}
-                                                @if ( $m->id == count($modules) )
+                                                @if ( $m->step == count($modules2) )
                                                     @if ( $activity->$module_prev !== null )
                                                         @if ( $activity->review_end != null )
                                                             <div class="alert alert-secondary mt-3 mb-0 p-2">
@@ -221,14 +226,14 @@
                                                                             {{ date('M d, Y @ h:i A', strtotime($activity->review_06_admin_request)) }}
                                                                         </small>
                                                                     </p>
-                                                                    <p class="mb-0">
+                                                                    <div class="mb-0">
                                                                         <form action="{{ route('userStep6Accept') }}" method="post">
                                                                             @csrf
                                                                             <input type="hidden" name="new_datetime" value="{{ $activity->review_06_admin_request }}">
                                                                             <button type="submit" class="btn btn-small btn-primary">Accept</button>
                                                                             <button type="button" onclick="changeDateModal(6)" class="btn btn-tertiary btn-small ms-2">Suggest New Date/Time</button>
                                                                         </form>
-                                                                    </p>
+                                                                    </div>
                                                                 @endif
                                                             </div>
                                                         @endif
@@ -240,9 +245,7 @@
                                     @endforeach
                             </table>
                         </div>
-                        <div class="tab-pane fade" id="modules_3" role="tabpanel" aria-labelledby="version_3">
-                            Version 3
-                        </div>
+                        @endforeach
                     </div>
 
                 </div>

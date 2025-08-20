@@ -62,7 +62,8 @@ class HomeController extends Controller
             $admin = Admin::where('id', $user_info['user']['admin_id'])->first();
         }
 
-        $modules   = Module::all();
+        $modules2   = Module::where("model", 2)->get();
+        $modules3   = Module::where("model", 3)->get();
 
         // Use Trait QuizResults to get all user answers to all module questions for display
         $qNa = $this->getQuizResults();
@@ -72,9 +73,10 @@ class HomeController extends Controller
                 "user"      => $user_info['user'],
                 "admin"     => $admin,
                 "companies" => $user_info['companies'],
-                "state"    => $user_info['state'],
+                "state"     => $user_info['state'],
                 "activity"  => $user_info['activity'],
-                "modules"   => $modules,
+                "modules2"  => $modules2,
+                "modules3"  => $modules3,
                 "images"    => $user_info['images'],
                 "messages"  => $user_info['messages'],
                 "questions" => $qNa['q'],
