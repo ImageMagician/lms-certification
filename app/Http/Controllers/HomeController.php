@@ -18,6 +18,7 @@ use Auth;
 use Illuminate\Support\Facades\Session;
 use App\Notifications\Step3;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
@@ -39,7 +40,9 @@ class HomeController extends Controller
         $user = Auth::user();
         $companies = explode(',', $user->companies);
         $state =$user->state;
-        $activity = UserActivity::where('user_id', $user->id)->first();
+        $activity = array();
+        $activity[2] = UserActivity::where('user_id', $user->id)->where('version_num', 2)->first()->toArray();
+        $activity[3] = UserActivity::where('user_id', $user->id)->where('version_num', 3)->first()->toArray();
         $images = InstallImage::where('user_id', $user->id)->get();
         $messages = Message::where('user_id', $user->id)->get();
 
@@ -61,9 +64,9 @@ class HomeController extends Controller
         if (!empty($user_info['user']['admin_id'])) {
             $admin = Admin::where('id', $user_info['user']['admin_id'])->first();
         }
-
-        $modules2   = Module::where("model", 2)->get();
-        $modules3   = Module::where("model", 3)->get();
+        $modules = array();
+        $modules[2]   = Module::where("version_num", 2)->get()->toArray();
+        $modules[3]   = Module::where("version_num", 3)->get()->toArray();
 
         // Use Trait QuizResults to get all user answers to all module questions for display
         $qNa = $this->getQuizResults();
@@ -75,8 +78,7 @@ class HomeController extends Controller
                 "companies" => $user_info['companies'],
                 "state"     => $user_info['state'],
                 "activity"  => $user_info['activity'],
-                "modules2"  => $modules2,
-                "modules3"  => $modules3,
+                "modules"   => $modules,
                 "images"    => $user_info['images'],
                 "messages"  => $user_info['messages'],
                 "questions" => $qNa['q'],

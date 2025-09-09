@@ -54,29 +54,6 @@
     <a href="{{ asset('docs/LION - Sanctuary Warranty_10-1-24.pdf') }}" class="btn btn-small btn-secondary mx-2" target="_blank">WARRANTY DOCUMENTS</a>
 </div>
 <div class="container-fluid">
-    <div class="row py-2">
-        <div class="col-12">
-            @php $steps = 0; @endphp
-            @foreach( $modules2 as $m )
-                @php
-                    $act_step = 'module_' . sprintf('%02d', $m->id);
-                @endphp
-                @if ( $activity->$act_step !== null )
-                    @php $steps++; @endphp
-                @endif
-            @endforeach
-            @if ( $user->cert == null && $activity->training_done == null && $activity->$act_step != null )
-            <div id="cont_request_cert" class="row justify-content-center">
-                <div class="col-12 text-center mt-3">
-                    <div class="alert alert-success p-2">
-                        <span style="font-size:18px">Training complete. Click here to be contacted by a Lion Energy representative to finalize your certification.</span><br />
-                        <a id="btn_request_cert" href="{{ route('request-cert') }}" class="btn btn-primary mt-2">Request Certification</a>
-                    </div>
-                </div>
-            </div>
-            @endif
-        </div>
-    </div>
     <div class="row">
         <div class="col-md-9 mb-3 mb-md-0">
             <div class="row">
@@ -95,9 +72,8 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="homeTabContent">
-                        @php $models = [2,3]; @endphp
-                        @foreach ($models as $model)
-                        <div class="tab-pane fade show active" id="modules_@php echo $model @endphp" role="tabpanel" aria-labelledby="version_@php echo $model @endphp">
+                        @foreach ($activity as $act)
+                        <div class="tab-pane fade show @if ( $act['version_num'] === 2 ) active @endif" id="modules_@php echo $act['version_num'] @endphp" role="tabpanel" aria-labelledby="version_@php echo $act['version_num'] @endphp">
                             <table class="table d-sm-table table-tile">
                                 <tr class="d-none d-sm-table-row">
                                     <th class="d-block d-sm-table-cell" scope="col">Step</th>
@@ -107,10 +83,7 @@
                                     <th class="d-block d-sm-table-cell" scope="col">Results</th>
                                     <th class="d-block d-sm-table-cell" scope="col">Actions</th>
                                 </tr>
-                                @php
-                                    $module = ($model === 2 ) ? $modules2 : $modules3;
-                                @endphp
-                                    @foreach ($modules2 as $m)
+                                    @foreach ($modules[$act['version_num']] as $m)
                                         @php
                                             $perc = 0;
                                             $prev_id = ( $m['step']-1 <= 1 ) ? 1 : $m['step']-1;
@@ -121,32 +94,32 @@
                                             $module_prev = 'module_' . sprintf('%02d', $prev_id);
                                             $module_date = $module_id . '_date';
                                         @endphp
-                                        @if ( !is_null($activity) )
+                                        @if ( !is_null($activity[$act['version_num']]) )
                                             <tr class="d-block mb-3 mb-sm-0 d-sm-table-row p-2 p-sm-2
-                                                @if ( $m->step > 1 && ( $activity->$module_prev == null || $activity->$module_prev < 100 ) )
+                                                @if ( $m['step'] > 1 && ( $activity[$act['version_num']][$module_prev] == null || $activity[$act['version_num']][$module_prev] < 100 ) )
                                                     disabled
                                                 @endif
 
-                                                @if ( $m->step == 1 && ( is_null( $activity->$module_id )|| $activity->$module_id < 100 ) )
+                                                @if ( $m['step'] === 1 && ( is_null( $activity[$act['version_num']][$module_id] )|| $activity[$act['version_num']][$module_id] < 100 ) )
                                                     focus
                                                 @elseif (
-                                                    $m->step > 1 &&
-                                                    $activity->$module_id < 100 &&
-                                                    $activity->$module_prev == 100
+                                                    $m['step'] > 1 &&
+                                                    $activity[$act['version_num']][$module_id] < 100 &&
+                                                    $activity[$act['version_num']][$module_prev] == 100
                                                 )
                                                     focus
                                                 @endif
                                            ">
                                                 <td class="d-block d-sm-table-cell text-center p-1 p-sm-2 table-tile-header">
                                                     <span class="d-sm-none d-inline">Step </span>
-                                                    {{ $m->step }}
+                                                    {{ $m['step'] }}
                                                 </td>
                                                 <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                                     <div class="d-sm-none text-right w-33 pe-2"><strong>Status:</strong></div>
                                                     <div>
-                                                        @if ( $activity->$module_id == 100 )
+                                                        @if ( $activity[$act['version_num']][$module_id] === 100 )
                                                             <span class="badge badge-success d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Complete</span>
-                                                        @elseif ( $activity->$module_id > 0 && $activity->$module_id < 100 )
+                                                        @elseif ( $activity[$act['version_num']][$module_id] > 0 && $activity[$act['version_num']][$module_id] < 100 )
                                                             <span class="badge badge-danger d-inline-block w-sm-100 ms-2 ms-sm-0 vertical-align-middle">Retake</span>
                                                         @endif
                                                     </div>
@@ -154,26 +127,26 @@
                                                 <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                                     <div class="d-sm-none w-33 text-right pe-2"><strong>Section:</strong></div>
                                                     <div>
-                                                        {{ ucwords($m->section) }}
+                                                        {{ ucwords($m['section']) }}
                                                     </div>
                                                 </td>
                                                 <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                                     <div class="d-sm-none w-33 text-right pe-2"><strong>Title:</strong></div>
                                                     <div class="d-block">
-                                                        {{ $m->title }}
+                                                        {{ $m['title'] }}
                                                     </div>
                                                 </td>
                                                 <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                                     <div class="d-sm-none d-block w-33 text-right pe-2"><strong>Results:</strong></div>
                                                     <div class="d-block">
-                                                        @if ( $activity->$module_id !== null )
-                                                            @if ( $questions[$m->id] > 0)
-                                                                @php $perc = round( $answers[$m->id] / $questions[$m->id] * 100, 2); @endphp
+                                                        @if ( $activity[$act['version_num']][$module_id] !== null )
+                                                            @if ( $questions[$m['id']] > 0)
+                                                                @php $perc = round( $answers[$m['id']] / $questions[$m['id']] * 100, 2); @endphp
                                                                 @if ( $perc < 75 )
                                                                     <span class="text-danger"><strong>
                                                                 @endif
-                                                                {{ $answers[$m->id] }} /
-                                                                 {{ $questions[$m->id] }} correct
+                                                                {{ $answers[$m['id']] }} /
+                                                                 {{ $questions[$m['id']] }} correct
                                                                 ({{ $perc }}%)
                                                                 @if ( $perc < 75 )
                                                                     </strong></span>
@@ -187,15 +160,15 @@
                                                 <td class="d-flex d-sm-table-cell p-1 p-sm-2">
                                                     <div class="d-sm-none d-block w-33 text-right pe-2"><strong>Actions:</strong></div>
                                                     <div class="d-block w-67 w-sm-100">
-                                                        @if ( $activity->$module_id !== null )
+                                                        @if ( $activity[$act['version_num']][$module_id] !== null )
                                                         <a href="/modules/{{ $m['id'] }}" class="btn btn-tertiary btn-small d-inline-block d-sm-block my-sm-2 my-xxl-0 d-xxl-inline-block me-2 me-sm-0 me-xxl-2 text-nowrap
                                                             @if ($perc < 100)
                                                                 btn-danger
                                                             @endif
                                                         ">Replay Video</a>
-                                                        <form action="/modules/@php echo sprintf('%02d', $m->id); @endphp/restart" method="post" class="me-2 me-sm-0 me-xxl-2 my-sm-2 my-xxl-0 d-inline-block d-sm-block d-xxl-inline-block">
+                                                        <form action="/modules/@php echo sprintf('%02d', $m['id']); @endphp/restart" method="post" class="me-2 me-sm-0 me-xxl-2 my-sm-2 my-xxl-0 d-inline-block d-sm-block d-xxl-inline-block">
                                                             @csrf
-                                                            <input type="hidden" id="module_id" name="module_id" value="{{ $m->id }}">
+                                                            <input type="hidden" id="module_id" name="module_id" value="{{ $m['id'] }}">
                                                             <input type="hidden" name="_method" value="PUT">
                                                             <button type="submit" class="btn btn-tertiary btn-small w-100 text-nowrap
                                                             @if ($perc < 100)
@@ -204,41 +177,40 @@
                                                             ">Restart Quiz</button>
                                                         </form>
                                                         @elseif (
-                                                            ( $activity->$module_id == null && !is_null( $activity->$module_prev ) && $activity->$module_prev == 100 ) ||
-                                                            ( is_null( $activity->$module_id ) && $m->id == 1)
+                                                            ( $activity[$act['version_num']][$module_id] == null && !is_null( $activity[$act['version_num']][$module_prev] ) && $activity[$act['version_num']][$module_prev] === 100 )
                                                         )
                                                             <a class="btn btn-primary btn-small w-100" href="/modules/{{ $m['id'] }}">Watch Video &amp; Take Quiz</a>
                                                         @endif
                                                     </div>
                                                {{-- Last Module --}}
-                                                @if ( $m->step == count($modules2) )
-                                                    @if ( $activity->$module_prev !== null )
-                                                        @if ( $activity->review_end != null )
-                                                            <div class="alert alert-secondary mt-3 mb-0 p-2">
-                                                                @if ( $activity->review_06_admin_request == null)<button onclick="changeDateModal(6)" class="float-right btn btn-tertiary btn-small h-100">Change</button>@endif
-                                                                <strong>Site inspection appt:</strong><br />{{ date("M d, Y @ h:i A", strtotime($activity->review_06)) }}
+{{--                                                @if ( $m['step'] == count($modules[$act['version_num']]) )--}}
+{{--                                                    @if ( $activity[$act['version_num']][$module_prev] !== null )--}}
+{{--                                                        @if ( $activity->review_end != null )--}}
+{{--                                                            <div class="alert alert-secondary mt-3 mb-0 p-2">--}}
+{{--                                                                @if ( $activity->review_06_admin_request == null)<button onclick="changeDateModal(6)" class="float-right btn btn-tertiary btn-small h-100">Change</button>@endif--}}
+{{--                                                                <strong>Site inspection appt:</strong><br />{{ date("M d, Y @ h:i A", strtotime($activity->review_06)) }}--}}
 
-                                                                @if ($activity->review_06_user_request != null)
-                                                                    <p class="mb-0"><small class="color-red-medium">Your requested change: {{ date('M d, Y @ h:i A', strtotime($activity->review_06_user_request)) }}</small></p>
-                                                                @elseif ( $activity->review_06_admin_request != null )
-                                                                    <p>
-                                                                        <small class="color-red-medium">Lion Energy&rsquo;s requested change:<br />
-                                                                            {{ date('M d, Y @ h:i A', strtotime($activity->review_06_admin_request)) }}
-                                                                        </small>
-                                                                    </p>
-                                                                    <div class="mb-0">
-                                                                        <form action="{{ route('userStep6Accept') }}" method="post">
-                                                                            @csrf
-                                                                            <input type="hidden" name="new_datetime" value="{{ $activity->review_06_admin_request }}">
-                                                                            <button type="submit" class="btn btn-small btn-primary">Accept</button>
-                                                                            <button type="button" onclick="changeDateModal(6)" class="btn btn-tertiary btn-small ms-2">Suggest New Date/Time</button>
-                                                                        </form>
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                        @endif
-                                                    @endif
-                                                @endif
+{{--                                                                @if ($activity->review_06_user_request != null)--}}
+{{--                                                                    <p class="mb-0"><small class="color-red-medium">Your requested change: {{ date('M d, Y @ h:i A', strtotime($activity->review_06_user_request)) }}</small></p>--}}
+{{--                                                                @elseif ( $activity->review_06_admin_request != null )--}}
+{{--                                                                    <p>--}}
+{{--                                                                        <small class="color-red-medium">Lion Energy&rsquo;s requested change:<br />--}}
+{{--                                                                            {{ date('M d, Y @ h:i A', strtotime($activity->review_06_admin_request)) }}--}}
+{{--                                                                        </small>--}}
+{{--                                                                    </p>--}}
+{{--                                                                    <div class="mb-0">--}}
+{{--                                                                        <form action="{{ route('userStep6Accept') }}" method="post">--}}
+{{--                                                                            @csrf--}}
+{{--                                                                            <input type="hidden" name="new_datetime" value="{{ $activity->review_06_admin_request }}">--}}
+{{--                                                                            <button type="submit" class="btn btn-small btn-primary">Accept</button>--}}
+{{--                                                                            <button type="button" onclick="changeDateModal(6)" class="btn btn-tertiary btn-small ms-2">Suggest New Date/Time</button>--}}
+{{--                                                                        </form>--}}
+{{--                                                                    </div>--}}
+{{--                                                                @endif--}}
+{{--                                                            </div>--}}
+{{--                                                        @endif--}}
+{{--                                                    @endif--}}
+{{--                                                @endif--}}
                                                 </td>
                                             </tr>
                                         @endif
@@ -296,34 +268,34 @@
     </form>
 </div>
 
-<div id="change_date_overlay" class="overlay_bg" onclick="changeDateModal()"></div>
-<div id="change_date_content" class="overlay_content yyz-card p-4" style="position:fixed; left:50%; top: 50%; transform:translate(-50%, -50%); width:400px;">
-    <form id="change_date_form" action="{{ route('userStep3Change') }}" method="post" onsubmit="processingOverlay()">
-        <h3 class="h4">Propose New Date &amp; Time</h3>
-        <div class="row mb-3">
-            <div class="col-6">
-                <label class="pt-0 pb-2 px-0" for="date">Date</label>
-                <input type  = "date"
-                       name  = "date"
-                       id    = "date"
-                       class = "w-100"
-                       value = @if ( $activity->review_06_user_request != null ){{ date("Y-m-d", strtotime($activity->review_06_user_request)) }}@elseif ( $activity->review_06 != null ){{ date("Y-m-d", strtotime($activity->review_06 ) ) }}@endif
-                >
-            </div>
-            <div class="col-6">
-                <label class="pt-0 pb-2 px-0" for="time">Time</label>
-                <input type="time"
-                       name="time"
-                       id="time"
-                       class="w-100"
-                       value = @if ( $activity->review_06_user_request != null ){{ date("H:i", strtotime($activity->review_06_user_request)) }}@elseif ( $activity->review_06 != null ){{ date("H:i", strtotime($activity->review_06 ) ) }}@endif
-                >
-            </div>
-        </div>
-        @csrf
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
+{{--<div id="change_date_overlay" class="overlay_bg" onclick="changeDateModal()"></div>--}}
+{{--<div id="change_date_content" class="overlay_content yyz-card p-4" style="position:fixed; left:50%; top: 50%; transform:translate(-50%, -50%); width:400px;">--}}
+{{--    <form id="change_date_form" action="{{ route('userStep3Change') }}" method="post" onsubmit="processingOverlay()">--}}
+{{--        <h3 class="h4">Propose New Date &amp; Time</h3>--}}
+{{--        <div class="row mb-3">--}}
+{{--            <div class="col-6">--}}
+{{--                <label class="pt-0 pb-2 px-0" for="date">Date</label>--}}
+{{--                <input type  = "date"--}}
+{{--                       name  = "date"--}}
+{{--                       id    = "date"--}}
+{{--                       class = "w-100"--}}
+{{--                       value = @if ( $activity->review_06_user_request != null ){{ date("Y-m-d", strtotime($activity->review_06_user_request)) }}@elseif ( $activity->review_06 != null ){{ date("Y-m-d", strtotime($activity->review_06 ) ) }}@endif--}}
+{{--                >--}}
+{{--            </div>--}}
+{{--            <div class="col-6">--}}
+{{--                <label class="pt-0 pb-2 px-0" for="time">Time</label>--}}
+{{--                <input type="time"--}}
+{{--                       name="time"--}}
+{{--                       id="time"--}}
+{{--                       class="w-100"--}}
+{{--                       value = @if ( $activity->review_06_user_request != null ){{ date("H:i", strtotime($activity->review_06_user_request)) }}@elseif ( $activity->review_06 != null ){{ date("H:i", strtotime($activity->review_06 ) ) }}@endif--}}
+{{--                >--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        @csrf--}}
+{{--        <button type="submit" class="btn btn-primary">Submit</button>--}}
+{{--    </form>--}}
+{{--</div>--}}
 
 <div id="main_overlay_bg" class="overlay_bg"></div>
 <div id="main_overlay_content" class="overlay_content text-center">
@@ -345,7 +317,7 @@
                 document.getElementById('msg_note').value = '';
             }
         }
-
+        {{--
         function changeDateModal(e) {
             let db1, db2, db3, date, time;
             if ( e === 3 ) {
@@ -395,6 +367,7 @@
             document.getElementById('change_date_content').classList.toggle('show');
         }
 
+        --}}
         function processingOverlay() {
             document.getElementById('main_overlay_bg').classList.toggle('show');
             document.getElementById('main_overlay_content').classList.toggle('show');

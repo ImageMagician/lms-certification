@@ -14,7 +14,8 @@ return new class extends Migration
         if(!Schema::hasTable('user_activities')) {
             Schema::create('user_activities', function (Blueprint $table) {
                 $table->id();
-                $table->integer('user_id')->unsigned();
+                $table->foreignId('user_id')->constrained('users');
+                $table->foreignId('version')->constrained('versions');
                 $table->integer('module_01_video')->nullable();
                 $table->float('module_01')->nullable();
                 $table->integer('module_02_video')->nullable();
