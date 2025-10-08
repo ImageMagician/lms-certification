@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('regional_reps')) {
-            Schema::create('regional_reps', function (Blueprint $table) {
+        if (!Schema::hasTable('admins')) {
+            Schema::create('admins', function (Blueprint $table) {
                 $table->id();
                 $table->string('first_name');
                 $table->string('last_name');
                 $table->string('email');
+                $table->string('password');
+                $table->integer('super_admin');
                 $table->timestamps();
             });
         }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('regional_reps');
+        Schema::dropIfExists('admins');
     }
 };

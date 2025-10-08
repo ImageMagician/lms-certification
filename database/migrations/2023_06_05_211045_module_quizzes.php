@@ -14,6 +14,8 @@ return new class extends Migration
         if(!Schema::hasTable('module_quizzes')) {
             Schema::create('module_quizzes', function (Blueprint $table) {
                 $table->id();
+                $table->unsignedBigInteger('version');
+                $table->foreign('version')->references('id')->on('versions');
                 $table->integer('module_id')->unsigned();
                 $table->integer('q_id')->unsigned();
                 $table->text('question');

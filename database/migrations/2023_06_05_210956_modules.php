@@ -14,6 +14,8 @@ return new class extends Migration
         if (!Schema::hasTable('modules')) {
             Schema::create('modules', function (Blueprint $table) {
                 $table->id();
+                $table->unsignedBigInteger('version');
+                $table->foreign('version')->references('id')->on('versions');
                 $table->string('section');
                 $table->string('title');
                 $table->text('description');
